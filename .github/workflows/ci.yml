@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: gitleaks (full history)
+        env:
+          GITLEAKS_VERSION: "8.30.1"
+        run: |
+          set -euo pipefail
+          cd /tmp
+          curl -fsSLO "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -fsSLO "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
+          grep " gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz\$" "gitleaks_${GITLEAKS_VERSION}_checksums.txt" | sha256sum -c -
+          tar -xzf "gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" gitleaks
+          cd "$GITHUB_WORKSPACE"
+          /tmp/gitleaks git --no-banner --redact .
+
+  scope:
+    name: Agent PRs stay in their lane
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Night and task branches touch only nights/, research/ and LOG.md
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          case "$HEAD_REF" in night/*|task/*) ;; *) echo "Not an agent branch ($HEAD_REF); no lane check."; exit 0;; esac
+          outside=$(git diff --name-only "origin/$BASE_REF...HEAD" | grep -vE '^(nights/|research/|LOG\.md$)' || true)
+          if [ -n "$outside" ]; then echo "Agent branch changes files outside its lane:"; echo "$outside"; exit 1; fi
+          echo "ok"
+
+  nights:
+    name: Build changed nights
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Install mise (pinned, checksum-verified)
+        env:
+          MISE_VERSION: "2026.10.19"
+        run: |
+          set -euo pipefail
+          cd /tmp
+          curl -fsSLO "https://github.com/jdx/mise/releases/download/v${MISE_VERSION}/mise-v${MISE_VERSION}-linux-x64"
+          curl -fsSLO "https://github.com/jdx/mise/releases/download/v${MISE_VERSION}/SHASUMS256.txt"
+          grep " \./mise-v${MISE_VERSION}-linux-x64\$\| mise-v${MISE_VERSION}-linux-x64\$" SHASUMS256.txt | sed 's# \./# #' | sha256sum -c -
+          sudo install -m 0755 "mise-v${MISE_VERSION}-linux-x64" /usr/local/bin/mise
+      - name: Build and check each changed night
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          nights=$(git diff --name-only "origin/$BASE_REF...HEAD" | awk -F/ '$1=="nights" && NF>2 {print $2}' | sort -u)
+          [ -n "$nights" ] || { echo "No night folders changed."; exit 0; }
+          for n in $nights; do
+            d="nights/$n"
+            echo "::group::$n"
+            [ -d "$d" ] || { echo "$d removed; skipping"; echo "::endgroup::"; continue; }
+            [[ "$n" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+$ ]] || { echo "Folder name must be YYYY-MM-DD-slug: $n"; exit 1; }
+            for f in README.md build.sh dist/index.html; do [ -e "$d/$f" ] || { echo "$d is missing $f"; exit 1; }; done
+            grep -qF "| $n |" LOG.md || { echo "LOG.md has no line for $n"; exit 1; }
+            ( cd "$d"
+              if [ -f mise.toml ] || [ -f .mise.toml ] || [ -f .tool-versions ]; then mise trust -a && mise install; fi
+              timeout 25m mise exec -- bash build.sh )
+            [ -s "$d/dist/index.html" ] || { echo "build.sh did not produce dist/index.html"; exit 1; }
+            echo "::endgroup::"
+          done
+
+  index:
+    name: Landing page renders
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: mkdir -p /tmp/site && python3 scripts/build-index.py /tmp/site && test -s /tmp/site/index.html
