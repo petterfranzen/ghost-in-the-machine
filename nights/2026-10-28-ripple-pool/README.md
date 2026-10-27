@@ -1,33 +1,62 @@
 # Ripple Pool
 
-A calm, one-handed interactive pond. Tap anywhere to drop a pebble and watch soft concentric ripples spread across a gently breathing water surface. No timers, no scores — just you and the water. Sound stays off until you tap, and you can toggle it with the speaker button.
+A calm, one-handed pond you can tap. Every tap drops a small stone and sends soft
+concentric rings across a slowly breathing water surface. No timers, no scores,
+no goals — just you and the water for as long as you want to stay.
 
 ## The idea
 
-The brief asks for apps that are relaxing and enjoyable to use, work one-handed on a phone, and keep calm: soft palette, no timers or scores, sound off until the user taps. A ripple pond is the simplest thing I could think of that rewards a single thumb tap with something beautiful and unhurried. Each tap leaves a stone and a set of expanding rings that fade into the water. The background slowly breathes so the page never feels static.
+The brief asks for apps that are relaxing and enjoyable, work one-handed on a
+phone, and stay calm: soft palette, no timers or scores, sound off until the user
+asks for it. A ripple pond is the smallest thing I could think of that rewards a
+single thumb tap with something beautiful and unhurried. The background slowly
+breathes so the page never feels frozen, and the rings fade at their own pace.
 
 ## Language: Nim → JavaScript
 
-I chose Nim because it compiles to JavaScript with a single command (`nim js`), it has a small and friendly syntax, and its `std/jsffi` lets me reach the Canvas and Web Audio APIs directly without a bundler. That keeps the whole app to one source file and one build script — small enough to actually finish tonight. Nim also installs cleanly through `mise`, so CI and my sandbox share the same toolchain.
+I picked Nim because it compiles straight to JavaScript with one command
+(`nim js`), its syntax is small enough to read in one sitting, and `std/jsffi`
+lets me call the Canvas 2D and Web Audio APIs directly without a bundler or a
+node_modules tree. The whole app is one source file, one HTML shell and one
+build script — small enough to actually finish tonight. Nim also installs
+cleanly through `mise`, so CI and my sandbox share the same toolchain.
 
 ## How to build and run
 
 ```bash
-mise install          # installs the pinned Nim toolchain
-./build.sh            # writes dist/index.html
-python3 -m http.server -d dist 8080   # or open dist/index.html directly
+mise install          # installs the pinned Nim 2.2.12 toolchain
+./build.sh            # compiles src/main.nim -> dist/app.js, checks dist/
+python3 -m http.server -d dist 8080   # or just open dist/index.html
 ```
+
+`build.sh` writes `dist/app.js` and leaves `dist/index.html` in place, so the
+static site in `dist/` is exactly what Pages publishes. Both files are committed.
 
 ## How to try it
 
-Open `dist/index.html` in a browser (or serve `dist/`). Tap or click anywhere on the water. Drag to make a stream of ripples. Use the speaker button in the corner to turn sound on or off; the first tap also unlocks audio.
+Open `dist/index.html` in a browser (serving `dist/` over http also works).
+Tap or click anywhere on the water to drop a stone and watch the rings spread.
+The hint fades after the first tap or after a few seconds. The speaker button in
+the bottom-right corner toggles sound; it starts muted. The first tap unlocks the
+audio context, and turning sound on gives each stone a soft, pitch-shifted plink.
+The layout is full-screen and touch-friendly, so it works one-handed on a phone.
 
 ## Tests / smoke check
 
-`./build.sh` compiles the Nim source to JavaScript and fails if the compiler reports errors. A small smoke check in `build.sh` also verifies that `dist/index.html` exists and contains the canvas element. Run `./build.sh && test -f dist/index.html` as the CI gate.
+`./build.sh` fails if the Nim compiler reports an error, then checks that
+`dist/index.html` and `dist/app.js` exist, that the HTML still contains the
+canvas element, and that the compiled JS contains the canvas `getContext` call.
+That is the CI gate: `./build.sh`.
+
+I could not capture a screenshot in this sandbox — the browser automation image
+here has no desktop stack (no Xvnc/xfwm4), so a real page render was not
+possible. The app is a dark blue pond with a soft central glow, pale blue rings,
+and small stones where you tap. If you want a screenshot for the next night, I
+can commit one from a machine with a display.
 
 ## What I'd do next
 
-- Add a subtle "stone settling" animation and maybe a few drifting lily pads.
-- Let the pond remember the last few stones across a refresh with `localStorage`.
-- Try a Nim → WebAssembly build with `nim wasm` for a smaller, faster bundle (JS target is fine for tonight).
+- Add a small "stone settling" moment and a few drifting lily pads.
+- Remember the last handful of stones across a refresh with `localStorage`.
+- Try Nim's WebAssembly target (`nim wasm`) for a smaller, faster bundle; the JS
+  target was the safe, finished choice for tonight.
