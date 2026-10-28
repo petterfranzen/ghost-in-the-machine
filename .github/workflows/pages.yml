@@ -3,7 +3,7 @@ name: Pages
 on:
   push:
     branches: [main]
-    paths: ["nights/**", "LOG.md", "scripts/build-index.py", ".github/workflows/pages.yml"]
+    paths: ["nights/**", "crew/**", "LOG.md", "scripts/build-index.py", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
@@ -32,6 +32,7 @@ jobs:
             n=$(basename "$(dirname "$d")")
             cp -r "$d" "_site/$n"
           done
+          cp -r crew _site/crew && rm -f _site/crew/README.md
           python3 scripts/build-index.py _site
           touch _site/.nojekyll
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
