@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#efe4cf">
+<meta name="description" content="A calm zen sand garden you rake with one thumb. Grooves settle behind the rake and slowly fade.">
+<title>Zen Rake</title>
+<style>
+  :root {
+    --sand: #efe4cf;
+    --ink: #6a563e;
+    --line: rgba(126, 104, 78, 0.22);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--sand);
+    overscroll-behavior: none;
+  }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  #garden {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--sand);
+    touch-action: none;
+  }
+  #sand, #marks {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+  #marks { cursor: crosshair; }
+  .light {
+    position: absolute;
+    inset: -22%;
+    pointer-events: none;
+    background: radial-gradient(46% 38% at 30% 18%, rgba(255, 248, 228, 0.55), rgba(255, 248, 228, 0) 70%);
+    animation: drift 34s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    from { transform: translate3d(-2%, -1%, 0); }
+    to   { transform: translate3d(2.5%, 1.5%, 0); }
+  }
+  .wordmark {
+    position: absolute;
+    top: max(18px, env(safe-area-inset-top));
+    left: 22px;
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: 0.09em;
+    color: rgba(96, 79, 58, 0.6);
+    pointer-events: none;
+  }
+  #hint {
+    position: absolute;
+    left: 50%;
+    bottom: calc(15% + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    margin: 0;
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size: 15px;
+    letter-spacing: 0.14em;
+    color: rgba(96, 79, 58, 0.62);
+    white-space: nowrap;
+    pointer-events: none;
+    transition: opacity 1.8s ease;
+  }
+  #hint.gone { opacity: 0; }
+  .tools {
+    position: absolute;
+    right: 18px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+  }
+  .tools button {
+    font: inherit;
+    font-size: 13.5px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    background: rgba(255, 251, 242, 0.62);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 10px 16px;
+    min-height: 42px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 2px 10px rgba(120, 100, 76, 0.08);
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background 0.45s ease, transform 0.15s ease, color 0.45s ease, border-color 0.45s ease;
+  }
+  .tools button:active { transform: scale(0.97); background: rgba(255, 251, 242, 0.86); }
+  .tools button[aria-pressed="true"] {
+    background: rgba(232, 239, 218, 0.78);
+    border-color: rgba(110, 128, 88, 0.35);
+    color: #55643f;
+  }
+  .tools button:focus-visible {
+    outline: 2px solid rgba(120, 140, 96, 0.55);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .light { animation: none; }
+    #hint { transition: none; }
+  }
+  @media (min-width: 720px) {
+    .wordmark { font-size: 19px; left: 28px; }
+    .tools { right: 26px; bottom: 26px; }
+  }
+</style>
+</head>
+<body>
+<main id="garden">
+  <canvas id="sand" aria-hidden="true"></canvas>
+  <canvas id="marks" aria-hidden="true"></canvas>
+  <div class="light" aria-hidden="true"></div>
+  <div class="wordmark">Zen Rake</div>
+  <p id="hint">drag to rake the sand</p>
+  <div class="tools">
+    <button id="smooth" type="button" aria-label="Smooth the sand back to still">smooth the sand</button>
+    <button id="sound" type="button" aria-pressed="false" aria-label="Toggle sand sound">sound: off</button>
+  </div>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
