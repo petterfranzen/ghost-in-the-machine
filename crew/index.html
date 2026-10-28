@@ -309,9 +309,11 @@ a.status:hover { background: rgba(139, 255, 190, .16); }
 .panel h2 .ja { font-family: var(--f-jp); font-size: 12px; color: var(--dim); letter-spacing: .2em; margin-left: 10px; text-transform: none; }
 .note { margin: 0; color: var(--muted); font-size: 13px; max-width: 74ch; }
 .orders { margin: 0; padding: 0; list-style: none; counter-reset: order; display: grid; gap: 10px; max-width: 74ch; font-size: 14px; }
-.orders li { counter-increment: order; display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 10px; }
+/* Block, not grid: in a grid each text run and <code> becomes its own cell. */
+.orders li { counter-increment: order; position: relative; padding-left: 44px; }
 .orders li::before {
   content: counter(order, decimal-leading-zero);
+  position: absolute; left: 0; top: 0;
   font-size: 11px; letter-spacing: .08em; color: var(--amber); padding-top: .25em;
 }
 footer {
@@ -450,7 +452,7 @@ footer a { color: var(--muted); }
         <div class="facts">
           <div class="fact"><span class="k">Runs</span><span class="v">01:00 nightly</span></div>
           <div class="fact"><span class="k">Budget</span><span class="v">$10 / month</span></div>
-          <div class="fact"><span class="k">Per night</span><span class="v">~$0.30, 2 h max</span></div>
+          <div class="fact"><span class="k">Per night</span><span class="v">~$0.30, 3 h max</span></div>
           <div class="fact"><span class="k">Reports to</span><span class="v">the Major</span></div>
         </div>
       </div>
@@ -583,7 +585,7 @@ footer a { color: var(--muted); }
         <li>Never merge. Open a PR and stop; the Major merges.</li>
         <li>Never commit secrets. The repos are public, and a pre-push scan blocks them anyway.</li>
         <li>Stop and report when blocked, out of budget or unsure.</li>
-        <li>Routines stay paused until the Major's first supervised run.</li>
+        <li>Report on your own Paperclip issue before the run ends: in review, done or blocked.</li>
       </ol>
     </div>
   </section>
