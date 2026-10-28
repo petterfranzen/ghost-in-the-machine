@@ -37,14 +37,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - name: Night and task branches touch only nights/, research/ and LOG.md
+      - name: Night and task branches touch only nights/, research/, crew/ and LOG.md
         env:
           HEAD_REF: ${{ github.head_ref }}
           BASE_REF: ${{ github.base_ref }}
         run: |
           set -euo pipefail
           case "$HEAD_REF" in night/*|task/*) ;; *) echo "Not an agent branch ($HEAD_REF); no lane check."; exit 0;; esac
-          outside=$(git diff --name-only "origin/$BASE_REF...HEAD" | grep -vE '^(nights/|research/|LOG\.md$)' || true)
+          outside=$(git diff --name-only "origin/$BASE_REF...HEAD" | grep -vE '^(nights/|research/|crew/|LOG\.md$)' || true)
           if [ -n "$outside" ]; then echo "Agent branch changes files outside its lane:"; echo "$outside"; exit 1; fi
           echo "ok"
 

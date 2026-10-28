@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Section 9 Roster</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root { color-scheme: light; }
+body { margin: 0; }
+img { max-width: 100%; }
+/* Layout: a personnel register. Command strip, then one dossier per agent, then the budget split and standing orders. */
+:root {
+  --bg: #eef1f6;
+  --panel: #ffffff;
+  --ink: #141a26;
+  --muted: #5a6478;
+  --line: #d5dbe6;
+  --chip: #e6eaf2;
+  --accent: #2a63c9;
+  --c-tachikoma: #1a8fc4;
+  --c-batou: #b8730f;
+  --c-ishikawa: #1f8f52;
+  --c-saito: #c23652;
+  --c-togusa: #7a55c7;
+  --ok: #1f8f52;
+  --warn: #a8660a;
+  --f-display: "Oxanium", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0f18; --panel: #121826; --ink: #e6ebf5; --muted: #95a0b8; --line: #243048; --chip: #1b2335; --accent: #6b9cf0;
+    --c-tachikoma: #4cc3f0; --c-batou: #f0a640; --c-ishikawa: #43d98a; --c-saito: #ff6b86; --c-togusa: #b591ff;
+    --ok: #43d98a; --warn: #f0a640; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0f18; --panel: #121826; --ink: #e6ebf5; --muted: #95a0b8; --line: #243048; --chip: #1b2335; --accent: #6b9cf0;
+  --c-tachikoma: #4cc3f0; --c-batou: #f0a640; --c-ishikawa: #43d98a; --c-saito: #ff6b86; --c-togusa: #b591ff;
+  --ok: #43d98a; --warn: #f0a640; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+.wrap { max-width: 980px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+header { display: grid; gap: 6px; }
+header h1 { font-size: clamp(30px, 6vw, 44px); font-weight: 700; letter-spacing: .01em; }
+header p { margin: 0; color: var(--muted); max-width: 62ch; }
+
+.command { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.command div { border-top: 2px solid var(--ink); padding-top: 10px; display: grid; gap: 2px; }
+.command b { font-family: var(--f-display); font-size: 20px; font-weight: 700; }
+.command span { color: var(--muted); font-size: 14px; }
+
+.roster { display: grid; gap: 14px; }
+.dossier {
+  --c: var(--accent);
+  background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 6px;
+  display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 18px; padding: 18px;
+}
+.dossier img { width: 96px; height: 96px; border-radius: 50%; display: block; }
+.dossier .body { display: grid; gap: 10px; min-width: 0; }
+.dossier .top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.dossier h2 { font-size: 24px; font-weight: 700; color: var(--c); }
+.dossier .role { font-weight: 600; }
+.status { margin-left: auto; font-family: var(--f-mono); font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.status.proposed { color: var(--muted); }
+.status.paused { color: var(--warn); }
+.voice { margin: 0; font-style: italic; color: var(--muted); max-width: 70ch; }
+.duties { margin: 0; padding-left: 18px; display: grid; gap: 2px; max-width: 72ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px; }
+.facts span { font-family: var(--f-mono); font-size: 12.5px; background: var(--chip); border-radius: 4px; padding: 3px 8px; font-variant-numeric: tabular-nums; }
+.facts span b { font-weight: 500; color: var(--muted); margin-right: 6px; }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: grid; gap: 12px; }
+.panel h3 { font-size: 18px; font-weight: 700; }
+.bar { display: flex; height: 18px; border-radius: 4px; overflow: hidden; }
+.bar i { display: block; height: 100%; }
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px 16px; font-size: 14px; }
+.legend div { display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
+.legend i { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.legend em { font-style: normal; color: var(--muted); margin-left: auto; font-family: var(--f-mono); font-size: 13px; }
+.note { margin: 0; color: var(--muted); font-size: 14px; max-width: 72ch; }
+.orders { margin: 0; padding-left: 18px; display: grid; gap: 4px; max-width: 72ch; }
+footer { color: var(--muted); font-size: 13px; }
+footer a { color: var(--accent); }
+
+@media (max-width: 560px) {
+  .dossier { grid-template-columns: 1fr; }
+  .dossier img { width: 72px; height: 72px; }
+  .status { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Section 9 · personnel register · as of 27 Oct 2026</span>
+    <h1>Section 9</h1>
+    <p>Petter's agent team on the Hetzner VM. Paperclip assigns the work, Hermes runs it on cheap OpenRouter models, and every change reaches GitHub as a pull request the Major reviews.</p>
+  </header>
+
+  <section class="command" aria-label="Command">
+    <div><b>The Chief</b><span>Petter. Owns everything, sets priorities, approves anything outside the rules.</span></div>
+    <div><b>The Major</b><span>Claude. Coordinates, writes briefs, reviews and merges, checks in at 07:47, 11:47 and 18:47.</span></div>
+  </section>
+
+  <section class="roster" aria-label="Agents">
+    <article class="dossier" style="--c: var(--c-tachikoma)">
+      <img src="avatars/tachikoma.svg" alt="Tachikoma: a round blue robot with big eyes and an antenna">
+      <div class="body">
+        <div class="top"><h2>Tachikoma</h2><span class="role">Nightly builder</span><span class="status proposed">Hired</span></div>
+        <p class="voice">Endlessly curious and cheerful. Builds things to find out what they feel like, and is proud of finishing.</p>
+        <ul class="duties">
+          <li>Each night, picks a language and an idea not done before and builds a small, calm app in <code>ghost-in-the-machine</code>.</li>
+          <li>Claims the night's language with an early draft PR, then marks it ready with a preview for the morning.</li>
+          <li>Can be copied: Tachikoma 2, 3 and so on run in parallel and sign their own PRs.</li>
+        </ul>
+        <div class="facts"><span><b>Runs</b>01:00 nightly</span><span><b>Budget</b>$10 / month</span><span><b>Per night</b>~$0.30, 2 h max</span><span><b>Reports to</b>the Major</span></div>
+      </div>
+    </article>
+
+    <article class="dossier" style="--c: var(--c-batou)">
+      <img src="avatars/batou.svg" alt="Batou: a broad-faced man with pale cropped hair and lens eyes">
+      <div class="body">
+        <div class="top"><h2>Batou</h2><span class="role">Coder</span><span class="status proposed">Hired</span></div>
+        <p class="voice">Big, blunt and dependable. Checks his gear before he moves and keeps it plain.</p>
+        <ul class="duties">
+          <li>Takes small, well-defined coding tasks: fixes to a night's app, follow-ups, first drafts.</li>
+          <li>Builds and tests before pushing; asks once, plainly, when an order is unclear.</li>
+        </ul>
+        <div class="facts"><span><b>Runs</b>on assigned tasks</span><span><b>Budget</b>$4 / month</span><span><b>Per task</b>≤ 1 h, ≤ $0.20</span><span><b>Reports to</b>the Major</span></div>
+      </div>
+    </article>
+
+    <article class="dossier" style="--c: var(--c-ishikawa)">
+      <img src="avatars/ishikawa.svg" alt="Ishikawa: a bearded man in dark glasses full of green data">
+      <div class="body">
+        <div class="top"><h2>Ishikawa</h2><span class="role">Researcher</span><span class="status proposed">Hired</span></div>
+        <p class="voice">The veteran intel man: calm, skeptical, a little wry. Would rather say "unconfirmed" than be wrong.</p>
+        <ul class="duties">
+          <li>Answers research questions from primary sources, dated and cited, answer first.</li>
+          <li>Writes longer reports to <code>research/</code> as a PR when asked.</li>
+        </ul>
+        <div class="facts"><span><b>Runs</b>on assigned tasks</span><span><b>Budget</b>$3 / month</span><span><b>Per question</b>~$0.10</span><span><b>Reports to</b>the Major</span></div>
+      </div>
+    </article>
+
+    <article class="dossier" style="--c: var(--c-togusa)">
+      <img src="avatars/togusa.svg" alt="Togusa: a man with brown hair in a trench coat and tie">
+      <div class="body">
+        <div class="top"><h2>Togusa</h2><span class="role">Backup coordinator</span><span class="status proposed">Hired</span></div>
+        <p class="voice">The most human of the team. Careful, by the book, writes everything down for the handover.</p>
+        <ul class="duties">
+          <li>Every 6 hours, checks whether the Major has been active. Does nothing if so.</li>
+          <li>After 12 silent hours: unblocks clear low-risk decisions and keeps the nightly build going. Never merges or changes settings.</li>
+        </ul>
+        <div class="facts"><span><b>Runs</b>every 6 h</span><span><b>Budget</b>$2 / month</span><span><b>Per run</b>~$0.05</span><span><b>Reports to</b>the Chief</span></div>
+      </div>
+    </article>
+
+    <article class="dossier" style="--c: var(--c-saito)">
+      <img src="avatars/saito.svg" alt="Saito: a man with one cybernetic red eye and a reticle">
+      <div class="body">
+        <div class="top"><h2>Saito</h2><span class="role">Ops, read-only</span><span class="status paused">Hired · paused</span></div>
+        <p class="voice">The patient marksman. Numbers first, few words, and never pulls a trigger.</p>
+        <ul class="duties">
+          <li>Each morning, reports the sandbox's disk use, failed runs and each agent's spend. Suggests fixes, changes nothing.</li>
+          <li>Created by Paperclip's setup wizard on the Claude adapter and paused; the roster script moves him to Hermes.</li>
+        </ul>
+        <div class="facts"><span><b>Runs</b>06:30 daily</span><span><b>Budget</b>$1 / month</span><span><b>Per report</b>~$0.03</span><span><b>Reports to</b>the Major</span></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="panel" aria-label="Monthly budget">
+    <h3>$20 a month, split five ways</h3>
+    <div class="bar" role="img" aria-label="Budget: Tachikoma $10, Batou $4, Ishikawa $3, Togusa $2, Saito $1">
+      <i style="width:50%; background: var(--c-tachikoma)"></i><i style="width:20%; background: var(--c-batou)"></i><i style="width:15%; background: var(--c-ishikawa)"></i><i style="width:10%; background: var(--c-togusa)"></i><i style="width:5%; background: var(--c-saito)"></i>
+    </div>
+    <div class="legend">
+      <div><i style="background: var(--c-tachikoma)"></i>Tachikoma<em>$10</em></div>
+      <div><i style="background: var(--c-batou)"></i>Batou<em>$4</em></div>
+      <div><i style="background: var(--c-ishikawa)"></i>Ishikawa<em>$3</em></div>
+      <div><i style="background: var(--c-togusa)"></i>Togusa<em>$2</em></div>
+      <div><i style="background: var(--c-saito)"></i>Saito<em>$1</em></div>
+    </div>
+    <p class="note">Paperclip stops an agent at its budget; the OpenRouter key stops everything at $20. Tachikoma copies share his $10 unless the cap goes up. Models: DeepSeek V4.1 Flash, falling back to GLM 5.3 Flash, MiniMax M3 and Claude Haiku 5.5, on zero-retention endpoints, never xAI.</p>
+  </section>
+
+  <section class="panel" aria-label="Standing orders">
+    <h3>Standing orders</h3>
+    <ul class="orders">
+      <li>Work only in <code>ghost-in-the-machine</code>. No access to anything else.</li>
+      <li>Never merge. Open a PR and stop; the Major merges.</li>
+      <li>Never commit secrets. The repos are public, and a pre-push scan blocks them anyway.</li>
+      <li>Stop and report when blocked, out of budget or unsure.</li>
+      <li>Routines stay paused until the Major's first supervised run.</li>
+    </ul>
+  </section>
+
+  <footer>Defined in <a href="https://github.com/petterfranzen/agent-manager/tree/main/agents" target="_blank" rel="noopener">agent-manager/agents</a>. The roster file there is the source of truth; this page is a snapshot.</footer>
+</div>
+
+</body>
+</html>
