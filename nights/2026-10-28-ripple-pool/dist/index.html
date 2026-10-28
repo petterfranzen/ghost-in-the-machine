@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0c162d">
+<title>Ripple Pool</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden;
+    background: #0c162d;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  #pool {
+    display: block; width: 100vw; height: 100vh;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: crosshair;
+  }
+  #hint {
+    position: fixed; left: 50%; bottom: max(1.4rem, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    color: rgba(190, 215, 255, 0.42);
+    font-size: 0.82rem; letter-spacing: 0.16em; text-transform: lowercase;
+    pointer-events: none; user-select: none;
+    transition: opacity 1.6s ease;
+    white-space: nowrap;
+  }
+  #hint.gone { opacity: 0; }
+  #sound-toggle {
+    position: fixed;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(160, 200, 255, 0.18);
+    background: rgba(20, 40, 75, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: rgba(190, 220, 255, 0.8);
+    font-size: 1.05rem;
+    line-height: 1;
+    display: grid; place-items: center;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background 0.3s ease, transform 0.15s ease;
+  }
+  #sound-toggle:active { transform: scale(0.92); }
+  #sound-toggle:hover { background: rgba(40, 70, 120, 0.7); }
+</style>
+</head>
+<body>
+<canvas id="pool" aria-label="A calm pool of water. Tap to make ripples."></canvas>
+<div id="hint">tap the water</div>
+<button id="sound-toggle" aria-label="Toggle sound" title="Toggle sound">🔇</button>
+<script src="app.js"></script>
+<script>
+  (function () {
+    var hint = document.getElementById('hint');
+    var hidden = false;
+    function fade() {
+      if (hidden) return;
+      hidden = true;
+      hint.classList.add('gone');
+    }
+    window.addEventListener('pointerdown', fade, { once: true });
+    setTimeout(fade, 9000);
+  })();
+</script>
+</body>
+</html>
