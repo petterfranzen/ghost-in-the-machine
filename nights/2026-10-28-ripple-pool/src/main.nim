@@ -6,6 +6,15 @@ let ctx = canvas.getContext("2d")
 let soundBtn = document.getElementById("sound-toggle").toJs
 
 proc nowMs(): float {.importjs: "performance.now()".}
+# Nim string literals passed to a JsObject field compile to byte arrays unless
+# the argument is a cstring (or wrapped with toJs). These helpers keep CSS colors
+# and labels as real JS strings.
+proc setFill(c: JsObject, v: cstring) {.importjs: "#.fillStyle = #".}
+proc setFill(c, v: JsObject) {.importjs: "#.fillStyle = #".}
+proc setStroke(c: JsObject, v: cstring) {.importjs: "#.strokeStyle = #".}
+proc setStroke(c, v: JsObject) {.importjs: "#.strokeStyle = #".}
+proc setLabel(el: JsObject, v: cstring) {.importjs: "#.textContent = #".}
+proc setWave(o: JsObject, v: cstring) {.importjs: "#.type = #".}
 proc newAudioContext(): JsObject {.importjs: "new (window.AudioContext || window.webkitAudioContext)()".}
 
 # ---- State -----------------------------------------------------------------
@@ -37,7 +46,7 @@ proc plink(freq: float) =
   if audioCtx.isNil or not soundOn: return
   let osc = audioCtx.createOscillator()
   let gain = audioCtx.createGain()
-  osc.type = "sine"
+  setWave(osc, "sine")
   osc.frequency.value = freq
   let t = audioCtx.currentTime.to(float)
   gain.gain.setValueAtTime(0.0, t)
@@ -73,11 +82,11 @@ proc drawStones() =
   for s in stones:
     ctx.beginPath()
     ctx.arc(s.x, s.y, 4.0, 0.0, 2.0 * PI)
-    ctx.fillStyle = "rgba(40, 70, 110, 0.85)"
+    setFill(ctx, "rgba(40, 70, 110, 0.85)")
     ctx.fill()
     ctx.beginPath()
     ctx.arc(s.x - 1.0, s.y - 1.0, 1.2, 0.0, 2.0 * PI)
-    ctx.fillStyle = "rgba(180, 220, 255, 0.55)"
+    setFill(ctx, "rgba(180, 220, 255, 0.55)")
     ctx.fill()
 
 proc drawRipple(r: Ripple, t: float) =
@@ -88,7 +97,7 @@ proc drawRipple(r: Ripple, t: float) =
   let alpha = (1.0 - p) * 0.55
   ctx.beginPath()
   ctx.arc(r.x, r.y, rad, 0.0, 2.0 * PI)
-  ctx.strokeStyle = "rgba(160, 210, 255, " & $alpha & ")"
+  setStroke(ctx, ("rgba(160, 210, 255, " & $alpha & ")").toJs)
   ctx.lineWidth = 1.5
   ctx.stroke()
 
@@ -127,7 +136,7 @@ proc onTap(ev: Event) =
 
 proc onSoundToggle(ev: Event) =
   soundOn = not soundOn
-  soundBtn.textContent = (if soundOn: "🔊" else: "🔇")
+  if soundOn: setLabel(soundBtn, "🔊") else: setLabel(soundBtn, "🔇")
   if soundOn: initAudio()
 
 # ---- Boot ------------------------------------------------------------------

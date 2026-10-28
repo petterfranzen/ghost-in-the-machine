@@ -48,6 +48,16 @@ The layout is full-screen and touch-friendly, so it works one-handed on a phone.
 canvas element, and that the compiled JS contains the canvas `getContext` call.
 That is the CI gate: `./build.sh`.
 
+I also executed the compiled app in Node against a stub DOM/Canvas/AudioContext
+harness to catch runtime faults a compile-only check misses. That check matters:
+Nim string literals assigned straight to a JS property compile to byte arrays, so
+`ctx.fillStyle = "rgba(...)"` silently shipped an invalid colour and nothing was
+painted. The app now sets colours and labels through small `{.importjs.}`
+helpers that take `cstring`, so the emitted JS contains real strings. The harness
+confirms valid colours, the speaker label toggling, and a plink firing only after
+sound is switched on. The harness lives outside the repo; `build.sh` stays the CI
+gate.
+
 I could not capture a screenshot in this sandbox — the browser automation image
 here has no desktop stack (no Xvnc/xfwm4), so a real page render was not
 possible. The app is a dark blue pond with a soft central glow, pale blue rings,

@@ -2,11 +2,11 @@
 var framePtr = null;
 var excHandler = 0;
 var lastJSError = null;
-var NTI570425676 = {size: 0, kind: 24, base: null, node: null, finalizer: null};
-var NTI570425356 = {size: 0, kind: 18, base: null, node: null, finalizer: null};
+var NTI570425671 = {size: 0, kind: 24, base: null, node: null, finalizer: null};
+var NTI570425362 = {size: 0, kind: 18, base: null, node: null, finalizer: null};
 var NTI134217745 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI33554445 = {size: 0,kind: 36,base: null,node: null,finalizer: null};
-var NTI570425367 = {size: 0, kind: 18, base: null, node: null, finalizer: null};
+var NTI570425373 = {size: 0, kind: 18, base: null, node: null, finalizer: null};
 var NTI134217751 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI33555181 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI33555189 = {size: 0, kind: 22, base: null, node: null, finalizer: null};
@@ -36,20 +36,20 @@ NTI134217749.base = NTI33555186;
 var NNI134217751 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
 NTI134217751.node = NNI134217751;
 NTI134217751.base = NTI33555186;
-var NNI570425367 = {kind: 2, len: 2, offset: 0, typ: null, name: null, sons: [{kind: 1, offset: "Field0", len: 0, typ: NTI33554445, name: "Field0", sons: null}, 
+var NNI570425373 = {kind: 2, len: 2, offset: 0, typ: null, name: null, sons: [{kind: 1, offset: "Field0", len: 0, typ: NTI33554445, name: "Field0", sons: null}, 
 {kind: 1, offset: "Field1", len: 0, typ: NTI33554445, name: "Field1", sons: null}]};
-NTI570425367.node = NNI570425367;
+NTI570425373.node = NNI570425373;
 var NNI134217745 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
 NTI134217745.node = NNI134217745;
 NTI134217745.base = NTI33555186;
-var NNI570425356 = {kind: 2, len: 6, offset: 0, typ: null, name: null, sons: [{kind: 1, offset: "x", len: 0, typ: NTI33554445, name: "x", sons: null}, 
+var NNI570425362 = {kind: 2, len: 6, offset: 0, typ: null, name: null, sons: [{kind: 1, offset: "x", len: 0, typ: NTI33554445, name: "x", sons: null}, 
 {kind: 1, offset: "y", len: 0, typ: NTI33554445, name: "y", sons: null}, 
 {kind: 1, offset: "r0", len: 0, typ: NTI33554445, name: "r0", sons: null}, 
 {kind: 1, offset: "r1", len: 0, typ: NTI33554445, name: "r1", sons: null}, 
 {kind: 1, offset: "t0", len: 0, typ: NTI33554445, name: "t0", sons: null}, 
 {kind: 1, offset: "dur", len: 0, typ: NTI33554445, name: "dur", sons: null}]};
-NTI570425356.node = NNI570425356;
-NTI570425676.base = NTI570425356;
+NTI570425362.node = NNI570425362;
+NTI570425671.base = NTI570425362;
 
 function setConstr() {
         var result = {};
@@ -401,13 +401,13 @@ function addChars__stdZprivateZdigitsutils_u202(result_p0, result_p0_Idx, x_p1, 
          else {result_p0[result_p0_Idx].length = Temporary1; };
     Label2: {
       var iHEX60gensym4_335544542 = 0;
-      var i_570426553 = 0;
+      var i_570426524 = 0;
       Label3: {
           Label4: while (true) {
-          if (!(i_570426553 < n_p3)) break Label4;
-            iHEX60gensym4_335544542 = i_570426553;
+          if (!(i_570426524 < n_p3)) break Label4;
+            iHEX60gensym4_335544542 = i_570426524;
             result_p0[result_p0_Idx][(old_335544528 + iHEX60gensym4_335544542)] = x_p1.charCodeAt((start_p2 + iHEX60gensym4_335544542));
-            i_570426553 += 1;
+            i_570426524 += 1;
           }
       };
     };
@@ -523,7 +523,7 @@ function unhandledException(e_p0) {
   
 }
 
-function delete__main_u981(x_p0, x_p0_Idx, i_p1) {
+function delete__main_u962(x_p0, x_p0_Idx, i_p1) {
     if (((x_p0[x_p0_Idx]).length - 1 < i_p1)) {
     raiseException({message: ([105,110,100,101,120,32,111,117,116,32,111,102,32,98,111,117,110,100,115,58,32,39]).concat(HEX24__systemZdollars_u14(i_p1),[39,32,60,32,39],HEX24__systemZdollars_u14((x_p0[x_p0_Idx]).length),[39,32,102,97,105,108,101,100]), m_type: NTI134217749, parent: null, name: null, trace: [], up: null}, "IndexDefect");
     }
@@ -533,7 +533,7 @@ function delete__main_u981(x_p0, x_p0_Idx, i_p1) {
   
 }
 
-function delete__main_u1030(x_p0, x_p0_Idx, i_p1) {
+function delete__main_u1011(x_p0, x_p0_Idx, i_p1) {
     if (((x_p0[x_p0_Idx]).length - 1 < i_p1)) {
     raiseException({message: ([105,110,100,101,120,32,111,117,116,32,111,102,32,98,111,117,110,100,115,58,32,39]).concat(HEX24__systemZdollars_u14(i_p1),[39,32,60,32,39],HEX24__systemZdollars_u14((x_p0[x_p0_Idx]).length),[39,32,102,97,105,108,101,100]), m_type: NTI134217749, parent: null, name: null, trace: [], up: null}, "IndexDefect");
     }
@@ -543,33 +543,33 @@ function delete__main_u1030(x_p0, x_p0_Idx, i_p1) {
   
 }
 
-function initAudio__main_u126() {
-    if ((audioCtx_570425401[0] == null)) {
-    audioCtx_570425401[0] = new (window.AudioContext || window.webkitAudioContext)();
+function initAudio__main_u144() {
+    if ((audioCtx_570425419[0] == null)) {
+    audioCtx_570425419[0] = new (window.AudioContext || window.webkitAudioContext)();
     }
     
 
   
 }
 
-function plink__main_u130(freq_p0) {
+function plink__main_u148(freq_p0) {
   BeforeRet: {
-    if (((audioCtx_570425401[0] == null) || !(soundOn_570425402[0]))) {
+    if (((audioCtx_570425419[0] == null) || !(soundOn_570425420[0]))) {
     break BeforeRet;
     }
     
-    var osc_570425482 = audioCtx_570425401[0].createOscillator();
-    var gain_570425486 = audioCtx_570425401[0].createGain();
-    osc_570425482.type = [115,105,110,101];
-    osc_570425482.frequency.value = freq_p0;
-    var t_570425517 = (audioCtx_570425401[0].currentTime);
-    gain_570425486.gain.setValueAtTime((0.0), (t_570425517));
-    gain_570425486.gain.linearRampToValueAtTime((0.07), ((t_570425517 + 0.02)));
-    gain_570425486.gain.exponentialRampToValueAtTime((0.0001), ((t_570425517 + 0.9)));
-    osc_570425482.connect((gain_570425486));
-    gain_570425486.connect((audioCtx_570425401[0].destination));
-    osc_570425482.start((t_570425517));
-    osc_570425482.stop(((t_570425517 + 0.95)));
+    var osc_570425500 = audioCtx_570425419[0].createOscillator();
+    var gain_570425504 = audioCtx_570425419[0].createGain();
+    osc_570425500.type = "sine";
+    osc_570425500.frequency.value = freq_p0;
+    var t_570425525 = (audioCtx_570425419[0].currentTime);
+    gain_570425504.gain.setValueAtTime((0.0), (t_570425525));
+    gain_570425504.gain.linearRampToValueAtTime((0.07), ((t_570425525 + 0.02)));
+    gain_570425504.gain.exponentialRampToValueAtTime((0.0001), ((t_570425525 + 0.9)));
+    osc_570425500.connect((gain_570425504));
+    gain_570425504.connect((audioCtx_570425419[0].destination));
+    osc_570425500.start((t_570425525));
+    osc_570425500.stop(((t_570425525 + 0.95)));
   };
 
   
@@ -593,45 +593,42 @@ function max__system_u1214(x_p0, y_p1) {
 
 }
 
-function onTap__main_u907(ev_p0) {
-    var e_570426256 = (ev_p0);
-    var rect_570426260 = canvas_570425351.getBoundingClientRect();
-    var x_570426275 = ((e_570426256.clientX) - (rect_570426260.left));
-    var y_570426290 = ((e_570426256.clientY) - (rect_570426260.top));
-    var t_570426291 = performance.now();
-    stones_570425400[0].push({Field0: x_570426275, Field1: y_570426290});;
-    var cssW_570426305 = ((canvas_570425351.width) / window.devicePixelRatio);
-    var cssH_570426313 = ((canvas_570425351.height) / window.devicePixelRatio);
-    var maxR_570426314 = (min__system_u1181(cssW_570426305, cssH_570426313) * 0.55);
-    ripples_570425393[0].push({x: x_570426275, y: y_570426290, r0: 6.0, r1: maxR_570426314, t0: t_570426291, dur: 2200.0});;
-    if ((40 < (stones_570425400[0]).length)) {
-    delete__main_u981(stones_570425400, 0, 0);
+function onTap__main_u888(ev_p0) {
+    var e_570426237 = (ev_p0);
+    var rect_570426241 = canvas_570425351.getBoundingClientRect();
+    var x_570426256 = ((e_570426237.clientX) - (rect_570426241.left));
+    var y_570426271 = ((e_570426237.clientY) - (rect_570426241.top));
+    var t_570426272 = performance.now();
+    stones_570425418[0].push({Field0: x_570426256, Field1: y_570426271});;
+    var cssW_570426286 = ((canvas_570425351.width) / window.devicePixelRatio);
+    var cssH_570426294 = ((canvas_570425351.height) / window.devicePixelRatio);
+    var maxR_570426295 = (min__system_u1181(cssW_570426286, cssH_570426294) * 0.55);
+    ripples_570425411[0].push({x: x_570426256, y: y_570426271, r0: 6.0, r1: maxR_570426295, t0: t_570426272, dur: 2200.0});;
+    if ((40 < (stones_570425418[0]).length)) {
+    delete__main_u962(stones_570425418, 0, 0);
     }
     
-    if ((40 < (ripples_570425393[0]).length)) {
-    delete__main_u1030(ripples_570425393, 0, 0);
+    if ((40 < (ripples_570425411[0]).length)) {
+    delete__main_u1011(ripples_570425411, 0, 0);
     }
     
-    initAudio__main_u126();
-    plink__main_u130((520.0 + ((x_570426275 / max__system_u1214(1.0, cssW_570426305)) * 220.0)));
+    initAudio__main_u144();
+    plink__main_u148((520.0 + ((x_570426256 / max__system_u1214(1.0, cssW_570426286)) * 220.0)));
 
   
 }
 
-function onSoundToggle__main_u1073(ev_p0) {
-    var Temporary1;
-
-    soundOn_570425402[0] = !(soundOn_570425402[0]);
-    if (soundOn_570425402[0]) {
-    Temporary1 = [240,159,148,138];
+function onSoundToggle__main_u1054(ev_p0) {
+    soundOn_570425420[0] = !(soundOn_570425420[0]);
+    if (soundOn_570425420[0]) {
+    soundBtn_570425379.textContent = "🔊";
     }
     else {
-    Temporary1 = [240,159,148,135];
+    soundBtn_570425379.textContent = "🔇";
     }
     
-    soundBtn_570425379.textContent = Temporary1;
-    if (soundOn_570425402[0]) {
-    initAudio__main_u126();
+    if (soundOn_570425420[0]) {
+    initAudio__main_u144();
     }
     
 
@@ -644,11 +641,11 @@ function raiseRangeError() {
   
 }
 
-function resize__main_u59() {
-    var dpr_570425404 = window.devicePixelRatio;
-    canvas_570425351.width = chckRange(Number(BigInt(Math.trunc((window.innerWidth * dpr_570425404)))), (-2147483648), 2147483647);
-    canvas_570425351.height = chckRange(Number(BigInt(Math.trunc((window.innerHeight * dpr_570425404)))), (-2147483648), 2147483647);
-    ctx_570425375.setTransform((dpr_570425404), (0.0), (0.0), (dpr_570425404), (0.0), (0.0));
+function resize__main_u77() {
+    var dpr_570425422 = window.devicePixelRatio;
+    canvas_570425351.width = chckRange(Number(BigInt(Math.trunc((window.innerWidth * dpr_570425422)))), (-2147483648), 2147483647);
+    canvas_570425351.height = chckRange(Number(BigInt(Math.trunc((window.innerHeight * dpr_570425422)))), (-2147483648), 2147483647);
+    ctx_570425375.setTransform((dpr_570425422), (0.0), (0.0), (dpr_570425422), (0.0), (0.0));
 
   
 }
@@ -693,24 +690,24 @@ function HEX24__system_u3224(x_p0) {
 
 }
 
-function drawBackground__main_u277(t_p0) {
-    var w_570425630 = ((canvas_570425351.width) / window.devicePixelRatio);
-    var h_570425638 = ((canvas_570425351.height) / window.devicePixelRatio);
-    var g_570425670 = ctx_570425375.createLinearGradient((0.0), (0.0), (0.0), (h_570425638));
-    g_570425670.addColorStop((0.0), ("rgb(12, 22, 45)"));
-    g_570425670.addColorStop((0.45), ("rgb(20, 42, 78)"));
-    g_570425670.addColorStop((1.0), ("rgb(10, 20, 40)"));
-    ctx_570425375.fillStyle = g_570425670;
-    ctx_570425375.fillRect((0.0), (0.0), (w_570425630), (h_570425638));
-    var pulse_570425766 = (0.5 + (0.5 * Math.sin((t_p0 * 0.0004))));
-    var cx_570425767 = (w_570425630 * 0.5);
-    var cy_570425768 = (h_570425638 * 0.42);
-    var rr_570425769 = (min__system_u1181(w_570425630, h_570425638) * (0.4 + (0.06 * pulse_570425766)));
-    var glow_570425815 = ctx_570425375.createRadialGradient((cx_570425767), (cy_570425768), (0.0), (cx_570425767), (cy_570425768), (rr_570425769));
-    glow_570425815.addColorStop((0.0), (toJSStr(([114,103,98,97,40,57,48,44,32,49,53,48,44,32,50,50,48,44,32]).concat(HEX24__system_u3224((0.1 + (0.05 * pulse_570425766))),[41]))));
-    glow_570425815.addColorStop((1.0), ("rgba(90, 150, 220, 0.0)"));
-    ctx_570425375.fillStyle = glow_570425815;
-    ctx_570425375.fillRect((0.0), (0.0), (w_570425630), (h_570425638));
+function drawBackground__main_u285(t_p0) {
+    var w_570425638 = ((canvas_570425351.width) / window.devicePixelRatio);
+    var h_570425646 = ((canvas_570425351.height) / window.devicePixelRatio);
+    var g_570425678 = ctx_570425375.createLinearGradient((0.0), (0.0), (0.0), (h_570425646));
+    g_570425678.addColorStop((0.0), ("rgb(12, 22, 45)"));
+    g_570425678.addColorStop((0.45), ("rgb(20, 42, 78)"));
+    g_570425678.addColorStop((1.0), ("rgb(10, 20, 40)"));
+    ctx_570425375.fillStyle = g_570425678;
+    ctx_570425375.fillRect((0.0), (0.0), (w_570425638), (h_570425646));
+    var pulse_570425774 = (0.5 + (0.5 * Math.sin((t_p0 * 0.0004))));
+    var cx_570425775 = (w_570425638 * 0.5);
+    var cy_570425776 = (h_570425646 * 0.42);
+    var rr_570425777 = (min__system_u1181(w_570425638, h_570425646) * (0.4 + (0.06 * pulse_570425774)));
+    var glow_570425823 = ctx_570425375.createRadialGradient((cx_570425775), (cy_570425776), (0.0), (cx_570425775), (cy_570425776), (rr_570425777));
+    glow_570425823.addColorStop((0.0), (toJSStr(([114,103,98,97,40,57,48,44,32,49,53,48,44,32,50,50,48,44,32]).concat(HEX24__system_u3224((0.1 + (0.05 * pulse_570425774))),[41]))));
+    glow_570425823.addColorStop((1.0), ("rgba(90, 150, 220, 0.0)"));
+    ctx_570425375.fillStyle = glow_570425823;
+    ctx_570425375.fillRect((0.0), (0.0), (w_570425638), (h_570425646));
 
   
 }
@@ -748,25 +745,25 @@ function failedAssertImpl__stdZassertions_u86(msg_p0) {
   
 }
 
-function drawStones__main_u550() {
+function drawStones__main_u558() {
     Label1: {
-      var s_570425934 = {Field0: 0.0, Field1: 0.0};
-      var i_570426569 = 0;
-      var L_570426570 = (stones_570425400[0]).length;
+      var s_570425942 = {Field0: 0.0, Field1: 0.0};
+      var i_570426540 = 0;
+      var L_570426541 = (stones_570425418[0]).length;
       Label2: {
           Label3: while (true) {
-          if (!(i_570426569 < L_570426570)) break Label3;
-            s_570425934 = nimCopy(s_570425934, stones_570425400[0][chckIndx(i_570426569, 0, (stones_570425400[0]).length - 1)], NTI570425367);
+          if (!(i_570426540 < L_570426541)) break Label3;
+            s_570425942 = nimCopy(s_570425942, stones_570425418[0][chckIndx(i_570426540, 0, (stones_570425418[0]).length - 1)], NTI570425373);
             ctx_570425375.beginPath();
-            ctx_570425375.arc((s_570425934.Field0), (s_570425934.Field1), (4.0), (0.0), (6.283185307179586));
-            ctx_570425375.fillStyle = [114,103,98,97,40,52,48,44,32,55,48,44,32,49,49,48,44,32,48,46,56,53,41];
+            ctx_570425375.arc((s_570425942.Field0), (s_570425942.Field1), (4.0), (0.0), (6.283185307179586));
+            ctx_570425375.fillStyle = "rgba(40, 70, 110, 0.85)";
             ctx_570425375.fill();
             ctx_570425375.beginPath();
-            ctx_570425375.arc(((s_570425934.Field0 - 1.0)), ((s_570425934.Field1 - 1.0)), (1.2), (0.0), (6.283185307179586));
-            ctx_570425375.fillStyle = [114,103,98,97,40,49,56,48,44,32,50,50,48,44,32,50,53,53,44,32,48,46,53,53,41];
+            ctx_570425375.arc(((s_570425942.Field0 - 1.0)), ((s_570425942.Field1 - 1.0)), (1.2), (0.0), (6.283185307179586));
+            ctx_570425375.fillStyle = "rgba(180, 220, 255, 0.55)";
             ctx_570425375.fill();
-            i_570426569 += 1;
-            if (!(((stones_570425400[0]).length == L_570426570))) {
+            i_570426540 += 1;
+            if (!(((stones_570425418[0]).length == L_570426541))) {
             failedAssertImpl__stdZassertions_u86(makeNimstrLit("iterators.nim(254, 11) `len(a) == L` the length of the seq changed while iterating over it"));
             }
             
@@ -777,19 +774,19 @@ function drawStones__main_u550() {
   
 }
 
-function drawRipple__main_u715(r_p0, t_p1) {
+function drawRipple__main_u703(r_p0, t_p1) {
   BeforeRet: {
-    var p_570426062 = ((t_p1 - r_p0.t0) / r_p0.dur);
-    if (((p_570426062 < 0.0) || (1.0 < p_570426062))) {
+    var p_570426050 = ((t_p1 - r_p0.t0) / r_p0.dur);
+    if (((p_570426050 < 0.0) || (1.0 < p_570426050))) {
     break BeforeRet;
     }
     
-    var ease_570426063 = (1.0 - Math.pow((1.0 - p_570426062), 3.0));
-    var rad_570426064 = (r_p0.r0 + ((r_p0.r1 - r_p0.r0) * ease_570426063));
-    var alpha_570426065 = ((1.0 - p_570426062) * 0.55);
+    var ease_570426051 = (1.0 - Math.pow((1.0 - p_570426050), 3.0));
+    var rad_570426052 = (r_p0.r0 + ((r_p0.r1 - r_p0.r0) * ease_570426051));
+    var alpha_570426053 = ((1.0 - p_570426050) * 0.55);
     ctx_570425375.beginPath();
-    ctx_570425375.arc((r_p0.x), (r_p0.y), (rad_570426064), (0.0), (6.283185307179586));
-    ctx_570425375.strokeStyle = ([114,103,98,97,40,49,54,48,44,32,50,49,48,44,32,50,53,53,44,32]).concat(HEX24__system_u3224(alpha_570426065),[41]);
+    ctx_570425375.arc((r_p0.x), (r_p0.y), (rad_570426052), (0.0), (6.283185307179586));
+    ctx_570425375.strokeStyle = (toJSStr(([114,103,98,97,40,49,54,48,44,32,50,49,48,44,32,50,53,53,44,32]).concat(HEX24__system_u3224(alpha_570426053),[41])));
     ctx_570425375.lineWidth = 1.5;
     ctx_570425375.stroke();
   };
@@ -797,44 +794,44 @@ function drawRipple__main_u715(r_p0, t_p1) {
   
 }
 
-function drawFrame__main_u789(t_p0) {
+function drawFrame__main_u770(t_p0) {
     var Temporary5;
 
-    drawBackground__main_u277(t_p0);
-    drawStones__main_u550();
-    var alive_570426139 = [];
+    drawBackground__main_u285(t_p0);
+    drawStones__main_u558();
+    var alive_570426120 = [];
     Label1: {
-      var r_570426162 = ({x: 0.0, y: 0.0, r0: 0.0, r1: 0.0, t0: 0.0, dur: 0.0});
-      var i_570426564 = 0;
-      var L_570426565 = (ripples_570425393[0]).length;
+      var r_570426143 = ({x: 0.0, y: 0.0, r0: 0.0, r1: 0.0, t0: 0.0, dur: 0.0});
+      var i_570426535 = 0;
+      var L_570426536 = (ripples_570425411[0]).length;
       Label2: {
           Label3: while (true) {
-          if (!(i_570426564 < L_570426565)) break Label3;
-            r_570426162 = nimCopy(r_570426162, ripples_570425393[0][chckIndx(i_570426564, 0, (ripples_570425393[0]).length - 1)], NTI570425356);
-            if (((t_p0 - r_570426162.t0) < r_570426162.dur)) {
-            var Temporary4 = nimCopy(null, r_570426162, NTI570425356);
-            alive_570426139.push(Temporary4);;
-            drawRipple__main_u715(r_570426162, t_p0);
+          if (!(i_570426535 < L_570426536)) break Label3;
+            r_570426143 = nimCopy(r_570426143, ripples_570425411[0][chckIndx(i_570426535, 0, (ripples_570425411[0]).length - 1)], NTI570425362);
+            if (((t_p0 - r_570426143.t0) < r_570426143.dur)) {
+            var Temporary4 = nimCopy(null, r_570426143, NTI570425362);
+            alive_570426120.push(Temporary4);;
+            drawRipple__main_u703(r_570426143, t_p0);
             }
             
-            i_570426564 += 1;
-            if (!(((ripples_570425393[0]).length == L_570426565))) {
+            i_570426535 += 1;
+            if (!(((ripples_570425411[0]).length == L_570426536))) {
             failedAssertImpl__stdZassertions_u86(makeNimstrLit("iterators.nim(254, 11) `len(a) == L` the length of the seq changed while iterating over it"));
             }
             
           }
       };
     };
-    ripples_570425393[0] = nimCopy(null, alive_570426139, NTI570425676);
-    Temporary5 = drawFrame__main_u789.bind(null); Temporary5.ClP_0 = drawFrame__main_u789; Temporary5.ClE_0 = null;
+    ripples_570425411[0] = nimCopy(null, alive_570426120, NTI570425671);
+    Temporary5 = drawFrame__main_u770.bind(null); Temporary5.ClP_0 = drawFrame__main_u770; Temporary5.ClE_0 = null;
     (window.requestAnimationFrame(Temporary5));
 
   
 }
 var Temporary1;
 
-function HEX3Aanonymous__main_u1119(ev_p0) {
-    resize__main_u59();
+function HEX3Aanonymous__main_u1090(ev_p0) {
+    resize__main_u77();
 
   
 }
@@ -842,14 +839,14 @@ var Temporary2;
 var canvas_570425351 = (document.getElementById("pool"));
 var ctx_570425375 = canvas_570425351.getContext(("2d"));
 var soundBtn_570425379 = (document.getElementById("sound-toggle"));
-var ripples_570425393 = [[]];
-var stones_570425400 = [[]];
-var audioCtx_570425401 = [null];
-var soundOn_570425402 = [false];
-canvas_570425351.addEventListener(("pointerdown"), (onTap__main_u907));
-soundBtn_570425379.addEventListener(("click"), (onSoundToggle__main_u1073));
-Temporary1 = HEX3Aanonymous__main_u1119.bind(null); Temporary1.ClP_0 = HEX3Aanonymous__main_u1119; Temporary1.ClE_0 = null;
+var ripples_570425411 = [[]];
+var stones_570425418 = [[]];
+var audioCtx_570425419 = [null];
+var soundOn_570425420 = [false];
+canvas_570425351.addEventListener(("pointerdown"), (onTap__main_u888));
+soundBtn_570425379.addEventListener(("click"), (onSoundToggle__main_u1054));
+Temporary1 = HEX3Aanonymous__main_u1090.bind(null); Temporary1.ClP_0 = HEX3Aanonymous__main_u1090; Temporary1.ClE_0 = null;
 window.addEventListener("resize", Temporary1, false);
-resize__main_u59();
-Temporary2 = drawFrame__main_u789.bind(null); Temporary2.ClP_0 = drawFrame__main_u789; Temporary2.ClE_0 = null;
+resize__main_u77();
+Temporary2 = drawFrame__main_u770.bind(null); Temporary2.ClP_0 = drawFrame__main_u770; Temporary2.ClE_0 = null;
 (window.requestAnimationFrame(Temporary2));
