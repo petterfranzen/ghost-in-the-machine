@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#05080f">
+<meta name="description" content="A dusk meadow you fill with fireflies. One tap lifts a small hush of them; they drift, blink and slowly fade.">
+<title>fireflies</title>
+<style>
+  :root {
+    --ink: #e7e2d6;
+    --dim: rgba(231, 226, 214, 0.42);
+    --glass: rgba(255, 255, 255, 0.07);
+    --edge: rgba(255, 255, 255, 0.16);
+    --warm: rgba(255, 208, 130, 0.16);
+  }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: #05080f;
+    color: var(--ink);
+    font: 14px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .stage {
+    position: fixed;
+    inset: 0;
+    touch-action: none;
+    cursor: crosshair;
+  }
+  .scene { display: block; width: 100%; height: 100%; }
+
+  /* Stars breathe in CSS so the Elm diff stays small: no per-frame work. */
+  .star {
+    animation-name: breathe;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    opacity: 0.55;
+  }
+  @keyframes breathe {
+    from { opacity: 0.16; }
+    to   { opacity: 0.85; }
+  }
+
+  .chrome {
+    position: fixed;
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    z-index: 2;
+  }
+  .pill {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    background: var(--glass);
+    border: 1px solid var(--edge);
+    border-radius: 999px;
+    padding: 11px 17px;
+    min-height: 44px;
+    min-width: 64px;
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    transition: background 220ms ease, border-color 220ms ease, transform 120ms ease;
+    cursor: pointer;
+  }
+  .pill:hover { background: rgba(255, 255, 255, 0.12); }
+  .pill:active { transform: translateY(1px); background: rgba(255, 255, 255, 0.18); }
+  .pill:focus-visible { outline: 2px solid rgba(255, 214, 150, 0.7); outline-offset: 3px; }
+  .pill.on {
+    background: var(--warm);
+    border-color: rgba(255, 208, 130, 0.42);
+    color: #ffe9c4;
+  }
+
+  .hint {
+    position: fixed;
+    left: max(18px, env(safe-area-inset-left));
+    bottom: max(28px, calc(env(safe-area-inset-bottom) + 12px));
+    color: var(--dim);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: lowercase;
+    pointer-events: none;
+    transition: opacity 1.6s ease 1.2s;
+    z-index: 2;
+  }
+  .hint.gone { opacity: 0; transition: opacity 1.4s ease; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star { animation: none; opacity: 0.42; }
+    .hint, .pill { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script src="app.js"></script>
+<script>
+  (function () {
+    var reduced = false;
+    try {
+      reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    } catch (e) { reduced = false; }
+    Elm.Main.init({ node: document.getElementById('stage'), flags: reduced });
+  })();
+</script>
+</body>
+</html>
