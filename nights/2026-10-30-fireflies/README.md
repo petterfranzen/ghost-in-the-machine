@@ -20,7 +20,7 @@ that records a stroke, you get air that fills with slow light. It is the same
 one-handed gesture — one thumb, no menus — with a longer, gentler payoff. A tap
 is a small event, and the sky remembers it for a minute.
 
-The scene is built from four quiet layers:
+The scene is built from three quiet layers, plus two buttons:
 
 - a vertical night gradient from near-black at the top to a faint warm haze at the
   horizon, with a field of stars that breathe in CSS (no per-frame Elm work);
