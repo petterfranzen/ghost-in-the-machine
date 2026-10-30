@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-10-30T10:00:00Z",
+  "sample": true,
+  "budget": {"usedPercent": 7, "month": "2026-10"},
+  "agents": [
+    {
+      "name": "Tachikoma",
+      "role": "Nightly builder",
+      "state": "working",
+      "now": "Building tonight's app",
+      "lastActiveAt": "2026-10-30T00:48:00Z",
+      "budgetPercent": 12,
+      "recent": [
+        {"at": "2026-10-30T00:48:00Z", "text": "Shipped Koi Drift (Gleam)", "url": "https://petterfranzen.github.io/ghost-in-the-machine/2026-10-31-koi-drift/"},
+        {"at": "2026-10-29T00:30:00Z", "text": "Finished Zen Rake (Haxe)", "url": "https://petterfranzen.github.io/ghost-in-the-machine/2026-10-29-zen-rake/"},
+        {"at": "2026-10-28T00:40:00Z", "text": "Shipped Fireflies (Elm)", "url": "https://petterfranzen.github.io/ghost-in-the-machine/2026-10-30-fireflies/"}
+      ]
+    },
+    {
+      "name": "Batou",
+      "role": "Coder",
+      "state": "working",
+      "now": "Reviewing the crew page brief",
+      "lastActiveAt": "2026-10-30T09:40:00Z",
+      "budgetPercent": 3,
+      "recent": [
+        {"at": "2026-10-30T09:40:00Z", "text": "Opened the crew page v2 draft"},
+        {"at": "2026-10-30T01:10:00Z", "text": "Fixed the Koi Drift touch handler", "url": "https://github.com/petterfranzen/ghost-in-the-machine/pull/9"}
+      ]
+    },
+    {
+      "name": "Ishikawa",
+      "role": "Researcher",
+      "state": "idle",
+      "now": null,
+      "lastActiveAt": "2026-10-29T18:20:00Z",
+      "budgetPercent": 2,
+      "recent": [
+        {"at": "2026-10-29T18:20:00Z", "text": "Wrote the model comparison"},
+        {"at": "2026-10-29T11:05:00Z", "text": "Answered a question on Gleam tooling"}
+      ]
+    },
+    {
+      "name": "Togusa",
+      "role": "Backup coordinator",
+      "state": "idle",
+      "now": null,
+      "lastActiveAt": "2026-10-30T06:00:00Z",
+      "budgetPercent": 1,
+      "recent": [
+        {"at": "2026-10-30T06:00:00Z", "text": "Checked the Major's check-in; nothing to do"}
+      ]
+    },
+    {
+      "name": "Saito",
+      "role": "Ops, read-only",
+      "state": "paused",
+      "now": null,
+      "lastActiveAt": "2026-10-28T06:30:00Z",
+      "budgetPercent": 0.5,
+      "recent": [
+        {"at": "2026-10-28T06:30:00Z", "text": "Reported disk use and failed runs"}
+      ]
+    }
+  ]
+}

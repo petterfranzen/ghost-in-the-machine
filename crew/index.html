@@ -1,357 +1,38 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="gits95">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Section 9 Roster</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Public Security Section 9: command staff, field operatives, budgets and standing orders for Petter's agent team.">
+<title>Section 9 Crew</title>
+<meta name="description" content="Public Security Section 9: command staff, field operatives, live status, budgets and standing orders for Aramaki's agent team.">
 <meta name="theme-color" content="#060b09">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap">
-<style>
-/* Section 9 roster — GITS-95 HUD skin. Near-black glass, phosphor readouts, wireframe grid. */
-:root {
-  color-scheme: dark;
-  --bg: #060b09;
-  --panel: #0b1410;
-  --panel-2: #0e1a15;
-  --line: rgba(139, 255, 190, .20);
-  --line-strong: rgba(139, 255, 190, .42);
-  --phos: #8bffbe;
-  --amber: #ffb454;
-  --ink: #e6f2ea;
-  --muted: #9db3a7;
-  --dim: #7f958a;
-  --c-major: #ffb454;
-  --c-chief: #ffd08a;
-  --c-tachikoma: #8bffbe;
-  --c-batou: #ffb454;
-  --c-ishikawa: #4fd68c;
-  --c-togusa: #c8d8ce;
-  --c-saito: #7f958a;
-  --f-display: "Rajdhani", "Segoe UI", system-ui, sans-serif;
-  --f-mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --f-jp: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, system-ui, sans-serif;
-  --pad: clamp(14px, 3.4vw, 26px);
-}
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  background-color: var(--bg);
-  background-image: radial-gradient(120% 70% at 50% -15%, rgba(80, 255, 170, .12), transparent 62%);
-  color: var(--ink);
-  font-family: var(--f-mono);
-  font-size: 15px;
-  line-height: 1.55;
-  overflow-x: hidden;
-}
-/* Wireframe grid, fixed behind the content. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(139, 255, 190, .055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(139, 255, 190, .055) 1px, transparent 1px);
-  background-size: 48px 48px;
-  -webkit-mask-image: radial-gradient(130% 100% at 50% 0%, #000 25%, rgba(0,0,0,.35) 70%, transparent 100%);
-  mask-image: radial-gradient(130% 100% at 50% 0%, #000 25%, rgba(0,0,0,.35) 70%, transparent 100%);
-}
-/* Scanlines and tube vignette. */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(180deg, rgba(0, 0, 0, .30) 0 1px, transparent 1px 3px),
-    radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0, 0, 0, .55) 100%);
-  opacity: .45;
-}
-.wrap {
-  position: relative;
-  z-index: 1;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 max(16px, env(safe-area-inset-left, 0px)) max(36px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-right, 0px));
-}
-.skip {
-  position: absolute;
-  left: 12px;
-  top: -60px;
-  z-index: 10;
-  background: var(--phos);
-  color: #04110b;
-  font-weight: 700;
-  padding: 12px 16px;
-  text-decoration: none;
-}
-.skip:focus { top: 12px; }
-a { color: var(--phos); text-underline-offset: 3px; }
-a:focus-visible, .skip:focus-visible {
-  outline: 2px solid var(--amber);
-  outline-offset: 3px;
-}
-img { max-width: 100%; display: block; }
-code {
-  font-family: var(--f-mono);
-  font-size: .92em;
-  color: var(--phos);
-  background: rgba(139, 255, 190, .09);
-  border: 1px solid rgba(139, 255, 190, .18);
-  padding: 1px 4px;
-  overflow-wrap: anywhere;
-}
-.ja {
-  font-family: var(--f-jp);
-  letter-spacing: .14em;
-  font-weight: 500;
-}
-
-/* ---- Top HUD bar ---- */
-.hudbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px 20px;
-  border-bottom: 1px solid var(--line);
-  padding: 12px 0 10px;
-  font-size: 11px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--dim);
-}
-.hudbar .brand { display: flex; align-items: center; gap: 10px; color: var(--phos); }
-.hudbar .brand .ja { font-size: 13px; letter-spacing: .2em; }
-.hudbar .brand b { font-family: var(--f-display); font-weight: 600; letter-spacing: .22em; font-size: 12px; }
-.hudbar .meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-variant-numeric: tabular-nums; }
-.hudbar .meta span::before { content: "["; color: var(--line-strong); }
-.hudbar .meta span::after { content: "]"; color: var(--line-strong); }
-
-/* ---- Header ---- */
-header { padding: clamp(26px, 6vw, 54px) 0 clamp(20px, 4vw, 34px); }
-header .eyebrow {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
-  font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--amber);
-}
-header .eyebrow .sep { color: var(--line-strong); }
-h1 {
-  margin: 10px 0 0;
-  font-family: var(--f-display);
-  font-weight: 700;
-  font-size: clamp(42px, 11vw, 88px);
-  line-height: .95;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--ink);
-  text-shadow: 0 0 22px rgba(139, 255, 190, .22);
-}
-h1 .thin { font-weight: 500; color: var(--phos); }
-.cursor {
-  display: inline-block;
-  width: .42em;
-  height: .78em;
-  margin-left: .12em;
-  background: var(--phos);
-  vertical-align: baseline;
-}
-header p {
-  margin: 16px 0 0;
-  max-width: 64ch;
-  color: var(--muted);
-  font-size: 14px;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .cursor { animation: blink 1.2s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-}
-
-/* ---- Sections ---- */
-section { margin-top: clamp(26px, 5vw, 42px); }
-.sec-label {
-  display: flex; align-items: center; gap: 12px;
-  font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--phos);
-  margin: 0 0 14px;
-  font-weight: 400;
-}
-.sec-label .ja { font-size: 12px; color: var(--dim); letter-spacing: .2em; }
-.sec-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-.sec-label .count { color: var(--dim); letter-spacing: .12em; font-variant-numeric: tabular-nums; }
-
-/* ---- Cards ---- */
-.card {
-  --c: var(--phos);
-  position: relative;
-  display: grid;
-  grid-template-columns: 104px minmax(0, 1fr);
-  gap: clamp(14px, 2.6vw, 22px);
-  padding: var(--pad);
-  background: linear-gradient(180deg, var(--panel-2), var(--panel));
-  border: 1px solid var(--line);
-  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
-}
-.card + .card { margin-top: 14px; }
-.card::before {
-  content: "";
-  position: absolute; inset: 0 0 auto 0; height: 2px;
-  background: linear-gradient(90deg, var(--c), transparent 72%);
-  opacity: .85;
-}
-.card.command { --pad: clamp(16px, 3vw, 26px); }
-.card .body { display: grid; gap: 12px; min-width: 0; }
-.card .top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
-.card h3 {
-  margin: 0;
-  font-family: var(--f-display);
-  font-weight: 700;
-  font-size: clamp(23px, 5vw, 30px);
-  line-height: 1.05;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--c);
-}
-.role {
-  font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--amber);
-  border-left: 1px solid var(--line-strong); padding-left: 12px;
-}
-.status {
-  margin-left: auto;
-  display: inline-flex; align-items: center; justify-content: center;
-  min-height: 32px;
-  padding: 4px 12px;
-  border: 1px solid currentColor;
-  font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--phos); text-decoration: none;
-  background: rgba(139, 255, 190, .07);
-  white-space: nowrap;
-}
-.status.paused { color: var(--amber); background: rgba(255, 180, 84, .07); }
-a.status { border-bottom-width: 2px; }
-a.status:hover { background: rgba(139, 255, 190, .16); }
-.voice { margin: 0; color: var(--muted); max-width: 70ch; font-size: 14px; }
-.voice::before { content: "» "; color: var(--dim); }
-.duties { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; max-width: 74ch; font-size: 14px; }
-.duties li { position: relative; padding-left: 16px; }
-.duties li::before { content: "▸"; position: absolute; left: 0; color: var(--c); font-size: 12px; top: .12em; }
-.facts { margin: 2px 0 0; display: grid; gap: 7px; }
-.fact { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 10px; font-size: 12.5px; line-height: 1.45; }
-.fact .k { color: var(--dim); text-transform: uppercase; letter-spacing: .12em; }
-.fact .v { color: var(--ink); font-variant-numeric: tabular-nums; }
-
-/* Avatar: duotone through a tinted plate. */
-.ava {
-  width: 104px; height: 104px;
-  position: relative;
-  background: var(--c);
-  border: 1px solid var(--line-strong);
-  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
-  isolation: isolate;
-  overflow: hidden;
-}
-.ava img {
-  width: 100%; height: 100%; object-fit: cover;
-  filter: grayscale(1) contrast(1.12) brightness(.92);
-  mix-blend-mode: luminosity;
-  opacity: .94;
-}
-.ava::after {
-  content: "";
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(180deg, rgba(0,0,0,.22) 0 1px, transparent 1px 3px);
-  pointer-events: none;
-}
-.ava .tag {
-  position: absolute; left: 0; bottom: 0;
-  font-size: 9px; letter-spacing: .12em;
-  background: rgba(4, 12, 8, .82); color: var(--phos);
-  padding: 2px 5px;
-}
-.monogram {
-  display: grid; place-items: center;
-  font-family: var(--f-display); font-weight: 700; font-size: 52px; line-height: 1;
-  color: #0a120c;
-  background: radial-gradient(120% 120% at 30% 20%, var(--c-chief), #c98b2e);
-}
-.monogram span { transform: translateY(-2px); }
-
-/* ---- Budget meter ---- */
-.meter {
-  display: flex; gap: 3px; height: 22px; padding: 3px;
-  border: 1px solid var(--line);
-  background: rgba(0,0,0,.35);
-}
-.meter i { display: block; height: 100%; min-width: 4px; }
-.meter i::after { content: ""; display: block; height: 100%; background: repeating-linear-gradient(90deg, rgba(0,0,0,.28) 0 2px, transparent 2px 6px); }
-.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 6px 20px; font-size: 13px; }
-.legend div { display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
-.legend i { width: 10px; height: 10px; flex: none; }
-.legend em { font-style: normal; color: var(--muted); margin-left: auto; font-size: 12.5px; }
-.panel {
-  position: relative;
-  background: linear-gradient(180deg, var(--panel-2), var(--panel));
-  border: 1px solid var(--line);
-  padding: var(--pad);
-  display: grid; gap: 14px;
-  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
-}
-.panel h2 {
-  margin: 0; font-family: var(--f-display); font-weight: 700;
-  font-size: clamp(18px, 4vw, 22px); letter-spacing: .08em; text-transform: uppercase; color: var(--ink);
-}
-.panel h2 .ja { font-family: var(--f-jp); font-size: 12px; color: var(--dim); letter-spacing: .2em; margin-left: 10px; text-transform: none; }
-.note { margin: 0; color: var(--muted); font-size: 13px; max-width: 74ch; }
-.orders { margin: 0; padding: 0; list-style: none; counter-reset: order; display: grid; gap: 10px; max-width: 74ch; font-size: 14px; }
-/* Block, not grid: in a grid each text run and <code> becomes its own cell. */
-.orders li { counter-increment: order; position: relative; padding-left: 44px; }
-.orders li::before {
-  content: counter(order, decimal-leading-zero);
-  position: absolute; left: 0; top: 0;
-  font-size: 11px; letter-spacing: .08em; color: var(--amber); padding-top: .25em;
-}
-footer {
-  margin-top: clamp(30px, 6vw, 48px);
-  border-top: 1px solid var(--line);
-  padding-top: 14px;
-  color: var(--dim);
-  font-size: 11px;
-  letter-spacing: .06em;
-  display: grid; gap: 4px;
-}
-footer a { color: var(--muted); }
-
-/* ---- 390 px and narrow screens ---- */
-@media (max-width: 620px) {
-  body { font-size: 15px; }
-  .card { grid-template-columns: 64px minmax(0, 1fr); gap: 12px; }
-  .ava { width: 64px; height: 64px; }
-  .monogram { font-size: 34px; }
-  .ava .tag { display: none; }
-  .card h3 { font-size: 22px; }
-  .role { border-left: 0; padding-left: 0; }
-  .status { margin-left: 0; min-height: 44px; padding: 6px 12px; }
-  .fact { grid-template-columns: 80px minmax(0, 1fr); gap: 8px; font-size: 12px; }
-  .duties, .voice, .orders { font-size: 14px; }
-  .hudbar { font-size: 10px; letter-spacing: .12em; }
-  .hudbar .brand .ja { font-size: 12px; }
-  h1 { font-size: clamp(40px, 13vw, 56px); }
-}
-@media (max-width: 370px) {
-  .card { grid-template-columns: 56px minmax(0, 1fr); gap: 10px; }
-  .ava { width: 56px; height: 56px; }
-  .fact { grid-template-columns: 1fr; gap: 0; }
-  .fact .k { font-size: 10.5px; }
-}
-</style>
+<script>
+(function () {
+  var THEMES = ['gits95', 'terminal', 'tachikoma-blue'];
+  var DEFAULT = 'gits95';
+  var name = DEFAULT;
+  try {
+    var q = new URLSearchParams(location.search).get('theme');
+    if (q && THEMES.indexOf(q.toLowerCase()) !== -1) {
+      name = q.toLowerCase();
+    } else {
+      var saved = localStorage.getItem('s9-theme');
+      if (saved && THEMES.indexOf(saved.toLowerCase()) !== -1) name = saved.toLowerCase();
+    }
+  } catch (e) {}
+  document.documentElement.setAttribute('data-theme', name);
+})();
+</script>
+<link rel="stylesheet" href="themes/base.css">
+<link rel="stylesheet" href="themes/gits95.css">
+<link rel="stylesheet" href="themes/terminal.css">
+<link rel="stylesheet" href="themes/tachikoma-blue.css">
 </head>
 <body>
+<div class="scan" aria-hidden="true"></div>
 <a class="skip" href="#command">Skip to the roster</a>
 
 <div class="wrap">
@@ -362,20 +43,38 @@ footer a { color: var(--muted); }
       <b>Public Security Section 9</b>
     </div>
     <div class="meta">
-      <span>Personnel 07</span>
-      <span>Budget $20 / mo</span>
-      <span>Operator Petter</span>
+      <span>Personnel <span id="personnel-count">07</span></span>
+      <span>Budget 100% / mo</span>
+      <span>Operator Aramaki</span>
+      <div class="theme-pick">
+        <label for="theme">Theme</label>
+        <select id="theme">
+          <option value="gits95">GITS-95</option>
+          <option value="terminal">Terminal</option>
+          <option value="tachikoma-blue">Tachikoma Blue</option>
+        </select>
+      </div>
     </div>
   </div>
+
+  <div class="live-strip" id="live-strip">
+    <span class="live-item" id="live-budget">Budget —</span>
+    <span class="live-item" id="live-updated">Updated —</span>
+    <span class="live-badge sample" id="live-sample" hidden title="This is sample data; the live feed is not published yet.">Sample data</span>
+    <span class="live-badge stale" id="live-stale" hidden title="Data is older than 3 hours.">Stale data</span>
+    <noscript><span class="live-badge">JavaScript off</span></noscript>
+  </div>
+  <p class="sample-note" id="sample-note" hidden>Sample data — the live feed starts when the hourly job publishes status.json.</p>
+  <span class="sr-only" id="live-announce" role="status" aria-live="polite"></span>
 
   <header>
     <div class="eyebrow">
       <span>Personnel register</span><span class="sep">/</span>
       <span lang="ja" class="ja">人事記録</span><span class="sep">/</span>
-      <span>as of 28 Oct 2026</span>
+      <span>live status</span>
     </div>
     <h1>Section <span class="thin">9</span><span class="cursor" aria-hidden="true"></span></h1>
-    <p>Petter's agent team on the Hetzner VM. Paperclip assigns the work, Hermes runs it on cheap OpenRouter models, and every change reaches GitHub as a pull request the Major reviews.</p>
+    <p>Aramaki's agent team on the company's server. Paperclip assigns the work, the agent runtime runs it on lightweight models, and every change reaches GitHub as a pull request the Major reviews.</p>
   </header>
 
   <section id="command" tabindex="-1" aria-labelledby="command-label">
@@ -392,7 +91,7 @@ footer a { color: var(--muted); }
           <span class="role">Coordinator</span>
           <span class="status">Command</span>
         </div>
-        <p class="voice">Claude. Coordinates the team and keeps the whole operation in her head. Calm under pressure, direct in a review.</p>
+        <p class="voice">Coordinates the team and keeps the whole operation in her head. Calm under pressure, direct in a review.</p>
         <ul class="duties">
           <li>Coordinates the field operatives and assigns the work.</li>
           <li>Writes the brief for each task before work starts.</li>
@@ -408,14 +107,14 @@ footer a { color: var(--muted); }
     </article>
 
     <article class="card command" style="--c: var(--c-chief)">
-      <div class="ava monogram" aria-hidden="true"><span>P</span></div>
+      <div class="ava monogram chief" aria-hidden="true"><span>A</span></div>
       <div class="body">
         <div class="top">
-          <h3>The Chief</h3>
-          <span class="role">Owner</span>
+          <h3>Aramaki</h3>
+          <span class="role">Chief of Section 9</span>
           <span class="status">Command</span>
         </div>
-        <p class="voice">Petter. Owns everything, sets the priorities and approves anything outside the rules. The one voice the whole section answers to.</p>
+        <p class="voice">Aramaki. Owns everything, sets the priorities and approves anything outside the rules. The one voice the whole section answers to.</p>
         <ul class="duties">
           <li>Sets priorities and decides what the section works on next.</li>
           <li>Approves anything that falls outside the standing orders.</li>
@@ -430,150 +129,209 @@ footer a { color: var(--muted); }
   </section>
 
   <section id="roster" aria-labelledby="roster-label">
-    <h2 class="sec-label" id="roster-label">Field operatives <span class="ja" lang="ja">課員</span> <span class="count">05</span></h2>
+    <h2 class="sec-label" id="roster-label">Field operatives <span class="ja" lang="ja">課員</span> <span class="count" id="roster-count">05</span></h2>
+    <p class="live-error" id="live-error" hidden role="status"></p>
+    <div id="roster-list">
 
-    <article class="card" style="--c: var(--c-tachikoma)">
-      <div class="ava">
-        <img src="avatars/tachikoma.svg" alt="Tachikoma: a round blue robot with big eyes and an antenna">
-        <span class="tag">S9-01</span>
-      </div>
-      <div class="body">
-        <div class="top">
-          <h3>Tachikoma</h3>
-          <span class="role">Nightly builder</span>
-          <a class="status" href="https://petterfranzen.github.io/ghost-in-the-machine/2026-10-28-ripple-pool/" aria-label="Tachikoma status: 1 night shipped. Read the Ripple Pool night.">1 night shipped</a>
+      <article class="card" data-agent="Tachikoma" style="--c: var(--c-tachikoma)">
+        <div class="ava">
+          <img src="avatars/tachikoma.svg" alt="Tachikoma: a round blue robot with big eyes and an antenna">
+          <span class="tag">S9-01</span>
         </div>
-        <p class="voice">Endlessly curious and cheerful. Builds things to find out what they feel like, and is proud of finishing.</p>
-        <ul class="duties">
-          <li>Each night, picks a language and an idea not done before and builds a small, calm app in <code>ghost-in-the-machine</code>.</li>
-          <li>Claims the night's language with an early draft PR, then marks it ready with a preview for the morning.</li>
-          <li>Can be copied: Tachikoma 2, 3 and so on run in parallel and sign their own PRs.</li>
-        </ul>
-        <div class="facts">
-          <div class="fact"><span class="k">Runs</span><span class="v">01:00 nightly</span></div>
-          <div class="fact"><span class="k">Budget</span><span class="v">$10 / month</span></div>
-          <div class="fact"><span class="k">Per night</span><span class="v">~$0.30, 3 h max</span></div>
-          <div class="fact"><span class="k">Reports to</span><span class="v">the Major</span></div>
+        <div class="body">
+          <div class="top">
+            <h3>Tachikoma</h3>
+            <span class="role">Nightly builder</span>
+            <span class="status">Hired</span>
+          </div>
+          <div class="live" data-live hidden>
+            <div class="live-row">
+              <span class="state-light" data-state-light aria-hidden="true"></span>
+              <span class="state-text" data-state-text>—</span>
+              <span class="last-active" data-last-active hidden></span>
+              <span class="live-budget" data-budget-text>—</span>
+            </div>
+            <p class="now"><span class="now-k">Now</span> <span data-now>—</span></p>
+            <ul class="recent" data-recent aria-label="Recent activity"></ul>
+            <div class="budget-bar" data-budget-bar aria-hidden="true"><i data-budget-fill></i></div>
+          </div>
+          <p class="voice">Endlessly curious and cheerful. Builds things to find out what they feel like, and is proud of finishing.</p>
+          <ul class="duties">
+            <li>Each night, picks a language and an idea not done before and builds a small, calm app in <code>ghost-in-the-machine</code>.</li>
+            <li>Claims the night's language with an early draft PR, then marks it ready with a preview for the morning.</li>
+            <li>Can be copied: Tachikoma 2, 3 and so on run in parallel and sign their own PRs.</li>
+          </ul>
+          <div class="facts">
+            <div class="fact"><span class="k">Runs</span><span class="v">01:00 nightly</span></div>
+            <div class="fact"><span class="k">Budget</span><span class="v">50% of monthly</span></div>
+            <div class="fact"><span class="k">Per night</span><span class="v">~1.5% of monthly, 3 h max</span></div>
+            <div class="fact"><span class="k">Reports to</span><span class="v">the Major</span></div>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
 
-    <article class="card" style="--c: var(--c-batou)">
-      <div class="ava">
-        <img src="avatars/batou.svg" alt="Batou: a broad-faced man with pale cropped hair and lens eyes">
-        <span class="tag">S9-02</span>
-      </div>
-      <div class="body">
-        <div class="top">
-          <h3>Batou</h3>
-          <span class="role">Coder</span>
-          <span class="status">Hired</span>
+      <article class="card" data-agent="Batou" style="--c: var(--c-batou)">
+        <div class="ava">
+          <img src="avatars/batou.svg" alt="Batou: a broad-faced man with pale cropped hair and lens eyes">
+          <span class="tag">S9-02</span>
         </div>
-        <p class="voice">Big, blunt and dependable. Checks his gear before he moves and keeps it plain.</p>
-        <ul class="duties">
-          <li>Takes small, well-defined coding tasks: fixes to a night's app, follow-ups, first drafts.</li>
-          <li>Builds and tests before pushing; asks once, plainly, when an order is unclear.</li>
-        </ul>
-        <div class="facts">
-          <div class="fact"><span class="k">Runs</span><span class="v">on assigned tasks</span></div>
-          <div class="fact"><span class="k">Budget</span><span class="v">$4 / month</span></div>
-          <div class="fact"><span class="k">Per task</span><span class="v">≤ 1 h, ≤ $0.20</span></div>
-          <div class="fact"><span class="k">Reports to</span><span class="v">the Major</span></div>
+        <div class="body">
+          <div class="top">
+            <h3>Batou</h3>
+            <span class="role">Coder</span>
+            <span class="status">Hired</span>
+          </div>
+          <div class="live" data-live hidden>
+            <div class="live-row">
+              <span class="state-light" data-state-light aria-hidden="true"></span>
+              <span class="state-text" data-state-text>—</span>
+              <span class="last-active" data-last-active hidden></span>
+              <span class="live-budget" data-budget-text>—</span>
+            </div>
+            <p class="now"><span class="now-k">Now</span> <span data-now>—</span></p>
+            <ul class="recent" data-recent aria-label="Recent activity"></ul>
+            <div class="budget-bar" data-budget-bar aria-hidden="true"><i data-budget-fill></i></div>
+          </div>
+          <p class="voice">Big, blunt and dependable. Checks his gear before he moves and keeps it plain.</p>
+          <ul class="duties">
+            <li>Takes small, well-defined coding tasks: fixes to a night's app, follow-ups, first drafts.</li>
+            <li>Builds and tests before pushing; asks once, plainly, when an order is unclear.</li>
+          </ul>
+          <div class="facts">
+            <div class="fact"><span class="k">Runs</span><span class="v">on assigned tasks</span></div>
+            <div class="fact"><span class="k">Budget</span><span class="v">20% of monthly</span></div>
+            <div class="fact"><span class="k">Per task</span><span class="v">≤ 1 h, ≤ 1% of monthly</span></div>
+            <div class="fact"><span class="k">Reports to</span><span class="v">the Major</span></div>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
 
-    <article class="card" style="--c: var(--c-ishikawa)">
-      <div class="ava">
-        <img src="avatars/ishikawa.svg" alt="Ishikawa: a bearded man in dark glasses full of green data">
-        <span class="tag">S9-03</span>
-      </div>
-      <div class="body">
-        <div class="top">
-          <h3>Ishikawa</h3>
-          <span class="role">Researcher</span>
-          <span class="status">Hired</span>
+      <article class="card" data-agent="Ishikawa" style="--c: var(--c-ishikawa)">
+        <div class="ava">
+          <img src="avatars/ishikawa.svg" alt="Ishikawa: a bearded man in dark glasses full of green data">
+          <span class="tag">S9-03</span>
         </div>
-        <p class="voice">The veteran intel man: calm, skeptical, a little wry. Would rather say "unconfirmed" than be wrong.</p>
-        <ul class="duties">
-          <li>Answers research questions from primary sources, dated and cited, answer first.</li>
-          <li>Writes longer reports to <code>research/</code> as a PR when asked.</li>
-        </ul>
-        <div class="facts">
-          <div class="fact"><span class="k">Runs</span><span class="v">on assigned tasks</span></div>
-          <div class="fact"><span class="k">Budget</span><span class="v">$3 / month</span></div>
-          <div class="fact"><span class="k">Per question</span><span class="v">~$0.10</span></div>
-          <div class="fact"><span class="k">Reports to</span><span class="v">the Major</span></div>
+        <div class="body">
+          <div class="top">
+            <h3>Ishikawa</h3>
+            <span class="role">Researcher</span>
+            <span class="status">Hired</span>
+          </div>
+          <div class="live" data-live hidden>
+            <div class="live-row">
+              <span class="state-light" data-state-light aria-hidden="true"></span>
+              <span class="state-text" data-state-text>—</span>
+              <span class="last-active" data-last-active hidden></span>
+              <span class="live-budget" data-budget-text>—</span>
+            </div>
+            <p class="now"><span class="now-k">Now</span> <span data-now>—</span></p>
+            <ul class="recent" data-recent aria-label="Recent activity"></ul>
+            <div class="budget-bar" data-budget-bar aria-hidden="true"><i data-budget-fill></i></div>
+          </div>
+          <p class="voice">The veteran intel man: calm, skeptical, a little wry. Would rather say "unconfirmed" than be wrong.</p>
+          <ul class="duties">
+            <li>Answers research questions from primary sources, dated and cited, answer first.</li>
+            <li>Writes longer reports to <code>research/</code> as a PR when asked.</li>
+          </ul>
+          <div class="facts">
+            <div class="fact"><span class="k">Runs</span><span class="v">on assigned tasks</span></div>
+            <div class="fact"><span class="k">Budget</span><span class="v">15% of monthly</span></div>
+            <div class="fact"><span class="k">Per question</span><span class="v">~0.5% of monthly</span></div>
+            <div class="fact"><span class="k">Reports to</span><span class="v">the Major</span></div>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
 
-    <article class="card" style="--c: var(--c-togusa)">
-      <div class="ava">
-        <img src="avatars/togusa.svg" alt="Togusa: a man with brown hair in a trench coat and tie">
-        <span class="tag">S9-04</span>
-      </div>
-      <div class="body">
-        <div class="top">
-          <h3>Togusa</h3>
-          <span class="role">Backup coordinator</span>
-          <span class="status">Hired</span>
+      <article class="card" data-agent="Togusa" style="--c: var(--c-togusa)">
+        <div class="ava">
+          <img src="avatars/togusa.svg" alt="Togusa: a man with brown hair in a trench coat and tie">
+          <span class="tag">S9-04</span>
         </div>
-        <p class="voice">The most human of the team. Careful, by the book, writes everything down for the handover.</p>
-        <ul class="duties">
-          <li>Every 6 hours, checks whether the Major has been active. Does nothing if so.</li>
-          <li>After 12 silent hours: unblocks clear low-risk decisions and keeps the nightly build going. Never merges or changes settings.</li>
-        </ul>
-        <div class="facts">
-          <div class="fact"><span class="k">Runs</span><span class="v">every 6 h</span></div>
-          <div class="fact"><span class="k">Budget</span><span class="v">$2 / month</span></div>
-          <div class="fact"><span class="k">Per run</span><span class="v">~$0.05</span></div>
-          <div class="fact"><span class="k">Reports to</span><span class="v">the Chief</span></div>
+        <div class="body">
+          <div class="top">
+            <h3>Togusa</h3>
+            <span class="role">Backup coordinator</span>
+            <span class="status">Hired</span>
+          </div>
+          <div class="live" data-live hidden>
+            <div class="live-row">
+              <span class="state-light" data-state-light aria-hidden="true"></span>
+              <span class="state-text" data-state-text>—</span>
+              <span class="last-active" data-last-active hidden></span>
+              <span class="live-budget" data-budget-text>—</span>
+            </div>
+            <p class="now"><span class="now-k">Now</span> <span data-now>—</span></p>
+            <ul class="recent" data-recent aria-label="Recent activity"></ul>
+            <div class="budget-bar" data-budget-bar aria-hidden="true"><i data-budget-fill></i></div>
+          </div>
+          <p class="voice">The most human of the team. Careful, by the book, writes everything down for the handover.</p>
+          <ul class="duties">
+            <li>Every 6 hours, checks whether the Major has been active. Does nothing if so.</li>
+            <li>After 12 silent hours: unblocks clear low-risk decisions and keeps the nightly build going. Never merges or changes settings.</li>
+          </ul>
+          <div class="facts">
+            <div class="fact"><span class="k">Runs</span><span class="v">every 6 h</span></div>
+            <div class="fact"><span class="k">Budget</span><span class="v">10% of monthly</span></div>
+            <div class="fact"><span class="k">Per run</span><span class="v">~0.25% of monthly</span></div>
+            <div class="fact"><span class="k">Reports to</span><span class="v">Aramaki</span></div>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
 
-    <article class="card" style="--c: var(--c-saito)">
-      <div class="ava">
-        <img src="avatars/saito.svg" alt="Saito: a man with one cybernetic red eye and a reticle">
-        <span class="tag">S9-05</span>
-      </div>
-      <div class="body">
-        <div class="top">
-          <h3>Saito</h3>
-          <span class="role">Ops, read-only</span>
-          <span class="status paused">Hired · paused</span>
+      <article class="card" data-agent="Saito" style="--c: var(--c-saito)">
+        <div class="ava">
+          <img src="avatars/saito.svg" alt="Saito: a man with one cybernetic red eye and a reticle">
+          <span class="tag">S9-05</span>
         </div>
-        <p class="voice">The patient marksman. Numbers first, few words, and never pulls a trigger.</p>
-        <ul class="duties">
-          <li>Each morning, reports the sandbox's disk use, failed runs and each agent's spend. Suggests fixes, changes nothing.</li>
-          <li>Created by Paperclip's setup wizard on the Claude adapter and paused; the roster script moves him to Hermes.</li>
-        </ul>
-        <div class="facts">
-          <div class="fact"><span class="k">Runs</span><span class="v">06:30 daily</span></div>
-          <div class="fact"><span class="k">Budget</span><span class="v">$1 / month</span></div>
-          <div class="fact"><span class="k">Per report</span><span class="v">~$0.03</span></div>
-          <div class="fact"><span class="k">Reports to</span><span class="v">the Major</span></div>
+        <div class="body">
+          <div class="top">
+            <h3>Saito</h3>
+            <span class="role">Ops, read-only</span>
+            <span class="status paused">Hired · paused</span>
+          </div>
+          <div class="live" data-live hidden>
+            <div class="live-row">
+              <span class="state-light" data-state-light aria-hidden="true"></span>
+              <span class="state-text" data-state-text>—</span>
+              <span class="last-active" data-last-active hidden></span>
+              <span class="live-budget" data-budget-text>—</span>
+            </div>
+            <p class="now"><span class="now-k">Now</span> <span data-now>—</span></p>
+            <ul class="recent" data-recent aria-label="Recent activity"></ul>
+            <div class="budget-bar" data-budget-bar aria-hidden="true"><i data-budget-fill></i></div>
+          </div>
+          <p class="voice">The patient marksman. Numbers first, few words, and never pulls a trigger.</p>
+          <ul class="duties">
+            <li>Each morning, reports the sandbox's disk use, failed runs and each agent's budget use. Suggests fixes, changes nothing.</li>
+            <li>Created by the setup wizard and paused; the roster script moves him to the active runtime.</li>
+          </ul>
+          <div class="facts">
+            <div class="fact"><span class="k">Runs</span><span class="v">06:30 daily</span></div>
+            <div class="fact"><span class="k">Budget</span><span class="v">5% of monthly</span></div>
+            <div class="fact"><span class="k">Per report</span><span class="v">~0.15% of monthly</span></div>
+            <div class="fact"><span class="k">Reports to</span><span class="v">the Major</span></div>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+
+    </div>
   </section>
 
   <section aria-labelledby="budget-label">
-    <h2 class="sec-label" id="budget-label">Monthly budget <span class="ja" lang="ja">予算</span> <span class="count">$20</span></h2>
+    <h2 class="sec-label" id="budget-label">Monthly budget <span class="ja" lang="ja">予算</span> <span class="count">100%</span></h2>
     <div class="panel">
-      <h2>$20 a month, split five ways across the field team <span class="ja" lang="ja">月間配分</span></h2>
-      <div class="meter" role="img" aria-label="Field team budget: Tachikoma $10, Batou $4, Ishikawa $3, Togusa $2, Saito $1">
+      <h2>100% a month, split five ways across the field team <span class="ja" lang="ja">月間配分</span></h2>
+      <div class="meter" role="img" aria-label="Field team budget allocation: Tachikoma 50%, Batou 20%, Ishikawa 15%, Togusa 10%, Saito 5%">
         <i style="width:50%; background: var(--c-tachikoma)"></i><i style="width:20%; background: var(--c-batou)"></i><i style="width:15%; background: var(--c-ishikawa)"></i><i style="width:10%; background: var(--c-togusa)"></i><i style="width:5%; background: var(--c-saito)"></i>
       </div>
       <div class="legend">
-        <div><i style="background: var(--c-tachikoma)"></i>Tachikoma<em>$10</em></div>
-        <div><i style="background: var(--c-batou)"></i>Batou<em>$4</em></div>
-        <div><i style="background: var(--c-ishikawa)"></i>Ishikawa<em>$3</em></div>
-        <div><i style="background: var(--c-togusa)"></i>Togusa<em>$2</em></div>
-        <div><i style="background: var(--c-saito)"></i>Saito<em>$1</em></div>
+        <div><i style="background: var(--c-tachikoma)"></i>Tachikoma<em>50%</em></div>
+        <div><i style="background: var(--c-batou)"></i>Batou<em>20%</em></div>
+        <div><i style="background: var(--c-ishikawa)"></i>Ishikawa<em>15%</em></div>
+        <div><i style="background: var(--c-togusa)"></i>Togusa<em>10%</em></div>
+        <div><i style="background: var(--c-saito)"></i>Saito<em>5%</em></div>
       </div>
-      <p class="note">Paperclip stops an agent at its budget; the OpenRouter key stops everything at $20. Tachikoma copies share his $10 unless the cap goes up. Models: DeepSeek V4.1 Flash, falling back to GLM 5.3 Flash, MiniMax M3 and Claude Haiku 5.5, on zero-retention endpoints, never xAI.</p>
+      <p class="note">Paperclip stops an agent at its budget; the company key stops everything at 100%. Tachikoma copies share its 50% unless the cap goes up. Each agent's bar on the roster shows its own monthly budget used; the header strip shows the whole company's.</p>
     </div>
   </section>
 
@@ -591,11 +349,355 @@ footer a { color: var(--muted); }
   </section>
 
   <footer>
-    <span>Defined in <a href="https://github.com/petterfranzen/agent-manager/tree/main/agents" target="_blank" rel="noopener">agent-manager/agents</a>. The roster file there is the source of truth; this page is a snapshot.</span>
+    <span>Defined in <code>agents/roster.toml</code> in agent-manager. The roster file there is the source of truth; this page is a live view.</span>
     <span>公安9課 · PUBLIC SECURITY SECTION 9 · END OF RECORD</span>
   </footer>
 
 </div>
 
+<script>
+(function () {
+  'use strict';
+  var THEMES = ['gits95', 'terminal', 'tachikoma-blue'];
+  var DEFAULT = 'gits95';
+  var STALE_MS = 3 * 60 * 60 * 1000;
+
+  var themeSelect = document.getElementById('theme');
+  var liveStrip = document.getElementById('live-strip');
+  var liveBudget = document.getElementById('live-budget');
+  var liveUpdated = document.getElementById('live-updated');
+  var liveSample = document.getElementById('live-sample');
+  var liveStale = document.getElementById('live-stale');
+  var liveError = document.getElementById('live-error');
+  var sampleNote = document.getElementById('sample-note');
+  var announceEl = document.getElementById('live-announce');
+  var rosterCount = document.getElementById('roster-count');
+  var personnelCount = document.getElementById('personnel-count');
+  var state = { data: null, generatedAt: null };
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function setText(el, value) { if (el) el.textContent = value == null ? '' : String(value); }
+  function announce(msg) { if (announceEl) announceEl.textContent = msg; }
+  function pad2(n) { return String(n).padStart(2, '0'); }
+
+  function safeUrl(url) {
+    if (typeof url !== 'string') return null;
+    var u = url.trim();
+    if (!u) return null;
+    if (/^https:\/\//i.test(u)) return u;
+    if (/^\//.test(u) || /^\.\.?\//.test(u)) return u;
+    return null;
+  }
+
+  function relTime(iso, now) {
+    var t = Date.parse(iso);
+    if (!isFinite(t)) return '';
+    var diff = Math.max(0, (now || Date.now()) - t);
+    var min = Math.floor(diff / 60000);
+    if (min < 1) return 'just now';
+    if (min < 60) return min + ' min ago';
+    var h = Math.floor(min / 60);
+    if (h < 24) return h + ' h ago';
+    return Math.floor(h / 24) + ' d ago';
+  }
+
+  function stateLabel(s) {
+    switch (s) {
+      case 'working': return 'Working';
+      case 'idle': return 'Idle';
+      case 'paused': return 'Paused';
+      case 'off': return 'Off';
+      default: return 'Unknown';
+    }
+  }
+
+  function fmtPct(n) {
+    if (typeof n !== 'number' || !isFinite(n)) return null;
+    var v = Math.max(0, Math.min(100, n));
+    return v % 1 === 0 ? String(v) : v.toFixed(1);
+  }
+
+  function setTheme(name, remember) {
+    name = String(name || '').toLowerCase();
+    if (THEMES.indexOf(name) === -1) name = DEFAULT;
+    document.documentElement.setAttribute('data-theme', name);
+    if (themeSelect) themeSelect.value = name;
+    if (remember) {
+      try { localStorage.setItem('s9-theme', name); } catch (e) {}
+      try {
+        var u = new URL(location.href);
+        u.searchParams.set('theme', name);
+        history.replaceState(null, '', u.pathname + u.search + u.hash);
+      } catch (e) {}
+    }
+    requestAnimationFrame(function () {
+      var bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (bg && meta) meta.setAttribute('content', bg);
+    });
+  }
+
+  function updateTimes() {
+    if (!state.data) return;
+    var now = Date.now();
+    var gen = state.generatedAt;
+    var stale = !gen || (now - gen) > STALE_MS;
+    var updated = gen ? 'Updated ' + relTime(state.data.generatedAt, now) : 'Updated time unknown';
+    setText(liveUpdated, updated);
+    if (liveStale) liveStale.hidden = !stale;
+    if (liveStrip) {
+      if (stale) liveStrip.classList.add('stale');
+      else liveStrip.classList.remove('stale');
+      liveStrip.setAttribute('data-sample', state.data.sample === true ? 'true' : 'false');
+    }
+    qsa('[data-recent]').forEach(function (list) {
+      qsa('time[data-at]', list).forEach(function (t) {
+        var txt = relTime(t.getAttribute('data-at'), now);
+        if (txt) t.textContent = txt;
+      });
+    });
+    qsa('[data-last-active]').forEach(function (el) {
+      var txt = relTime(el.getAttribute('data-at'), now);
+      if (txt) {
+        el.hidden = false;
+        el.textContent = 'last active ' + txt;
+      } else {
+        el.hidden = true;
+      }
+    });
+  }
+
+  function buildLiveBlock() {
+    var wrap = document.createElement('div');
+    wrap.className = 'live';
+    wrap.setAttribute('data-live', '');
+    wrap.innerHTML = '<div class="live-row"><span class="state-light" data-state-light aria-hidden="true"></span><span class="state-text" data-state-text>—</span><span class="last-active" data-last-active hidden></span><span class="live-budget" data-budget-text>—</span></div><p class="now"><span class="now-k">Now</span> <span data-now>—</span></p><ul class="recent" data-recent aria-label="Recent activity"></ul><div class="budget-bar" data-budget-bar aria-hidden="true"><i data-budget-fill></i></div>';
+    return wrap;
+  }
+
+  function fillLive(live, agent) {
+    if (!live) return;
+    live.hidden = false;
+    live.setAttribute('data-state', agent.state || 'off');
+    setText(qs('[data-state-text]', live), stateLabel(agent.state));
+
+    var nowP = qs('.now', live);
+    var nowV = qs('[data-now]', live);
+    if (agent.now && String(agent.now).trim()) {
+      setText(nowV, agent.now);
+      if (nowP) nowP.classList.remove('empty');
+    } else {
+      setText(nowV, 'No current task');
+      if (nowP) nowP.classList.add('empty');
+    }
+
+    var last = qs('[data-last-active]', live);
+    if (last) {
+      var lastTxt = agent.lastActiveAt ? relTime(agent.lastActiveAt) : '';
+      if (lastTxt) {
+        last.hidden = false;
+        last.setAttribute('data-at', agent.lastActiveAt);
+        last.textContent = 'last active ' + lastTxt;
+      } else {
+        last.hidden = true;
+      }
+    }
+
+    var pct = fmtPct(agent.budgetPercent);
+    var budgetText = qs('[data-budget-text]', live);
+    var bar = qs('[data-budget-bar]', live);
+    var fill = qs('[data-budget-fill]', live);
+    if (pct !== null) {
+      setText(budgetText, pct + '% used');
+      if (bar) bar.hidden = false;
+      if (fill) fill.style.width = pct + '%';
+    } else {
+      setText(budgetText, 'Budget —');
+      if (bar) bar.hidden = true;
+      if (fill) fill.style.width = '0%';
+    }
+
+    var list = qs('[data-recent]', live);
+    if (list) {
+      list.textContent = '';
+      var items = (Array.isArray(agent.recent) ? agent.recent : []).filter(function (item) {
+        return item && typeof item.text === 'string' && item.text.trim();
+      });
+      items.sort(function (a, b) {
+        var ta = Date.parse(a.at), tb = Date.parse(b.at);
+        if (!isFinite(ta) && !isFinite(tb)) return 0;
+        if (!isFinite(ta)) return 1;
+        if (!isFinite(tb)) return -1;
+        return tb - ta;
+      });
+      items = items.slice(0, 3);
+      if (!items.length) {
+        var empty = document.createElement('li');
+        empty.className = 'empty';
+        empty.textContent = 'No recent activity';
+        list.appendChild(empty);
+      } else {
+        items.forEach(function (item) {
+          var li = document.createElement('li');
+          var time = document.createElement('time');
+          time.setAttribute('datetime', item.at || '');
+          time.setAttribute('data-at', item.at || '');
+          time.textContent = relTime(item.at) || '—';
+          li.appendChild(time);
+          var url = safeUrl(item.url);
+          var node;
+          if (url) {
+            node = document.createElement('a');
+            node.href = url;
+            node.rel = 'noopener';
+            node.target = '_blank';
+          } else {
+            node = document.createElement('span');
+            node.className = 'recent-text';
+          }
+          node.textContent = item.text;
+          li.appendChild(node);
+          list.appendChild(li);
+        });
+      }
+    }
+  }
+
+  function findCard(name) {
+    var key = String(name || '').toLowerCase();
+    var cards = qsa('.card[data-agent]');
+    for (var i = 0; i < cards.length; i++) {
+      if (String(cards[i].getAttribute('data-agent')).toLowerCase() === key) return cards[i];
+    }
+    return null;
+  }
+
+  function createCard(agent) {
+    var article = document.createElement('article');
+    article.className = 'card';
+    article.setAttribute('data-agent', agent.name);
+    article.style.setProperty('--c', 'var(--c-default)');
+    var ava = document.createElement('div');
+    ava.className = 'ava monogram';
+    ava.setAttribute('aria-hidden', 'true');
+    var letter = document.createElement('span');
+    letter.textContent = (agent.name || '?').trim().charAt(0).toUpperCase() || '?';
+    ava.appendChild(letter);
+    var body = document.createElement('div');
+    body.className = 'body';
+    var top = document.createElement('div');
+    top.className = 'top';
+    var h3 = document.createElement('h3');
+    h3.textContent = agent.name || 'Unknown';
+    var role = document.createElement('span');
+    role.className = 'role';
+    role.textContent = agent.role || 'Field operative';
+    var status = document.createElement('span');
+    status.className = 'status';
+    status.textContent = 'Agent';
+    top.appendChild(h3);
+    top.appendChild(role);
+    top.appendChild(status);
+    body.appendChild(top);
+    body.appendChild(buildLiveBlock());
+    article.appendChild(ava);
+    article.appendChild(body);
+    var roster = document.getElementById('roster-list');
+    if (roster) roster.appendChild(article);
+    return article;
+  }
+
+  function renderAgents(data) {
+    var agents = (Array.isArray(data.agents) ? data.agents : []).filter(function (agent) {
+      return agent && typeof agent.name === 'string' && agent.name.trim();
+    });
+    var seen = {};
+    agents.forEach(function (agent) {
+      seen[String(agent.name).toLowerCase()] = true;
+      var card = findCard(agent.name) || createCard(agent);
+      var role = qs('.role', card);
+      if (role && agent.role) setText(role, agent.role);
+      var live = qs('[data-live]', card);
+      if (!live) {
+        live = buildLiveBlock();
+        var body = qs('.body', card);
+        if (body) body.appendChild(live);
+        else card.appendChild(live);
+      }
+      fillLive(live, agent);
+      card.classList.add('has-live');
+    });
+    qsa('#roster-list .card[data-agent]').forEach(function (card) {
+      card.hidden = !seen[String(card.getAttribute('data-agent')).toLowerCase()];
+    });
+    if (rosterCount) rosterCount.textContent = pad2(agents.length);
+    if (personnelCount) personnelCount.textContent = pad2(2 + agents.length);
+  }
+
+  function setLiveError(message) {
+    if (liveStrip) liveStrip.classList.add('error');
+    setText(liveBudget, 'Budget —');
+    setText(liveUpdated, message || 'Live status unavailable');
+    if (liveSample) liveSample.hidden = true;
+    if (liveStale) liveStale.hidden = true;
+    if (sampleNote) sampleNote.hidden = true;
+    if (liveError) {
+      liveError.hidden = false;
+      setText(liveError, message || 'Live status unavailable — showing the static roster.');
+    }
+    announce(message || 'Live status unavailable; showing the static roster.');
+  }
+
+  function fetchStatus() {
+    fetch('status.json', { cache: 'no-store' }).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).then(function (data) {
+      if (!data || typeof data !== 'object' || !Array.isArray(data.agents)) throw new Error('Bad status data');
+      state.data = data;
+      var gen = Date.parse(data.generatedAt);
+      state.generatedAt = isFinite(gen) ? gen : null;
+
+      var used = data.budget && fmtPct(data.budget.usedPercent);
+      var month = data.budget && data.budget.month ? ' · ' + data.budget.month : '';
+      setText(liveBudget, used !== null ? 'Budget ' + used + '% used' + month : 'Budget —');
+      if (liveSample) liveSample.hidden = data.sample !== true;
+      if (sampleNote) sampleNote.hidden = data.sample !== true;
+      if (liveStrip) {
+        liveStrip.setAttribute('data-sample', data.sample === true ? 'true' : 'false');
+        liveStrip.classList.remove('error');
+      }
+      if (liveError) liveError.hidden = true;
+
+      renderAgents(data);
+      updateTimes();
+
+      var stale = !state.generatedAt || (Date.now() - state.generatedAt) > STALE_MS;
+      var upd = relTime(data.generatedAt) || 'time unknown';
+      announce('Live status loaded. ' + (used !== null ? used + '% of monthly budget used. ' : '') + 'Updated ' + upd + '.' + (data.sample === true ? ' Sample data.' : '') + (stale ? ' Data is stale.' : ''));
+    }).catch(function (err) {
+      setLiveError('Live status unavailable — showing the static roster.');
+      if (window.console && console.warn) console.warn('Section 9 status fetch failed:', err);
+    });
+  }
+
+  if (themeSelect) {
+    themeSelect.value = document.documentElement.getAttribute('data-theme') || DEFAULT;
+    themeSelect.addEventListener('change', function () {
+      setTheme(themeSelect.value, true);
+    });
+  }
+
+  requestAnimationFrame(function () {
+    var bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (bg && meta) meta.setAttribute('content', bg);
+  });
+
+  fetchStatus();
+  setInterval(updateTimes, 60 * 1000);
+})();
+</script>
 </body>
 </html>
