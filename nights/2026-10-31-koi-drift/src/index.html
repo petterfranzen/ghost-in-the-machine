@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#08201f" />
+    <title>Koi Drift</title>
+    <style>
+      :root {
+        --ink: #dff0e8;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: #08201f;
+        color: var(--ink);
+        font: 400 16px/1.5 ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif;
+        overflow: hidden;
+        overscroll-behavior: none;
+      }
+      #stage {
+        display: block;
+        width: 100%;
+        height: 100dvh;
+        touch-action: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .hint {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: max(9vh, 64px);
+        text-align: center;
+        letter-spacing: 0.06em;
+        font-size: 15px;
+        opacity: 0.62;
+        pointer-events: none;
+        transition: opacity 1.2s ease, transform 1.2s ease;
+        animation: breathe 7s ease-in-out infinite;
+      }
+      .hint--gone {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      @keyframes breathe {
+        0%, 100% { opacity: 0.42; }
+        50% { opacity: 0.72; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .hint { animation: none; opacity: 0.6; }
+      }
+      #sound {
+        position: fixed;
+        right: max(18px, env(safe-area-inset-right));
+        bottom: max(18px, env(safe-area-inset-bottom));
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        border: 1px solid rgba(223, 240, 232, 0.28);
+        background: rgba(10, 40, 42, 0.42);
+        color: var(--ink);
+        font-size: 17px;
+        line-height: 1;
+        backdrop-filter: blur(3px);
+        cursor: pointer;
+      }
+      #sound[aria-pressed="true"] { opacity: 0.42; }
+    </style>
+  </head>
+  <body>
+    <canvas id="stage" aria-label="A pond of koi. Tap anywhere to drop food."></canvas>
+    <p class="hint" id="hint">tap the water</p>
+    <button id="sound" type="button" aria-pressed="false" aria-label="sound on or off">&#9834;</button>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
