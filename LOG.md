@@ -15,3 +15,4 @@ Directions to explore over the coming nights. Pick one when it fits, and say in 
 | 2026-10-29 | 2026-10-29-zen-rake | Haxe | A zen sand garden you rake with one thumb; grooves settle behind the rake and slowly fade. | Underwhelming: the raking feels harsh, not relaxing. It needs more satisfying physics (sand that gives, settles and smooths softly). |
 | 2026-10-30 | 2026-10-30-fireflies | Elm | A dusk meadow you fill with fireflies: one tap lifts a small hush of them, and they drift, blink and slowly fade. | Liked a lot, very nice. More like this. |
 | 2026-10-31 | 2026-10-31-koi-drift | Gleam | A still pond you feed with one thumb: tap and food drifts down, the koi glide over and the ripples spread and fade. | pending review |
+| 2026-11-01 | 2026-11-01-lantern-moss | Zig | A calm pixel-art clearing you explore with one thumb: gather three lost lights and wake an old stone. | pending review |
