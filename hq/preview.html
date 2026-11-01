@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en" data-layout-variant="cockpit" data-theme="ghost">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost in the Shell 1995 — theme preview</title>
+<!-- Static mock of the Hermes dashboard shell, used to render this theme for
+     review screenshots. Tokens mirror hq/ghost.yaml (keep the two in sync).
+     The live dashboard derives its shadcn tokens from the same palette. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap">
+<style>
+:root{
+  --color-background:#060b09;
+  --color-foreground:#8bffbe;
+  --color-card:#0b1410;
+  --color-card-foreground:#8bffbe;
+  --color-popover:#0e1a15;
+  --color-muted:#0b1410;
+  --color-muted-foreground:#9db3a7;
+  --color-primary:#8bffbe;
+  --color-primary-foreground:#060b09;
+  --color-secondary:#0e1a15;
+  --color-secondary-foreground:#e6f2ea;
+  --color-accent:#5be7d8;
+  --color-accent-foreground:#04100b;
+  --color-destructive:#ff8a5c;
+  --color-success:#4fd68c;
+  --color-warning:#ffb454;
+  --color-border:rgba(139,255,190,.20);
+  --color-ring:#ffb454;
+  --ink-bright:#e6f2ea;
+  --radius:0;
+  --font-sans:"Share Tech Mono",ui-monospace,Menlo,monospace;
+  --font-display:"Rajdhani","Segoe UI",system-ui,sans-serif;
+  --font-mono:"Share Tech Mono",ui-monospace,Menlo,monospace;
+  --ghost-phos-rgb:139,255,190;
+  --ghost-phos:#8bffbe;
+  --ghost-amber:#ffb454;
+  --ghost-cyan:#5be7d8;
+  --ghost-bg:#060b09;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--color-background);
+  color:var(--color-foreground);
+  font-family:var(--font-sans);
+  font-size:14px;line-height:1.5;letter-spacing:.02em;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+/* --- customCSS from hq/ghost.yaml (inlined verbatim for the render) --- */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(var(--ghost-phos-rgb),.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(var(--ghost-phos-rgb),.045) 1px,transparent 1px);
+  background-size:48px 48px;
+  -webkit-mask-image:radial-gradient(130% 100% at 50% 0%,#000 25%,rgba(0,0,0,.35) 70%,transparent 100%);
+  mask-image:radial-gradient(130% 100% at 50% 0%,#000 25%,rgba(0,0,0,.35) 70%,transparent 100%);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:100;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,transparent 0px,transparent 2px,rgba(var(--ghost-phos-rgb),.035) 3px,rgba(var(--ghost-phos-rgb),.035) 4px);
+  mix-blend-mode:screen;
+}
+:root[data-layout-variant="cockpit"] aside{
+  border-image:linear-gradient(180deg,rgba(var(--ghost-phos-rgb),.30),rgba(var(--ghost-phos-rgb),.06)) 1;
+}
+h1,h2,h3{font-family:var(--font-display);letter-spacing:.03em;text-shadow:0 0 12px rgba(var(--ghost-phos-rgb),.14);margin:0}
+h1::after,h2::after{
+  content:"";display:inline-block;width:.55em;height:.12em;margin-left:.45em;
+  vertical-align:.14em;background:var(--ghost-amber);opacity:.75;
+}
+::selection{background:var(--ghost-phos);color:var(--ghost-bg)}
+*{scrollbar-width:thin;scrollbar-color:rgba(var(--ghost-phos-rgb),.45) rgba(0,0,0,.35)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.35)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(var(--ghost-phos-rgb),.55),rgba(var(--ghost-phos-rgb),.30))}
+::-webkit-scrollbar-thumb:hover{background:var(--ghost-phos)}
+:focus-visible{outline:2px solid var(--ghost-amber);outline-offset:2px}
+::placeholder{color:#9db3a7;opacity:1}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes ghost-glitch{
+    0%,92%,100%{transform:translate(0,0);text-shadow:0 0 12px rgba(var(--ghost-phos-rgb),.14)}
+    93%{transform:translate(-1px,0);text-shadow:2px 0 0 rgba(91,231,216,.55),-2px 0 0 rgba(255,180,84,.45)}
+    95%{transform:translate(1px,0);text-shadow:-2px 0 0 rgba(91,231,216,.45),2px 0 0 rgba(255,180,84,.40)}
+    97%{transform:translate(0,0);text-shadow:0 0 12px rgba(var(--ghost-phos-rgb),.14)}
+  }
+  h1,[data-wordmark],.ghost-wordmark{animation:ghost-glitch 9s steps(1,end) infinite;animation-delay:3s}
+  @keyframes ghost-flicker{0%,100%{opacity:.035}48%{opacity:.035}49%{opacity:.06}50%{opacity:.035}}
+  body::after{animation:ghost-flicker 7s ease-in-out infinite}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  body::after{opacity:.035}
+}
+/* --- mock dashboard shell (not part of the theme) --- */
+.shell{position:relative;z-index:1;display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+aside{
+  background:linear-gradient(180deg,rgba(11,20,16,.96),rgba(6,11,9,.96));
+  box-shadow:inset -1px 0 0 rgba(var(--ghost-phos-rgb),.18);
+  padding:18px 16px;display:flex;flex-direction:column;gap:18px;
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{width:30px;height:30px;flex:none;border:1px solid rgba(var(--ghost-phos-rgb),.35);display:grid;place-items:center;background:rgba(var(--ghost-phos-rgb),.06)}
+.brand .mark svg{width:18px;height:18px;display:block}
+.brand b{font-family:var(--font-display);font-size:15px;letter-spacing:.06em;color:var(--ink-bright)}
+.personnel{display:flex;gap:6px;flex-wrap:wrap}
+.personnel img{width:30px;height:30px;object-fit:cover;filter:grayscale(1) contrast(1.1) brightness(.95);border:1px solid rgba(var(--ghost-phos-rgb),.22);opacity:.92}
+.personnel img.on{border-color:var(--ghost-amber)}
+nav{display:flex;flex-direction:column;gap:2px;margin-top:2px}
+nav a{
+  color:var(--color-muted-foreground);text-decoration:none;padding:7px 9px;font-size:14px;
+  clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%);
+  border-left:0;display:flex;align-items:center;gap:9px;
+}
+nav a svg{width:14px;height:14px;flex:none;stroke:currentColor;fill:none;stroke-width:1.6}
+nav a[aria-current]{background:rgba(var(--ghost-phos-rgb),.10);color:var(--ghost-phos)}
+nav a:hover{background:rgba(var(--ghost-phos-rgb),.05);color:var(--ink-bright)}
+.rail-foot{margin-top:auto;font-size:12px;color:var(--color-muted-foreground)}
+.rail-foot .kv{display:flex;justify-content:space-between;padding:3px 0;border-top:1px dashed rgba(var(--ghost-phos-rgb),.14)}
+main{min-width:0;display:flex;flex-direction:column}
+header{
+  display:flex;align-items:center;gap:16px;padding:12px 20px;
+  background:linear-gradient(180deg,rgba(11,20,16,.98),rgba(6,11,9,.92));
+  box-shadow:inset 0 -1px 0 rgba(var(--ghost-phos-rgb),.22);
+  position:sticky;top:0;z-index:2;
+}
+header h1{font-size:24px;color:var(--ink-bright);font-weight:600}
+.tabs{display:flex;gap:4px;margin-left:6px}
+.tab{
+  color:var(--color-muted-foreground);text-decoration:none;font-size:14px;padding:5px 12px;
+  clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%);
+}
+.tab[aria-selected]{background:rgba(var(--ghost-phos-rgb),.10);color:var(--ghost-phos)}
+.hgrow{margin-left:auto;display:flex;align-items:center;gap:10px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 9px;box-shadow:inset 0 0 0 1px rgba(var(--ghost-phos-rgb),.28);color:var(--ghost-phos)}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--color-success)}
+.iconbtn{width:32px;height:32px;display:grid;place-items:center;background:transparent;border:1px solid rgba(var(--ghost-phos-rgb),.22);color:var(--ghost-phos);cursor:pointer}
+.iconbtn svg{width:16px;height:16px}
+.content{padding:22px 20px 40px;display:flex;flex-direction:column;gap:18px;max-width:1180px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{
+  clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+  background:linear-gradient(180deg,rgba(14,26,21,.96),rgba(11,20,16,.98));
+  box-shadow:inset 0 0 0 1px rgba(var(--ghost-phos-rgb),.18),0 2px 10px rgba(0,0,0,.45);
+  padding:15px 16px;
+}
+.card h3{font-size:15px;color:var(--ink-bright)}
+.card .k{font-size:12px;color:var(--color-muted-foreground);text-transform:uppercase;letter-spacing:.10em}
+.big{font-size:30px;font-family:var(--font-display);font-weight:600;color:var(--ghost-phos);margin:6px 0 2px}
+.bar{height:9px;background:rgba(0,0,0,.35);box-shadow:inset 0 0 0 1px rgba(var(--ghost-phos-rgb),.16);margin-top:10px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#4fd68c,#8bffbe 70%,#5be7d8)}
+.sub{font-size:12px;color:var(--color-muted-foreground)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-weight:400;color:var(--color-muted-foreground);text-transform:uppercase;letter-spacing:.09em;font-size:12px;padding:0 10px 8px 0;border-bottom:1px solid rgba(var(--ghost-phos-rgb),.16)}
+td{padding:8px 10px 8px 0;border-bottom:1px solid rgba(var(--ghost-phos-rgb),.08)}
+td:last-child,th:last-child{text-align:right;padding-right:0}
+.num{font-variant-numeric:tabular-nums}
+.badge{display:inline-block;font-size:12px;padding:2px 8px;box-shadow:inset 0 0 0 1px rgba(var(--ghost-phos-rgb),.28);color:var(--ghost-phos)}
+.badge.warn{color:var(--color-warning);box-shadow:inset 0 0 0 1px rgba(255,180,84,.4)}
+.badge.err{color:var(--color-destructive);box-shadow:inset 0 0 0 1px rgba(255,138,92,.4)}
+.badge.ok{color:var(--color-success);box-shadow:inset 0 0 0 1px rgba(79,214,140,.4)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button.act{font:inherit;cursor:pointer;background:rgba(var(--ghost-phos-rgb),.10);color:var(--ghost-phos);border:0;box-shadow:inset 0 0 0 1px rgba(var(--ghost-phos-rgb),.35);padding:7px 14px;clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%)}
+button.act:hover{background:rgba(var(--ghost-phos-rgb),.18)}
+button.ghost{background:transparent;color:var(--color-muted-foreground);box-shadow:inset 0 0 0 1px rgba(var(--ghost-phos-rgb),.18)}
+input[type=search]{font:inherit;background:rgba(0,0,0,.35);color:var(--ink-bright);border:0;box-shadow:inset 0 0 0 1px rgba(var(--ghost-phos-rgb),.28);padding:8px 11px;min-width:240px}
+code,pre{font-family:var(--font-mono);font-size:12.5px}
+code{background:rgba(var(--ghost-phos-rgb),.09);box-shadow:inset 0 0 0 1px rgba(var(--ghost-phos-rgb),.18);padding:1px 5px;color:var(--ghost-phos)}
+pre{margin:0;background:rgba(var(--ghost-phos-rgb),.05);box-shadow:inset 0 0 0 1px rgba(var(--ghost-phos-rgb),.14);padding:12px;color:var(--color-muted-foreground);overflow:auto}
+pre b{color:var(--ghost-phos);font-weight:400}
+.legend{font-size:12px;color:var(--color-muted-foreground)}
+@media(max-width:860px){
+  .shell{grid-template-columns:1fr}
+  aside{flex-direction:row;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:inset 0 -1px 0 rgba(var(--ghost-phos-rgb),.18)}
+  nav{flex-direction:row;flex-wrap:wrap;margin:0}
+  .rail-foot{display:none}
+  .grid{grid-template-columns:1fr}
+  .tabs{display:none}
+  .content{padding:16px 14px 32px}
+  input[type=search]{min-width:0;flex:1}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside>
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" stroke="#8bffbe" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/></svg>
+      </span>
+      <b data-wordmark>SECTION-9 · HERMES</b>
+    </div>
+    <div class="personnel" aria-label="Crew">
+      <img class="on" src="https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/major.png" alt="The Major">
+      <img src="https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/aramaki.png" alt="Aramaki">
+      <img src="https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/batou.png" alt="Batou">
+      <img src="https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/tachikoma.png" alt="Tachikoma">
+      <img src="https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/togusa.png" alt="Togusa">
+    </div>
+    <nav>
+      <a href="#overview" aria-current="page"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Overview</a>
+      <a href="#sessions"><svg viewBox="0 0 24 24"><path d="M4 5h16v10H8l-4 4z"/></svg>Sessions</a>
+      <a href="#skills"><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-2.7L7 19l1-6-4-4 5.5-.5z"/></svg>Skills</a>
+      <a href="#cron"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>Cron</a>
+      <a href="#logs"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Logs</a>
+    </nav>
+    <div class="rail-foot">
+      <div class="kv"><span>Budget</span><span>07% / mo</span></div>
+      <div class="kv"><span>Models</span><span>3 live</span></div>
+      <div class="kv"><span>Node</span><span>section-9.07</span></div>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <h1 data-wordmark>Hermes</h1>
+      <div class="tabs" role="tablist">
+        <a class="tab" role="tab" aria-selected="true" href="#overview">Overview</a>
+        <a class="tab" role="tab" href="#sessions">Sessions</a>
+        <a class="tab" role="tab" href="#skills">Skills</a>
+        <a class="tab" role="tab" href="#cron">Cron</a>
+        <a class="tab" role="tab" href="#logs">Logs</a>
+      </div>
+      <div class="hgrow">
+        <span class="pill"><i></i>Online · wire up</span>
+        <button class="iconbtn" type="button" aria-label="Theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#8bffbe" stroke-width="1.6"><path d="M12 3a9 9 0 100 18c1.2 0 1.8-.9 1.4-2-.4-1 .3-2 1.5-2H17a4 4 0 004-4c0-5-4-10-9-10z"/><circle cx="7.5" cy="12" r="1"/><circle cx="10" cy="8" r="1"/><circle cx="15" cy="8.5" r="1"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="content" id="overview">
+      <div class="grid">
+        <div class="card">
+          <span class="k">Active sessions</span>
+          <div class="big num">04</div>
+          <span class="sub">2 running · 2 idle</span>
+        </div>
+        <div class="card">
+          <span class="k">Monthly budget</span>
+          <div class="big num">07<span style="font-size:15px;color:var(--color-muted-foreground)">%</span></div>
+          <div class="bar"><i style="width:7%"></i></div>
+        </div>
+        <div class="card">
+          <span class="k">Last cron run</span>
+          <div class="big" style="font-size:22px">00:48</div>
+          <span class="sub">lantern-moss · ok</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <h2 style="font-size:19px">Recent runs</h2>
+          <div class="row">
+            <input type="search" placeholder="Filter sessions…" aria-label="Filter sessions">
+            <button class="act" type="button">New session</button>
+            <button class="act ghost" type="button">Export</button>
+          </div>
+        </div>
+        <table style="margin-top:14px">
+          <thead><tr><th>Session</th><th>Model</th><th>State</th><th>Turns</th></tr></thead>
+          <tbody>
+            <tr><td>night/2026-11-01-lantern-moss</td><td class="sub">deepseek-v4</td><td><span class="badge ok">done</span></td><td class="num">212</td></tr>
+            <tr><td>task/ghost-theme</td><td class="sub">claude-sonnet</td><td><span class="badge">working</span></td><td class="num">18</td></tr>
+            <tr><td>cron/weekly-review</td><td class="sub">local-llm</td><td><span class="badge warn">queued</span></td><td class="num">0</td></tr>
+            <tr><td>qa/pr-12-verify</td><td class="sub">claude-haiku</td><td><span class="badge err">failed</span></td><td class="num">7</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2 style="font-size:19px">Config</h2>
+        <p class="sub" style="margin:8px 0 10px">Theme: <code>ghost.yaml</code> — drop it in <code>~/.hermes/dashboard-themes/</code>.</p>
+        <pre><b>layoutVariant:</b> cockpit   <b>radius:</b> 0
+<b>palette:</b> bg #060b09 · mid #8bffbe · amber #ffb454
+<b>motion:</b> scanlines + glitch respect prefers-reduced-motion</pre>
+      </div>
+      <p class="legend">Static preview of the Hermes dashboard shell — tokens mirror hq/ghost.yaml.</p>
+    </div>
+  </main>
+</div>
+</body>
+</html>
