@@ -11,17 +11,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap">
 <script>
 (function () {
-  var THEMES = ['gits95', 'terminal', 'tachikoma-blue'];
   var DEFAULT = 'gits95';
   var name = DEFAULT;
   try {
     var q = new URLSearchParams(location.search).get('theme');
-    if (q && THEMES.indexOf(q.toLowerCase()) !== -1) {
-      name = q.toLowerCase();
-    } else {
-      var saved = localStorage.getItem('s9-theme');
-      if (saved && THEMES.indexOf(saved.toLowerCase()) !== -1) name = saved.toLowerCase();
-    }
+    var saved = localStorage.getItem('s9-theme');
+    name = String(q || saved || DEFAULT).toLowerCase();
   } catch (e) {}
   document.documentElement.setAttribute('data-theme', name);
 })();
@@ -152,17 +147,6 @@
             <span class="role decrypt">Nightly builder</span>
             <span class="status">Hired</span>
           </div>
-          <div class="live" data-live hidden>
-            <div class="live-row">
-              <span class="state-light" data-state-light aria-hidden="true"></span>
-              <span class="state-text" data-state-text>—</span>
-              <span class="last-active" data-last-active hidden></span>
-              <span class="live-budget" data-budget-text>—</span>
-            </div>
-            <p class="now"><span class="now-k">Now</span> <span data-now class="decrypt">—</span></p>
-            <ul class="recent" data-recent aria-label="Recent activity"></ul>
-            <div class="budget-bar" data-budget-bar aria-hidden="true"><i data-budget-fill></i></div>
-          </div>
           <p class="voice">Endlessly curious and cheerful. Builds things to find out what they feel like, and is proud of finishing.</p>
           <ul class="duties">
             <li>Each night, picks a language and an idea not done before and builds a small, calm app in <code>ghost-in-the-machine</code>.</li>
@@ -189,17 +173,6 @@
             <span class="role decrypt">Coder</span>
             <span class="status">Hired</span>
           </div>
-          <div class="live" data-live hidden>
-            <div class="live-row">
-              <span class="state-light" data-state-light aria-hidden="true"></span>
-              <span class="state-text" data-state-text>—</span>
-              <span class="last-active" data-last-active hidden></span>
-              <span class="live-budget" data-budget-text>—</span>
-            </div>
-            <p class="now"><span class="now-k">Now</span> <span data-now class="decrypt">—</span></p>
-            <ul class="recent" data-recent aria-label="Recent activity"></ul>
-            <div class="budget-bar" data-budget-bar aria-hidden="true"><i data-budget-fill></i></div>
-          </div>
           <p class="voice">Big, blunt and dependable. Checks his gear before he moves and keeps it plain.</p>
           <ul class="duties">
             <li>Takes small, well-defined coding tasks: fixes to a night's app, follow-ups, first drafts.</li>
@@ -224,17 +197,6 @@
             <h3 class="decrypt">Ishikawa</h3>
             <span class="role decrypt">Researcher</span>
             <span class="status">Hired</span>
-          </div>
-          <div class="live" data-live hidden>
-            <div class="live-row">
-              <span class="state-light" data-state-light aria-hidden="true"></span>
-              <span class="state-text" data-state-text>—</span>
-              <span class="last-active" data-last-active hidden></span>
-              <span class="live-budget" data-budget-text>—</span>
-            </div>
-            <p class="now"><span class="now-k">Now</span> <span data-now class="decrypt">—</span></p>
-            <ul class="recent" data-recent aria-label="Recent activity"></ul>
-            <div class="budget-bar" data-budget-bar aria-hidden="true"><i data-budget-fill></i></div>
           </div>
           <p class="voice">The veteran intel man: calm, skeptical, a little wry. Would rather say "unconfirmed" than be wrong.</p>
           <ul class="duties">
@@ -261,17 +223,6 @@
             <span class="role decrypt">Backup coordinator</span>
             <span class="status">Hired</span>
           </div>
-          <div class="live" data-live hidden>
-            <div class="live-row">
-              <span class="state-light" data-state-light aria-hidden="true"></span>
-              <span class="state-text" data-state-text>—</span>
-              <span class="last-active" data-last-active hidden></span>
-              <span class="live-budget" data-budget-text>—</span>
-            </div>
-            <p class="now"><span class="now-k">Now</span> <span data-now class="decrypt">—</span></p>
-            <ul class="recent" data-recent aria-label="Recent activity"></ul>
-            <div class="budget-bar" data-budget-bar aria-hidden="true"><i data-budget-fill></i></div>
-          </div>
           <p class="voice">The most human of the team. Careful, by the book, writes everything down for the handover.</p>
           <ul class="duties">
             <li>Every 6 hours, checks whether the Major has been active. Does nothing if so.</li>
@@ -296,17 +247,6 @@
             <h3 class="decrypt">Saito</h3>
             <span class="role decrypt">Ops, read-only</span>
             <span class="status paused">Hired · paused</span>
-          </div>
-          <div class="live" data-live hidden>
-            <div class="live-row">
-              <span class="state-light" data-state-light aria-hidden="true"></span>
-              <span class="state-text" data-state-text>—</span>
-              <span class="last-active" data-last-active hidden></span>
-              <span class="live-budget" data-budget-text>—</span>
-            </div>
-            <p class="now"><span class="now-k">Now</span> <span data-now class="decrypt">—</span></p>
-            <ul class="recent" data-recent aria-label="Recent activity"></ul>
-            <div class="budget-bar" data-budget-bar aria-hidden="true"><i data-budget-fill></i></div>
           </div>
           <p class="voice">The patient marksman. Numbers first, few words, and never pulls a trigger.</p>
           <ul class="duties">
@@ -384,7 +324,7 @@
 <script>
 (function () {
   'use strict';
-  var THEMES = ['gits95', 'terminal', 'tachikoma-blue'];
+  var THEMES = Array.prototype.map.call(document.querySelectorAll('#theme option'), function (o) { return o.value; });
   var DEFAULT = 'gits95';
   var STALE_MS = 3 * 60 * 60 * 1000;
   var DECRYPT_GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789#*+=<>/@';
@@ -426,6 +366,7 @@
     if (typeof url !== 'string') return null;
     var u = url.trim();
     if (!u) return null;
+    if (u.indexOf('//') === 0) return null;
     if (/^https:\/\//i.test(u)) return u;
     if (/^\//.test(u) || /^\.\.?\//.test(u)) return u;
     return null;
@@ -621,7 +562,7 @@
       (Array.isArray(agents) ? agents : []).forEach(function (a) {
         var m = a && a.model;
         if (m && (typeof m === 'string' || typeof m.name === 'string')) {
-          feedList.push({ name: m, role: a.role || '' });
+          feedList.push({ name: typeof m === 'string' ? m : m.name });
         }
       });
     }
@@ -733,15 +674,23 @@
   }
 
   function tickerStep(ts) {
-    tickerMotion.raf = window.requestAnimationFrame(tickerStep);
+    tickerMotion.raf = 0;
+    if (tickerPaused()) { tickerMotion.last = 0; return; }
     if (!tickerMotion.last) tickerMotion.last = ts;
     var dt = Math.min(64, ts - tickerMotion.last) / 1000;
     tickerMotion.last = ts;
-    if (tickerPaused()) return;
-    if (!tickerMotion.loop) { measureTicker(); if (!tickerMotion.loop) return; }
+    if (!tickerMotion.loop) { measureTicker(); if (!tickerMotion.loop) { tickerMotion.raf = window.requestAnimationFrame(tickerStep); return; } }
     tickerMotion.offset -= tickerMotion.speed * dt;
     if (-tickerMotion.offset >= tickerMotion.loop) tickerMotion.offset += tickerMotion.loop;
     tickerTrack.style.transform = 'translate3d(' + tickerMotion.offset.toFixed(2) + 'px,0,0)';
+    tickerMotion.raf = window.requestAnimationFrame(tickerStep);
+  }
+
+  function resumeTicker() {
+    if (tickerMotion.raf) return;
+    if (reduceMotion || document.hidden || !tickerTrack.querySelector('.ticker-dupe')) return;
+    tickerMotion.last = 0;
+    tickerMotion.raf = window.requestAnimationFrame(tickerStep);
   }
 
   function startTicker() {
@@ -754,15 +703,20 @@
         tickerBtn.textContent = tickerMotion.user ? '▶' : '❚❚';
         tickerBtn.setAttribute('aria-label', tickerMotion.user ? 'Play the live feed' : 'Pause the live feed');
         tickerBtn.classList.toggle('paused', tickerMotion.user);
+        if (!tickerMotion.user) resumeTicker();
       });
     }
     var host = tickerEl;
     host.addEventListener('mouseenter', function () { tickerMotion.hover = true; });
-    host.addEventListener('mouseleave', function () { tickerMotion.hover = false; });
+    host.addEventListener('mouseleave', function () { tickerMotion.hover = false; resumeTicker(); });
     host.addEventListener('focusin', function () { tickerMotion.focus = true; });
-    host.addEventListener('focusout', function () { tickerMotion.focus = false; });
+    host.addEventListener('focusout', function () { tickerMotion.focus = false; resumeTicker(); });
     host.addEventListener('touchstart', function () { tickerMotion.user = true; }, { passive: true });
-    document.addEventListener('visibilitychange', function () { tickerMotion.last = 0; });
+    document.addEventListener('visibilitychange', function () { tickerMotion.last = 0; if (!document.hidden) resumeTicker(); });
+    window.addEventListener('resize', measureTicker);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(measureTicker);
+    }
     tickerMotion.raf = window.requestAnimationFrame(tickerStep);
   }
 

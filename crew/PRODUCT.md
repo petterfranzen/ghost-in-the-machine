@@ -42,4 +42,4 @@ Layout lives in `themes/base.css` and holds no colour, font or effect of its
 own; every one of those is a CSS custom property on `html[data-theme="..."]` in a
 theme file. `gits95` (phosphor green, the default), `terminal` (amber) and
 `tachikoma-blue` (cyan) ship; the chief can add his own by copying one and editing
-the variables. See `README.md` and `DESIGN.md`.
+the variables. See `README.md`.

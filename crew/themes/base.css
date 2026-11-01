@@ -54,19 +54,24 @@ body::after {
 /* Animated scanline overlay. */
 .scan {
   position: fixed;
-  inset: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 200vh;
   z-index: 2;
   pointer-events: none;
   background-image: var(--scan-image);
   background-size: var(--scan-size);
+  background-repeat: repeat;
   opacity: var(--scan-opacity);
+  will-change: transform;
 }
 @media (prefers-reduced-motion: no-preference) {
   .scan { animation: scan var(--dur-scan) linear infinite; }
 }
 @keyframes scan {
-  from { background-position: 0 0; }
-  to { background-position: 0 100vh; }
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
 }
 .wrap {
   position: relative;
@@ -418,18 +423,6 @@ a.status:hover { background: var(--status-bg-hover); }
 .monogram.chief { background: var(--monogram-image); }
 .monogram span { transform: translateY(-2px); }
 
-/* ---- Budget meter ---- */
-.meter {
-  display: flex; gap: 3px; height: 22px; padding: 3px;
-  border: 1px solid var(--line);
-  background: var(--meter-bg);
-}
-.meter i { display: block; height: 100%; min-width: 4px; }
-.meter i::after { content: ""; display: block; height: 100%; background: var(--meter-stripe); }
-.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 6px 20px; font-size: 13px; }
-.legend div { display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
-.legend i { width: 10px; height: 10px; flex: none; }
-.legend em { font-style: normal; color: var(--muted); margin-left: auto; font-size: 12.5px; }
 .panel {
   position: relative;
   background: var(--panel-image);
@@ -786,6 +779,5 @@ body.ticker-on { padding-bottom: 54px; }
   .city { transform: none; opacity: .5; }
   .cursor { animation: none; }
   .budget-bar i { transition: none; }
-  .ticker-track.flow { animation: none; }
   .ticker-view { overflow-x: auto; }
 }

@@ -92,7 +92,6 @@ html[data-theme="tachikoma-blue"] {
   --model-bg: rgba(143, 216, 255, .05);
   --model-line: rgba(120, 210, 255, .22);
   --model-role: #a8c4dd;
-  --dur-ticker: 46s;
   --dur-stream: 11s;
   --dur-boot-line: .26s;
 }

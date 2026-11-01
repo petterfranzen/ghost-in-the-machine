@@ -92,7 +92,6 @@ html[data-theme="gits95"] {
   --model-bg: rgba(139, 255, 190, .04);
   --model-line: rgba(139, 255, 190, .20);
   --model-role: #9db3a7;
-  --dur-ticker: 46s;
   --dur-stream: 9s;
   --dur-boot-line: .26s;
 }
