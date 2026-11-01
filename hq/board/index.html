@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="en" data-theme="gits95">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Section 9 — Board</title>
+<meta name="description" content="Section 9 board: who is where, what they are doing, and the task board from todo to done. An ops-room view for Aramaki's crew.">
+<meta name="theme-color" content="#060b09">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap">
+<style>
+:root{
+  --bg:#060b09;
+  --panel:#0b1410;
+  --panel-2:#0e1a15;
+  --line:rgba(139,255,190,.20);
+  --line-strong:rgba(139,255,190,.42);
+  --phos:#8bffbe;
+  --phos-rgb:139,255,190;
+  --amber:#ffb454;
+  --warn:#ff8a5c;
+  --cyan:#5be7d8;
+  --ink:#e6f2ea;
+  --muted:#9db3a7;
+  --dim:#7f958a;
+  --state-working:var(--phos);
+  --state-idle:#7fd4ff;
+  --state-blocked:var(--amber);
+  --state-sleeping:var(--muted);
+  --font-sans:"Share Tech Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --font-display:"Rajdhani","Segoe UI",system-ui,sans-serif;
+  --clip:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+  --clip-sm:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  min-height:100vh;
+  background-color:var(--bg);
+  background-image:radial-gradient(120% 70% at 50% -15%,rgba(80,255,170,.12),transparent 62%);
+  color:var(--ink);
+  font-family:var(--font-sans);
+  font-size:15px;
+  line-height:1.5;
+  letter-spacing:.02em;
+  overflow-x:hidden;
+}
+/* Fixed wireframe grid, behind the content. */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(var(--phos-rgb),.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(var(--phos-rgb),.055) 1px,transparent 1px);
+  background-size:48px 48px;
+  -webkit-mask-image:radial-gradient(130% 100% at 50% 0%,#000 25%,rgba(0,0,0,.35) 70%,transparent 100%);
+          mask-image:radial-gradient(130% 100% at 50% 0%,#000 25%,rgba(0,0,0,.35) 70%,transparent 100%);
+}
+/* CRT scanlines over the whole shell. */
+body::after{
+  content:"";position:fixed;inset:0;z-index:100;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,transparent 0 2px,rgba(var(--phos-rgb),.035) 3px,rgba(var(--phos-rgb),.035) 4px);
+  mix-blend-mode:screen;
+}
+a{color:var(--cyan)}
+a:hover{color:var(--phos)}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+::selection{background:var(--phos);color:var(--bg)}
+.skip{
+  position:absolute;left:-999px;top:8px;z-index:200;
+  background:var(--phos);color:var(--bg);padding:.5em .9em;
+  font-weight:700;text-decoration:none;
+}
+.skip:focus{left:8px}
+.sr-only{
+  position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+.hud{
+  position:sticky;top:0;z-index:10;
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  padding:12px clamp(14px,3vw,28px);
+  background:linear-gradient(180deg,rgba(11,20,16,.98),rgba(6,11,9,.92));
+  box-shadow:inset 0 -1px 0 rgba(var(--phos-rgb),.22);
+}
+.brand{display:flex;align-items:baseline;gap:12px;min-width:0}
+.brand .ja{color:var(--amber);font-size:.85rem;letter-spacing:.12em;white-space:nowrap}
+h1{
+  font-family:var(--font-display);font-size:clamp(1.15rem,2.2vw,1.65rem);
+  margin:0;letter-spacing:.04em;text-transform:uppercase;line-height:1.1;
+  text-shadow:0 0 12px rgba(var(--phos-rgb),.14);white-space:nowrap;
+}
+.tick{
+  display:inline-block;width:.55em;height:.12em;margin-left:.45em;
+  vertical-align:.14em;background:var(--amber);opacity:.75;
+}
+.meta{
+  display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.35rem 1rem;
+  color:var(--muted);font-size:.78rem;text-align:right;
+}
+.meta b{color:var(--ink);font-weight:400}
+.sample-badge{
+  color:var(--amber);border:1px solid rgba(255,180,84,.55);
+  padding:0 .45em;white-space:nowrap;
+}
+.wrap{
+  position:relative;z-index:1;
+  padding:clamp(14px,2.4vw,28px);
+  display:flex;flex-direction:column;gap:clamp(20px,2.8vw,34px);
+}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+h2{
+  font-family:var(--font-display);font-size:1.05rem;margin:0;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--ink);
+}
+.hint{color:var(--muted);font-size:.78rem;margin:0}
+.filter-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.filter-line b{color:var(--phos);font-weight:400}
+.clear-filter{
+  font:inherit;font-size:.75rem;color:var(--bg);background:var(--amber);
+  border:0;padding:.25em .7em;cursor:pointer;
+}
+.clear-filter:hover{background:var(--ink)}
+.lanes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.lane{
+  appearance:none;-webkit-appearance:none;
+  display:flex;flex-direction:column;gap:7px;text-align:left;
+  background:var(--panel);border:1px solid var(--line);
+  padding:10px 12px;color:var(--ink);font:inherit;cursor:pointer;
+  min-width:0;
+}
+.lane:hover{border-color:var(--line-strong);background:var(--panel-2)}
+.lane[aria-pressed="true"]{border-color:var(--amber);box-shadow:inset 0 0 0 1px var(--amber)}
+.lane-top{display:flex;align-items:center;gap:9px;min-width:0}
+.avatar{
+  width:36px;height:36px;object-fit:cover;flex:none;
+  border:1px solid var(--line);background:var(--bg);
+  filter:grayscale(1) contrast(1.12) brightness(.92);
+}
+.lane-id{min-width:0;display:flex;flex-direction:column;line-height:1.15}
+.lane-id .name{font-family:var(--font-display);font-size:1.05rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lane-id .role{color:var(--muted);font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.state{
+  margin-left:auto;display:inline-flex;align-items:center;gap:5px;
+  font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--state-sleeping);box-shadow:0 0 6px currentColor;flex:none}
+.state-working{color:var(--state-working)}
+.state-working .dot{background:var(--state-working)}
+.state-idle{color:var(--state-idle)}
+.state-idle .dot{background:var(--state-idle)}
+.state-blocked{color:var(--state-blocked)}
+.state-blocked .dot{background:var(--state-blocked)}
+.state-sleeping{color:var(--state-sleeping)}
+.state-sleeping .dot{background:var(--state-sleeping);box-shadow:none}
+.lane-task{font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--ink)}
+.lane-task.empty{color:var(--muted);font-style:italic}
+.lane-foot{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:.7rem;min-width:0}
+.lane-foot .model{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lane-foot .last{white-space:nowrap}
+.columns{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:start}
+.column{
+  background:linear-gradient(180deg,rgba(14,26,21,.72),rgba(11,20,16,.9));
+  border:1px solid var(--line);clip-path:var(--clip);
+  padding:10px;min-width:0;
+}
+.column-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  padding:2px 2px 9px;border-bottom:1px solid var(--line);margin-bottom:9px;
+}
+.column-head h3{font-family:var(--font-display);font-size:.92rem;margin:0;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.column-head .count{color:var(--muted);font-size:.75rem;white-space:nowrap}
+.cards{display:flex;flex-direction:column;gap:8px}
+.card{
+  background:linear-gradient(180deg,rgba(14,26,21,.96),rgba(11,20,16,.98));
+  border:1px solid var(--line);border-left:3px solid var(--dim);
+  clip-path:var(--clip-sm);padding:9px 10px;
+  display:flex;flex-direction:column;gap:5px;min-width:0;
+}
+.card.status-todo{border-left-color:var(--muted)}
+.card.status-working{border-left-color:var(--phos)}
+.card.status-review{border-left-color:var(--cyan)}
+.card.status-blocked{border-left-color:var(--amber)}
+.card.status-done{border-left-color:var(--dim)}
+.card-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:.72rem;color:var(--muted)}
+.issue{color:var(--phos);font-weight:700}
+.card .title{
+  font-family:var(--font-display);font-size:.98rem;font-weight:600;line-height:1.25;
+  margin:0;overflow-wrap:anywhere;
+}
+.card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.74rem;color:var(--muted);min-width:0}
+.who{display:inline-flex;align-items:center;gap:6px;min-width:0}
+.who img{
+  width:20px;height:20px;object-fit:cover;flex:none;
+  border:1px solid var(--line);filter:grayscale(1) contrast(1.12) brightness(.92);
+}
+.who .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.who.anon .name{font-style:italic}
+.pr{color:var(--cyan);text-decoration:none;white-space:nowrap;font-size:.75rem}
+.pr:hover{text-decoration:underline;color:var(--phos)}
+.empty{color:var(--muted);font-size:.76rem;font-style:italic;padding:3px 2px}
+.more{
+  font:inherit;font-size:.72rem;color:var(--cyan);background:transparent;
+  border:1px solid var(--line);padding:.35em .6em;cursor:pointer;margin-top:2px;
+}
+.more:hover{border-color:var(--line-strong);color:var(--phos)}
+.error{
+  border:1px solid rgba(255,138,92,.5);color:var(--warn);
+  padding:12px 14px;background:rgba(255,138,92,.06);
+}
+@media (max-width:1200px){.columns{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:900px){
+  .lanes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .columns{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:700px){.columns{grid-template-columns:1fr}}
+@media (max-width:560px){
+  .lanes{grid-template-columns:1fr}
+  .hud{flex-direction:column;align-items:flex-start}
+  .meta{justify-content:flex-start;text-align:left}
+}
+@media (prefers-reduced-motion:no-preference){
+  .state-working .dot{animation:pulse 2.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.42}}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#board">Skip to the task board</a>
+<header class="hud">
+  <div class="brand">
+    <span class="ja" lang="ja">公安9課</span>
+    <h1>Section 9 — Board<span class="tick" aria-hidden="true"></span></h1>
+  </div>
+  <div class="meta" id="meta">loading…</div>
+</header>
+<main class="wrap">
+  <section id="agents" aria-labelledby="agents-head">
+    <div class="section-head">
+      <h2 id="agents-head">Agents<span class="tick" aria-hidden="true"></span></h2>
+      <p class="hint">Tap a lane to filter the board.</p>
+    </div>
+    <div class="lanes" id="lanes"></div>
+  </section>
+  <section id="board" aria-labelledby="board-head">
+    <div class="section-head">
+      <h2 id="board-head">Tasks<span class="tick" aria-hidden="true"></span></h2>
+      <div class="filter-line" id="filter-line"></div>
+    </div>
+    <div class="columns" id="columns"></div>
+  </section>
+</main>
+<div class="sr-only" id="live" aria-live="polite"></div>
+<script type="application/json" id="board-sample">{
+  "generatedAt": "2026-11-01T21:20:32Z",
+  "sample": true,
+  "budget": {
+    "usedPercent": 42,
+    "month": "2026-11"
+  },
+  "model": "deepseek/deepseek-v4.1-flash",
+  "agents": [
+    {
+      "name": "Major",
+      "role": "Coordinator",
+      "state": "working",
+      "now": "Reviewing the board PR",
+      "model": "claude-sonnet-4.5",
+      "lastActiveAt": "2026-11-01T21:12:00Z"
+    },
+    {
+      "name": "Aramaki",
+      "role": "Chief",
+      "state": "idle",
+      "now": null,
+      "model": "claude-opus-4.1",
+      "lastActiveAt": "2026-11-01T19:40:00Z"
+    },
+    {
+      "name": "Batou",
+      "role": "Coder",
+      "state": "working",
+      "now": "Building the Section 9 board page",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "lastActiveAt": "2026-11-01T21:18:00Z"
+    },
+    {
+      "name": "Tachikoma",
+      "role": "Nightly builder",
+      "state": "working",
+      "now": "Building tonight's app",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "lastActiveAt": "2026-11-01T20:50:00Z"
+    },
+    {
+      "name": "Togusa",
+      "role": "QA",
+      "state": "blocked",
+      "now": "Waiting on the board PR to review",
+      "model": "gpt-5-codex",
+      "lastActiveAt": "2026-11-01T18:05:00Z"
+    },
+    {
+      "name": "Ishikawa",
+      "role": "Researcher",
+      "state": "idle",
+      "now": null,
+      "model": "claude-sonnet-4.5",
+      "lastActiveAt": "2026-10-31T14:00:00Z"
+    },
+    {
+      "name": "Saito",
+      "role": "Ops",
+      "state": "paused",
+      "now": null,
+      "model": "deepseek/deepseek-v4.1-flash",
+      "lastActiveAt": "2026-10-28T06:30:00Z"
+    },
+    {
+      "name": "Jev",
+      "role": "Security",
+      "state": "sleeping",
+      "now": null,
+      "model": "claude-haiku-4.5",
+      "lastActiveAt": "2026-10-30T22:00:00Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": 39,
+      "title": "Build: Section 9 board page (agents and tasks, full width)",
+      "agent": "batou",
+      "status": "working",
+      "pr": null,
+      "updated": "2026-11-01T21:19:00Z"
+    },
+    {
+      "id": 38,
+      "title": "Design: Section 9 board for hq.sectionnine.dev (hosting, data schema)",
+      "agent": "saito",
+      "status": "review",
+      "pr": null,
+      "updated": "2026-11-01T21:15:00Z"
+    },
+    {
+      "id": 37,
+      "title": "QA: board page at 390 px",
+      "agent": "togusa",
+      "status": "todo",
+      "pr": null,
+      "updated": "2026-11-01T20:00:00Z"
+    },
+    {
+      "id": 36,
+      "title": "Write the board README",
+      "agent": "batou",
+      "status": "todo",
+      "pr": null,
+      "updated": "2026-11-01T19:30:00Z"
+    },
+    {
+      "id": 35,
+      "title": "Review: VPS dispatcher, sync and dashboard code",
+      "agent": "saito",
+      "status": "review",
+      "pr": null,
+      "updated": "2026-11-01T18:00:00Z"
+    },
+    {
+      "id": 34,
+      "title": "Design: stop the SSH sync drain and cap CPU under Hostinger's credits",
+      "agent": "saito",
+      "status": "blocked",
+      "pr": null,
+      "updated": "2026-11-01T17:00:00Z"
+    },
+    {
+      "id": 33,
+      "title": "Research: Telegram gateway for talking to the team without Claude",
+      "agent": "ishikawa",
+      "status": "working",
+      "pr": "https://github.com/petterfranzen/ghost-in-the-machine/pull/22",
+      "updated": "2026-11-01T21:10:00Z"
+    },
+    {
+      "id": 32,
+      "title": "Design: Telegram gateway change for agent-manager",
+      "agent": "saito",
+      "status": "review",
+      "pr": null,
+      "updated": "2026-11-01T16:00:00Z"
+    },
+    {
+      "id": 31,
+      "title": "QA: crew avatars (PR #14)",
+      "agent": "togusa",
+      "status": "done",
+      "pr": "https://github.com/petterfranzen/ghost-in-the-machine/pull/14",
+      "updated": "2026-11-01T12:07:00Z"
+    },
+    {
+      "id": 30,
+      "title": "Nightly app: Koi Drift",
+      "agent": "tachikoma",
+      "status": "done",
+      "pr": "https://github.com/petterfranzen/ghost-in-the-machine/pull/12",
+      "updated": "2026-10-31T00:48:00Z"
+    },
+    {
+      "id": 29,
+      "title": "Fix the Koi Drift touch handler",
+      "agent": "batou",
+      "status": "done",
+      "pr": "https://github.com/petterfranzen/ghost-in-the-machine/pull/9",
+      "updated": "2026-10-30T01:10:00Z"
+    },
+    {
+      "id": 28,
+      "title": "Crew page v2",
+      "agent": "batou",
+      "status": "done",
+      "pr": "https://github.com/petterfranzen/ghost-in-the-machine/pull/8",
+      "updated": "2026-10-30T00:40:00Z"
+    },
+    {
+      "id": 27,
+      "title": "Avatar contact sheet",
+      "agent": "tachikoma",
+      "status": "done",
+      "pr": null,
+      "updated": "2026-10-29T22:00:00Z"
+    },
+    {
+      "id": 26,
+      "title": "Landing page renders",
+      "agent": "tachikoma",
+      "status": "done",
+      "pr": null,
+      "updated": "2026-10-29T20:00:00Z"
+    },
+    {
+      "id": 25,
+      "title": "Budget meter on the crew page",
+      "agent": "batou",
+      "status": "done",
+      "pr": null,
+      "updated": "2026-10-29T18:00:00Z"
+    },
+    {
+      "id": 24,
+      "title": "Add prefers-reduced-motion to the crew page",
+      "agent": "batou",
+      "status": "done",
+      "pr": null,
+      "updated": "2026-10-29T16:00:00Z"
+    },
+    {
+      "id": 23,
+      "title": "Write the runbook for the VPS",
+      "agent": "saito",
+      "status": "done",
+      "pr": null,
+      "updated": "2026-10-29T14:00:00Z"
+    },
+    {
+      "id": 22,
+      "title": "Telegram gateway research",
+      "agent": "ishikawa",
+      "status": "done",
+      "pr": null,
+      "updated": "2026-10-29T12:00:00Z"
+    },
+    {
+      "id": 21,
+      "title": "Model comparison",
+      "agent": "ishikawa",
+      "status": "done",
+      "pr": null,
+      "updated": "2026-10-29T10:00:00Z"
+    },
+    {
+      "id": 20,
+      "title": "Nightly app: Zen Rake",
+      "agent": "tachikoma",
+      "status": "done",
+      "pr": null,
+      "updated": "2026-10-28T00:30:00Z"
+    },
+    {
+      "id": 19,
+      "title": "Nightly app: Fireflies",
+      "agent": "tachikoma",
+      "status": "done",
+      "pr": null,
+      "updated": "2026-10-27T00:40:00Z"
+    }
+  ]
+}</script>
+<script>
+(function () {
+  'use strict';
+
+  var AVATAR_BASE = 'https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/';
+  var ROSTER = [
+    { id: 'major',      name: 'Major',      role: 'Coordinator',   avatar: AVATAR_BASE + 'major.png' },
+    { id: 'aramaki',    name: 'Aramaki',    role: 'Chief',         avatar: AVATAR_BASE + 'aramaki.png' },
+    { id: 'batou',      name: 'Batou',      role: 'Coder',         avatar: AVATAR_BASE + 'batou.png' },
+    { id: 'tachikoma',  name: 'Tachikoma',  role: 'Nightly builder', avatar: AVATAR_BASE + 'tachikoma.png' },
+    { id: 'togusa',     name: 'Togusa',     role: 'QA',            avatar: AVATAR_BASE + 'togusa.png' },
+    { id: 'ishikawa',   name: 'Ishikawa',   role: 'Researcher',    avatar: AVATAR_BASE + 'ishikawa.png' },
+    { id: 'saito',      name: 'Saito',      role: 'Ops',           avatar: AVATAR_BASE + 'saito.png' },
+    { id: 'jev',        name: 'Jev',        role: 'Security',      avatar: AVATAR_BASE + 'jev.png' }
+  ];
+  var COLUMNS = [
+    { key: 'todo',    label: 'Todo' },
+    { key: 'working', label: 'Working' },
+    { key: 'review',  label: 'Review' },
+    { key: 'blocked', label: 'Blocked' },
+    { key: 'done',    label: 'Done' }
+  ];
+  var DONE_LIMIT = 10;
+  var state = { data: null, filter: 'all', doneExpanded: false, source: 'loading' };
+
+  var lanesEl = document.getElementById('lanes');
+  var columnsEl = document.getElementById('columns');
+  var metaEl = document.getElementById('meta');
+  var filterLineEl = document.getElementById('filter-line');
+  var liveEl = document.getElementById('live');
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function stateOf(s) {
+    var v = String(s || '').toLowerCase();
+    if (v === 'working' || v === 'active') return 'working';
+    if (v === 'idle') return 'idle';
+    if (v === 'blocked') return 'blocked';
+    return 'sleeping'; // paused, off, sleeping, unknown
+  }
+
+  function rosterOf(id) {
+    for (var i = 0; i < ROSTER.length; i++) if (ROSTER[i].id === id) return ROSTER[i];
+    return null;
+  }
+
+  function rel(iso) {
+    var t = Date.parse(iso);
+    if (!isFinite(t)) return '—';
+    var s = Math.max(0, Math.round((Date.now() - t) / 1000));
+    if (s < 60) return s + 's';
+    var m = Math.round(s / 60);
+    if (m < 60) return m + 'm';
+    var h = Math.round(m / 60);
+    if (h < 48) return h + 'h';
+    var d = Math.round(h / 24);
+    return d + 'd';
+  }
+
+  function abs(iso) {
+    var t = Date.parse(iso);
+    if (!isFinite(t)) return '';
+    try { return new Date(t).toISOString().replace('T', ' ').replace('.000Z', 'Z'); }
+    catch (e) { return iso; }
+  }
+
+  // One small mapping function: raw status.json (old or new) -> display model.
+  function normalize(raw) {
+    raw = raw || {};
+    var records = {};
+    (raw.agents || []).forEach(function (a) {
+      var id = String(a.id || a.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      var rec = {
+        id: id,
+        name: a.name || id,
+        role: a.role || '',
+        state: stateOf(a.state),
+        task: a.now || '',
+        model: a.model || raw.model || '—',
+        lastActiveAt: a.lastActiveAt || null
+      };
+      records[id] = rec;
+      records[String(a.name || '').toLowerCase()] = rec;
+    });
+    var tasks = (raw.tasks || []).map(function (t) {
+      var st = String(t.status || 'todo').toLowerCase();
+      if (!COLUMNS.some(function (c) { return c.key === st; })) st = 'todo';
+      return {
+        id: t.id,
+        title: t.title || 'On a task',
+        agent: String(t.agent || 'unassigned').toLowerCase(),
+        status: st,
+        pr: (typeof t.pr === 'string' && /^https?:\/\//i.test(t.pr)) ? t.pr : null,
+        updated: t.updated || raw.generatedAt || null
+      };
+    });
+    var agents = ROSTER.map(function (r) {
+      var rec = records[r.id];
+      if (rec) {
+        return {
+          id: r.id, name: r.name, role: rec.role || r.role, avatar: r.avatar,
+          state: rec.state, task: rec.task, model: rec.model,
+          lastActiveAt: rec.lastActiveAt
+        };
+      }
+      // Not in the feed: show the lane, but let a working task speak for it.
+      var mine = tasks.filter(function (t) { return t.agent === r.id; });
+      var working = mine.filter(function (t) { return t.status === 'working'; })[0];
+      var blocked = mine.filter(function (t) { return t.status === 'blocked'; })[0];
+      var review = mine.filter(function (t) { return t.status === 'review'; })[0];
+      var st = working ? 'working' : blocked ? 'blocked' : review ? 'idle' : 'sleeping';
+      return {
+        id: r.id, name: r.name, role: r.role, avatar: r.avatar,
+        state: st,
+        task: (working || blocked || review || {}).title || '',
+        model: raw.model || '—',
+        lastActiveAt: null
+      };
+    });
+    return {
+      generatedAt: raw.generatedAt || null,
+      budget: raw.budget || null,
+      model: raw.model || '—',
+      sample: raw.sample === true,
+      agents: agents,
+      tasks: tasks
+    };
+  }
+
+  function filteredTasks(d) {
+    if (state.filter === 'all') return d.tasks.slice();
+    return d.tasks.filter(function (t) { return t.agent === state.filter; });
+  }
+
+  function renderMeta(d) {
+    var bits = [];
+    if (d.generatedAt) bits.push('updated <b title="' + esc(abs(d.generatedAt)) + '">' + esc(rel(d.generatedAt)) + ' ago</b>');
+    if (d.budget && d.budget.usedPercent != null) bits.push('budget <b>' + esc(d.budget.usedPercent) + '%</b>');
+    if (d.model) bits.push('model <b>' + esc(d.model) + '</b>');
+    if (state.source === 'file' || state.source === 'sample' || d.sample) {
+      bits.push('<span class="sample-badge" title="Sample data — the live feed is not published here.">Sample data</span>');
+    }
+    metaEl.innerHTML = bits.join(' <span aria-hidden="true">·</span> ');
+  }
+
+  function renderLanes(d) {
+    lanesEl.innerHTML = d.agents.map(function (a) {
+      var pressed = state.filter === a.id ? 'true' : 'false';
+      var task = a.task ? esc(a.task) : 'No current task';
+      return '<button type="button" class="lane" data-agent="' + esc(a.id) + '" aria-pressed="' + pressed + '"' +
+        ' title="' + esc('Filter the board by ' + a.name) + '">' +
+        '<span class="lane-top">' +
+          '<img class="avatar" src="' + esc(a.avatar) + '" alt="" width="36" height="36" loading="lazy">' +
+          '<span class="lane-id"><span class="name">' + esc(a.name) + '</span><span class="role">' + esc(a.role) + '</span></span>' +
+          '<span class="state state-' + esc(a.state) + '"><span class="dot" aria-hidden="true"></span>' + esc(a.state) + '</span>' +
+        '</span>' +
+        '<span class="lane-task' + (a.task ? '' : ' empty') + '">' + task + '</span>' +
+        '<span class="lane-foot"><span class="model" title="' + esc(a.model) + '">' + esc(a.model) + '</span>' +
+        '<span class="last" title="' + esc(a.lastActiveAt ? abs(a.lastActiveAt) : 'No activity recorded') + '">' +
+        (a.lastActiveAt ? esc(rel(a.lastActiveAt)) + ' ago' : '—') + '</span></span>' +
+      '</button>';
+    }).join('');
+  }
+
+  function renderFilter(d) {
+    if (state.filter === 'all') {
+      filterLineEl.innerHTML = '';
+      return;
+    }
+    var r = rosterOf(state.filter);
+    filterLineEl.innerHTML = '<span>Showing <b>' + esc(r ? r.name : state.filter) + '</b></span>' +
+      '<button type="button" class="clear-filter">Show all agents</button>';
+  }
+
+  function renderCard(t) {
+    var r = rosterOf(t.agent);
+    var who = r
+      ? '<span class="who"><img src="' + esc(r.avatar) + '" alt="" width="20" height="20" loading="lazy"><span class="name">' + esc(r.name) + '</span></span>'
+      : '<span class="who anon"><span class="name">' + esc(t.agent === 'unassigned' ? 'Unassigned' : t.agent) + '</span></span>';
+    var pr = t.pr ? '<a class="pr" href="' + esc(t.pr) + '" target="_blank" rel="noopener noreferrer" aria-label="Open the pull request for issue ' + esc(t.id) + '">PR ↗</a>' : '';
+    return '<article class="card status-' + esc(t.status) + '">' +
+      '<div class="card-top"><span class="issue">#' + esc(t.id) + '</span>' +
+      '<span class="age" title="' + esc(t.updated ? 'updated ' + abs(t.updated) : 'update time unknown') + '">' + esc(t.updated ? rel(t.updated) : '—') + '</span></div>' +
+      '<h3 class="title">' + esc(t.title) + '</h3>' +
+      '<div class="card-foot">' + who + pr + '</div>' +
+    '</article>';
+  }
+
+  function renderColumns(d) {
+    var tasks = filteredTasks(d);
+    var by = {};
+    COLUMNS.forEach(function (c) { by[c.key] = []; });
+    tasks.forEach(function (t) { by[t.status].push(t); });
+    COLUMNS.forEach(function (c) {
+      by[c.key].sort(function (a, b) {
+        var ta = Date.parse(a.updated) || 0, tb = Date.parse(b.updated) || 0;
+        return tb - ta;
+      });
+    });
+    columnsEl.innerHTML = COLUMNS.map(function (c) {
+      var list = by[c.key];
+      var total = list.length;
+      var shown = list;
+      var more = '';
+      if (c.key === 'done' && !state.doneExpanded && total > DONE_LIMIT) {
+        shown = list.slice(0, DONE_LIMIT);
+        more = '<button type="button" class="more">Show all ' + total + '</button>';
+      } else if (c.key === 'done' && state.doneExpanded && total > DONE_LIMIT) {
+        more = '<button type="button" class="more">Show last ' + DONE_LIMIT + '</button>';
+      }
+      var count = total + (c.key === 'done' && total > DONE_LIMIT && !state.doneExpanded ? ' · last ' + DONE_LIMIT : '');
+      return '<section class="column" aria-labelledby="col-' + esc(c.key) + '">' +
+        '<div class="column-head"><h3 id="col-' + esc(c.key) + '">' + esc(c.label) + '</h3><span class="count">' + esc(count) + '</span></div>' +
+        '<div class="cards">' + (shown.length ? shown.map(renderCard).join('') : '<p class="empty">none</p>') + more + '</div>' +
+      '</section>';
+    }).join('');
+  }
+
+  function render() {
+    if (!state.data) return;
+    renderMeta(state.data);
+    renderLanes(state.data);
+    renderFilter(state.data);
+    renderColumns(state.data);
+  }
+
+  function showError(msg) {
+    columnsEl.innerHTML = '<div class="error" role="alert">' + esc(msg) + '</div>';
+    metaEl.textContent = 'live feed unavailable';
+  }
+
+  function apply(raw, source) {
+    state.data = normalize(raw);
+    state.source = source;
+    render();
+    var d = state.data;
+    var working = d.agents.filter(function (a) { return a.state === 'working'; }).length;
+    liveEl.textContent = 'Board updated. ' + d.tasks.length + ' tasks, ' + working + ' agents working.' +
+      (source === 'file' || source === 'sample' ? ' Sample data.' : '');
+  }
+
+  function load() {
+    if (location.protocol === 'file:') {
+      var el = document.getElementById('board-sample');
+      try { apply(JSON.parse(el.textContent), 'file'); }
+      catch (e) { showError('The sample data is not valid JSON.'); }
+      return;
+    }
+    fetch('./status.json', { cache: 'no-store' }).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).then(function (raw) {
+      apply(raw, 'live');
+    }).catch(function () {
+      fetch('./board-sample.json', { cache: 'no-store' }).then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      }).then(function (raw) {
+        apply(raw, 'sample');
+      }).catch(function () {
+        showError('Could not load status.json or board-sample.json.');
+      });
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var lane = e.target.closest ? e.target.closest('.lane') : null;
+    if (lane) {
+      var id = lane.getAttribute('data-agent');
+      state.filter = state.filter === id ? 'all' : id;
+      state.doneExpanded = false;
+      render();
+      return;
+    }
+    var more = e.target.closest ? e.target.closest('.more') : null;
+    if (more) {
+      state.doneExpanded = !state.doneExpanded;
+      render();
+      return;
+    }
+    var clear = e.target.closest ? e.target.closest('.clear-filter') : null;
+    if (clear) {
+      state.filter = 'all';
+      state.doneExpanded = false;
+      render();
+    }
+  });
+
+  load();
+  setInterval(function () { if (location.protocol !== 'file:') load(); }, 60000);
+})();
+</script>
+</body>
+</html>
