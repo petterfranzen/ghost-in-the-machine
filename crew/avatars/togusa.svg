@@ -1,36 +1,50 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Togusa: a mullet, a trench collar and a tie">
+<title>Togusa: a mullet, a trench collar and a tie</title>
 <defs>
-  <radialGradient id="bg" cx="50%" cy="40%" r="70%">
-    <stop offset="0" stop-color="#16203a"/><stop offset="1" stop-color="#05070d"/>
+  <radialGradient id="wash" cx="50%" cy="30%" r="85%">
+    <stop offset="0" stop-color="#8bffbe" stop-opacity=".10"/>
+    <stop offset="1" stop-color="#8bffbe" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="vig" cx="50%" cy="46%" r="72%">
+    <stop offset="55%" stop-color="#000" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#000" stop-opacity=".55"/>
   </radialGradient>
   <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
-    <path d="M32 0H0V32" fill="none" stroke="#b58cff" stroke-opacity=".08" stroke-width="1"/>
+    <path d="M32 0H0V32" fill="none" stroke="#8bffbe" stroke-opacity=".07" stroke-width="1"/>
   </pattern>
-  <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-    <stop offset="0" stop-color="#b58cff" stop-opacity=".9"/><stop offset="1" stop-color="#b58cff" stop-opacity="0"/>
-  </radialGradient>
+  <pattern id="scan" width="4" height="3" patternUnits="userSpaceOnUse">
+    <rect width="4" height="1" fill="#000" fill-opacity=".22"/>
+  </pattern>
+  <pattern id="dith" width="2" height="2" patternUnits="userSpaceOnUse">
+    <rect width="1" height="1" fill="#000" fill-opacity=".10"/>
+    <rect x="1" y="1" width="1" height="1" fill="#c6ffe0" fill-opacity=".045"/>
+  </pattern>
+  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="2.4" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
 </defs>
-<rect width="512" height="512" fill="url(#bg)"/>
-<rect width="512" height="512" fill="url(#grid)"/>
-<circle cx="256" cy="236" r="200" fill="none" stroke="#b58cff" stroke-opacity=".35" stroke-width="3"/>
+  <rect width="256" height="256" fill="#040a08"/>
+  <rect width="256" height="256" fill="url(#grid)"/>
+  <rect width="256" height="256" fill="url(#wash)"/>
+<path d="M18 256C25 196 67 168 128 168C189 168 231 196 238 256Z" fill="#123a26"/><path d="M92 172C104 190 152 190 164 172L164 256H92Z" fill="#0a2418" fill-opacity=".55"/><path d="M96 168L78 214L104 200L128 176Z" fill="#1f6b45"/><path d="M160 168L178 214L152 200L128 176Z" fill="#1f6b45"/><path d="M92 172L104 200L128 178Z" fill="#3fa874" fill-opacity=".35"/><path d="M164 172L152 200L128 178Z" fill="#3fa874" fill-opacity=".35"/><path d="M128 176L104 256H152Z" fill="#0a2418"/><path d="M96 256L128 186L112 176L86 214Z" fill="#0a2418" fill-opacity=".7"/><path d="M160 256L128 186L144 176L170 214Z" fill="#0a2418" fill-opacity=".7"/><path d="M124 190L128 182L132 190L128 214Z" fill="#ffb454"/><rect x="112" y="140" width="32" height="34" fill="#1f6b45"/><ellipse cx="128" cy="104" rx="42" ry="48" fill="#3fa874"/><path d="M84 104 C84 137.6 104 152 128 152 C110 140.0 100 112 100 94Z" fill="#123a26" fill-opacity=".45"/><path d="M86 104C84 60 104 46 128 46C152 46 172 60 170 104C172 130 176 150 168 152C166 128 164 108 160 96C140 104 116 104 96 96C92 108 90 128 88 152C80 150 84 130 86 104Z" fill="#123a26"/><path d="M96 94C114 86 142 86 160 96L156 74C138 68 118 68 100 74Z" fill="#1f6b45" fill-opacity=".7"/><g filter="url(#glow)"><rect x="105.0" y="103.75" width="10" height="4.5" rx="2" fill="#5be7d8"/><rect x="141.0" y="103.75" width="10" height="4.5" rx="2" fill="#5be7d8"/></g><path d="M128 112V126" stroke="#123a26" stroke-width="3" stroke-linecap="round"/><path d="M118 133Q128 137 138 133" stroke="#123a26" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <rect width="256" height="256" fill="url(#dith)"/>
+  <rect width="256" height="256" fill="url(#scan)"/>
+  <rect width="256" height="256" fill="url(#vig)"/>
+  <rect y="150" width="256" height="1" fill="#8bffbe" fill-opacity=".14"/>
+  <rect x="70" y="70" width="116" height="1" fill="#c6ffe0" fill-opacity=".10"/>
 
-
-<path d="M80 512C92 410 168 372 256 370C344 372 420 410 432 512Z" fill="#b89b6e"/>
-<path d="M216 380L256 512L296 380Z" fill="#f2f0ea"/><path d="M250 392H262L268 470L256 500L244 470Z" fill="#3b2f5c"/><path d="M188 384L232 380L256 512L170 420Z" fill="#cdb183"/><path d="M324 384L280 380L256 512L342 420Z" fill="#cdb183"/>
-<rect x="218" y="296" width="76" height="92" rx="22" fill="#e0b391" filter="brightness(.9)"/>
-<path d="M218 330Q256 360 294 330V388H218Z" fill="#000" opacity=".18"/>
-<ellipse cx="170" cy="238" rx="13" ry="24" fill="#e0b391"/>
-<ellipse cx="342" cy="238" rx="13" ry="24" fill="#e0b391"/>
-<path d="M176 196C176 112 336 112 336 196V252C336 312 300 346 256 346C212 346 176 312 176 252Z" fill="#e0b391"/>
-<path d="M170 240C158 160 190 100 258 98C326 98 356 160 342 240C338 214 334 194 330 176C300 170 262 150 244 132C230 160 200 176 182 182C178 204 174 222 170 240Z" fill="#5a3a24"/><path d="M172 252C170 274 174 290 182 300L186 262ZM340 252C342 274 338 290 330 300L326 262Z" fill="#5a3a24"/>
-
-<path d="M200 204Q220 196 240 204M272 204Q292 196 312 204" fill="none" stroke="#5a3a24" stroke-width="7" stroke-linecap="round"/>
-<path d="M204 230Q222 216 240 230Q222 240 204 230Z" fill="#fff"/><path d="M272 230Q290 216 308 230Q290 240 272 230Z" fill="#fff"/>
-<circle cx="222" cy="229" r="7" fill="#3b2a1e"/><circle cx="290" cy="229" r="7" fill="#3b2a1e"/>
-<circle cx="224" cy="227" r="2" fill="#fff"/><circle cx="292" cy="227" r="2" fill="#fff"/>
-<path d="M256 240L248 276H264" fill="none" stroke="#b5876a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M232 304Q256 318 282 302" fill="none" stroke="#8a4f3c" stroke-width="5" stroke-linecap="round"/>
-
-
-
+  <g font-family="'Liberation Mono',ui-monospace,monospace" font-size="11"
+     letter-spacing="1.2" fill="#8bffbe">
+    <rect x="10" y="228" width="58" height="18" fill="#020604" fill-opacity=".78"/>
+    <text x="16" y="241">S9-03</text>
+  </g>
+  <g font-family="'IPAGothic','Noto Sans CJK JP',sans-serif" font-size="17"
+     fill="#8bffbe" fill-opacity=".85" text-anchor="end">
+    <text x="246" y="242">唐</text>
+  </g>
+  <path d="M10 34V10H34" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
+  <path d="M222 10H246V34" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
+  <path d="M246 222V246H222" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
+  <path d="M34 246H10V222" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
 </svg>

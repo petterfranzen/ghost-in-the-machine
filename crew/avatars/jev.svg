@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Jev: a minimal yes/no sigil, a check against a cross">
+<title>Jev: a minimal yes/no sigil, a check against a cross</title>
+<defs>
+  <radialGradient id="wash" cx="50%" cy="30%" r="85%">
+    <stop offset="0" stop-color="#8bffbe" stop-opacity=".10"/>
+    <stop offset="1" stop-color="#8bffbe" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="vig" cx="50%" cy="46%" r="72%">
+    <stop offset="55%" stop-color="#000" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#000" stop-opacity=".55"/>
+  </radialGradient>
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+    <path d="M32 0H0V32" fill="none" stroke="#8bffbe" stroke-opacity=".07" stroke-width="1"/>
+  </pattern>
+  <pattern id="scan" width="4" height="3" patternUnits="userSpaceOnUse">
+    <rect width="4" height="1" fill="#000" fill-opacity=".22"/>
+  </pattern>
+  <pattern id="dith" width="2" height="2" patternUnits="userSpaceOnUse">
+    <rect width="1" height="1" fill="#000" fill-opacity=".10"/>
+    <rect x="1" y="1" width="1" height="1" fill="#c6ffe0" fill-opacity=".045"/>
+  </pattern>
+  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="2.4" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+  <rect width="256" height="256" fill="#040a08"/>
+  <rect width="256" height="256" fill="url(#grid)"/>
+  <rect width="256" height="256" fill="url(#wash)"/>
+<circle cx="128" cy="126" r="76" fill="#0a2418" fill-opacity=".35"/><circle cx="128" cy="126" r="76" fill="none" stroke="#1f6b45" stroke-width="2.4"/><circle cx="128" cy="126" r="66" fill="none" stroke="#8bffbe" stroke-width="1" stroke-opacity=".28" stroke-dasharray="3 5"/><path d="M128 52V200" stroke="#123a26" stroke-width="2"/><g filter="url(#glow)" fill="none" stroke="#5be7d8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M84 124L104 146L150 92"/></g><g fill="none" stroke="#3fa874" stroke-width="7" stroke-linecap="round" stroke-opacity=".65"><path d="M172 100L204 132M204 100L172 132"/></g><g font-family="'Liberation Mono',ui-monospace,monospace" font-size="10" letter-spacing="1"><text x="86" y="176" fill="#5be7d8" text-anchor="middle" opacity=".9">1</text><text x="170" y="176" fill="#3fa874" text-anchor="middle" opacity=".75">0</text></g>
+  <rect width="256" height="256" fill="url(#dith)"/>
+  <rect width="256" height="256" fill="url(#scan)"/>
+  <rect width="256" height="256" fill="url(#vig)"/>
+  <rect y="150" width="256" height="1" fill="#8bffbe" fill-opacity=".14"/>
+  <rect x="70" y="70" width="116" height="1" fill="#c6ffe0" fill-opacity=".10"/>
+
+  <g font-family="'Liberation Mono',ui-monospace,monospace" font-size="11"
+     letter-spacing="1.2" fill="#8bffbe">
+    <rect x="10" y="228" width="58" height="18" fill="#020604" fill-opacity=".78"/>
+    <text x="16" y="241">S9-07</text>
+  </g>
+  <g font-family="'IPAGothic','Noto Sans CJK JP',sans-serif" font-size="17"
+     fill="#8bffbe" fill-opacity=".85" text-anchor="end">
+    <text x="246" y="242">ジ</text>
+  </g>
+  <path d="M10 34V10H34" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
+  <path d="M222 10H246V34" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
+  <path d="M246 222V246H222" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
+  <path d="M34 246H10V222" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
+</svg>
