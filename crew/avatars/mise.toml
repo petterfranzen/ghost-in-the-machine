@@ -1,0 +1,5 @@
+# Toolchain for refreshing the crew avatars (sh build.sh).
+# Python and node come from the image; oxipng is pinned here so the PNGs
+# compress the same way everywhere.
+[tools]
+oxipng = "10.1.0"

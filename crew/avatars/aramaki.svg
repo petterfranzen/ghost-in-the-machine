@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Aramaki, the Chief: an older, stern face behind round glasses">
+<title>Aramaki, the Chief: an older, stern face behind round glasses</title>
+<defs>
+  <radialGradient id="wash" cx="50%" cy="30%" r="85%">
+    <stop offset="0" stop-color="#8bffbe" stop-opacity=".10"/>
+    <stop offset="1" stop-color="#8bffbe" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="vig" cx="50%" cy="46%" r="72%">
+    <stop offset="55%" stop-color="#000" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#000" stop-opacity=".55"/>
+  </radialGradient>
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+    <path d="M32 0H0V32" fill="none" stroke="#8bffbe" stroke-opacity=".07" stroke-width="1"/>
+  </pattern>
+  <pattern id="scan" width="4" height="3" patternUnits="userSpaceOnUse">
+    <rect width="4" height="1" fill="#000" fill-opacity=".22"/>
+  </pattern>
+  <pattern id="dith" width="2" height="2" patternUnits="userSpaceOnUse">
+    <rect width="1" height="1" fill="#000" fill-opacity=".10"/>
+    <rect x="1" y="1" width="1" height="1" fill="#c6ffe0" fill-opacity=".045"/>
+  </pattern>
+  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="2.4" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+  <rect width="256" height="256" fill="#040a08"/>
+  <rect width="256" height="256" fill="url(#grid)"/>
+  <rect width="256" height="256" fill="url(#wash)"/>
+<path d="M18 256C25 196 67 168 128 168C189 168 231 196 238 256Z" fill="#123a26"/><path d="M92 172C104 190 152 190 164 172L164 256H92Z" fill="#0a2418" fill-opacity=".55"/><path d="M128 176L104 256H152Z" fill="#0a2418"/><path d="M96 256L128 186L112 176L86 214Z" fill="#0a2418" fill-opacity=".7"/><path d="M160 256L128 186L144 176L170 214Z" fill="#0a2418" fill-opacity=".7"/><path d="M124 190L128 182L132 190L128 214Z" fill="#1f6b45"/><rect x="112" y="140" width="32" height="34" fill="#1f6b45"/><ellipse cx="128" cy="104" rx="46" ry="47" fill="#3fa874"/><path d="M84 104 C84 136.9 104 151 128 151 C110 139.25 100 112 100 94Z" fill="#123a26" fill-opacity=".45"/><path d="M84 96C86 62 104 48 128 48C152 48 170 62 172 96C170 74 156 62 128 62C100 62 86 74 84 96Z" fill="#123a26" fill-opacity=".65"/><path d="M82 100C80 84 84 74 88 68C92 84 90 96 90 104Z" fill="#7fe3ad" fill-opacity=".5"/><path d="M174 100C176 84 172 74 168 68C164 84 166 96 166 104Z" fill="#7fe3ad" fill-opacity=".5"/><path d="M98 86H118M138 86H158" stroke="#123a26" stroke-width="5" stroke-linecap="round"/><g filter="url(#glow)" fill="none" stroke="#5be7d8" stroke-width="2.4"><circle cx="108" cy="102" r="15"/><circle cx="148" cy="102" r="15"/><path d="M123 102H133"/><path d="M93 100L84 96"/><path d="M163 100L172 96"/></g><circle cx="108" cy="102" r="15" fill="#5be7d8" fill-opacity=".10"/><circle cx="148" cy="102" r="15" fill="#5be7d8" fill-opacity=".10"/><rect x="104" y="99" width="8" height="6" rx="3" fill="#5be7d8"/><rect x="144" y="99" width="8" height="6" rx="3" fill="#5be7d8"/><path d="M128 112V126L121 130" stroke="#123a26" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="112" y="132" width="32" height="7" rx="3.5" fill="#7fe3ad" fill-opacity=".8"/>
+  <rect width="256" height="256" fill="url(#dith)"/>
+  <rect width="256" height="256" fill="url(#scan)"/>
+  <rect width="256" height="256" fill="url(#vig)"/>
+  <rect y="150" width="256" height="1" fill="#8bffbe" fill-opacity=".14"/>
+  <rect x="70" y="70" width="116" height="1" fill="#c6ffe0" fill-opacity=".10"/>
+
+  <g font-family="'Liberation Mono',ui-monospace,monospace" font-size="11"
+     letter-spacing="1.2" fill="#8bffbe">
+    <rect x="10" y="228" width="58" height="18" fill="#020604" fill-opacity=".78"/>
+    <text x="16" y="241">S9-01</text>
+  </g>
+  <g font-family="'IPAGothic','Noto Sans CJK JP',sans-serif" font-size="17"
+     fill="#8bffbe" fill-opacity=".85" text-anchor="end">
+    <text x="246" y="242">荒</text>
+  </g>
+  <path d="M10 34V10H34" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
+  <path d="M222 10H246V34" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
+  <path d="M246 222V246H222" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
+  <path d="M34 246H10V222" stroke="#8bffbe" stroke-opacity=".55" stroke-width="2" fill="none"/>
+</svg>

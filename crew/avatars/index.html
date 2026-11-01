@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crew avatars - Section 9</title>
+<meta name="description" content="Eight original Ghost in the Shell 1995-flavoured phosphor portraits for the Section 9 crew.">
+<meta name="theme-color" content="#040a08">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap">
+<style>
+/* Section 9 crew avatars - contact sheet. The same world as crew/index.html:
+   near-black glass, green-phosphor readouts, a wireframe grid, scanlines. */
+:root {
+  color-scheme: dark;
+  --bg: #040a08;
+  --panel: #08130d;
+  --panel-2: #0b1a12;
+  --line: rgba(139, 255, 190, .20);
+  --line-strong: rgba(139, 255, 190, .42);
+  --phos: #8bffbe;
+  --ink: #e6f2ea;
+  --muted: #a7bdaf;
+  --dim: #86a091;
+  --f-display: "Rajdhani", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "Share Tech Mono", ui-monospace, "Liberation Mono", Menlo, monospace;
+  --f-jp: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, "IPAGothic", system-ui, sans-serif;
+  --pad: clamp(14px, 3.4vw, 26px);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--bg);
+  background-image: radial-gradient(120% 60% at 50% -10%, rgba(80, 255, 170, .13), transparent 60%);
+  color: var(--ink);
+  font-family: var(--f-mono);
+  font-size: 15px;
+  line-height: 1.55;
+}
+body::before {                       /* wireframe grid, fixed behind */
+  content: "";
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(139, 255, 190, .055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 255, 190, .055) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(130% 100% at 50% 0%, #000 25%, rgba(0,0,0,.35) 70%, transparent 100%);
+  mask-image: radial-gradient(130% 100% at 50% 0%, #000 25%, rgba(0,0,0,.35) 70%, transparent 100%);
+}
+body::after {                        /* scanlines + tube vignette */
+  content: "";
+  position: fixed; inset: 0; z-index: 3; pointer-events: none;
+  background:
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, .28) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0, 0, 0, .5) 100%);
+  opacity: .42;
+}
+.wrap { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: clamp(16px, 4vw, 34px) var(--pad) 60px; }
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 9;
+  display: inline-flex; align-items: center; min-height: 44px;
+  background: var(--phos); color: #04120a; padding: 10px 16px; font-weight: 700;
+}
+.skip:focus { left: 8px; top: 8px; }
+a { color: var(--phos); }
+:focus-visible { outline: 2px solid var(--phos); outline-offset: 3px; }
+::selection { background: rgba(139, 255, 190, .28); color: #eafff3; }
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: #050f0a; }
+::-webkit-scrollbar-thumb { background: #1c4a33; border: 2px solid #050f0a; }
+::-webkit-scrollbar-thumb:hover { background: #2c7a52; }
+
+.hudbar {
+  display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: baseline; justify-content: space-between;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(11, 26, 18, .85), rgba(6, 14, 10, .85));
+  padding: 8px 14px; font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+}
+.hudbar .brand { display: flex; align-items: baseline; gap: 10px; color: var(--ink); letter-spacing: .1em; }
+.hudbar .brand .ja { font-family: var(--f-jp); color: var(--phos); font-size: 12px; letter-spacing: .22em; }
+.hudbar .brand b { font-weight: 700; letter-spacing: .16em; }
+.hudbar .meta { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.hudbar .meta span { color: var(--dim); }
+.hudbar .meta .back { color: var(--phos); text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; }
+.hudbar .meta .back:hover, .hudbar .meta .back:focus-visible { text-decoration: underline; }
+
+header { margin: clamp(22px, 5vw, 40px) 0 clamp(16px, 3.5vw, 26px); }
+header h1 {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(38px, 9vw, 68px);
+  line-height: .95;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+header h1 .thin { color: var(--phos); font-weight: 500; }
+header p { margin: 14px 0 0; max-width: 66ch; color: var(--muted); font-size: 14px; }
+header p b { color: var(--ink); font-weight: 700; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: clamp(12px, 2.2vw, 20px);
+  margin: 0;
+}
+.card {
+  margin: 0;
+  position: relative;
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 1px solid var(--line);
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+.plate {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--line-strong);
+  background: #020604;
+  overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+}
+.plate img { display: block; width: 100%; height: 100%; }
+.card figcaption { display: grid; gap: 2px; }
+.card .name {
+  margin: 0;
+  font-family: var(--f-display); font-weight: 700; font-size: 21px; line-height: 1.1;
+  letter-spacing: .02em; color: var(--ink);
+}
+.card .code {
+  font-size: 11px; letter-spacing: .16em; color: var(--phos);
+}
+.card .code span { color: var(--dim); letter-spacing: .1em; }
+.card .trait { font-size: 13px; color: var(--muted); line-height:1.45; }
+.card .file { font-size: 12px; letter-spacing: .04em; color: var(--dim); }
+
+footer {
+  margin-top: clamp(30px, 6vw, 52px);
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  color: var(--dim); font-size: 12px; letter-spacing: .04em;
+  display: grid; gap: 6px; max-width: 82ch;
+}
+footer code { color: var(--muted); font-family: var(--f-mono); }
+
+@media (max-width: 620px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .card { padding: 9px; gap: 8px; }
+  .card .name { font-size: 18px; }
+  .card .trait { font-size: 12.5px; }
+  .hudbar .meta span:nth-child(3) { display: none; }
+}
+@media (max-width: 340px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .plate::before {                     /* one slow scan sweep, subtle */
+    content: ""; position: absolute; left: 0; right: 0; height: 26%;
+    background: linear-gradient(180deg, transparent, rgba(139, 255, 190, .06) 60%, transparent);
+    animation: sweep 7s linear infinite;
+  }
+}
+@keyframes sweep { from { top: -30%; } to { top: 105%; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#roster">Skip to the avatars</a>
+<div class="wrap">
+
+  <div class="hudbar">
+    <div class="brand"><span class="ja" lang="ja">公安9課</span><b>Personnel files</b></div>
+    <div class="meta"><a class="back" href="../">&#8592; Roster</a><span>Personnel 08</span><span>Original avatars</span><span>256 &times; 256</span><span>SVG + PNG</span></div>
+  </div>
+
+  <header>
+    <h1>Crew <span class="thin">avatars</span></h1>
+    <p>Eight original portraits for the Section 9 roster, drawn in one hand: a phosphor&#8209;green
+    tonal ramp on a near&#8209;black tube, one cyan trait each, a wireframe grid, scanlines and a
+    hint of dither. <b>Evoked, not traced</b> &mdash; no film frame, logo or likeness.</p>
+  </header>
+
+  <section id="roster" class="grid" aria-label="Crew avatars">
+
+    <figure class="card">
+      <div class="plate"><img src="aramaki.svg" width="256" height="256" alt="Aramaki, the Chief: an older, stern face behind round wireframe glasses, grey at the temples"></div>
+      <figcaption>
+        <h2 class="name">Aramaki</h2>
+        <span class="code">S9-01 &middot; <span>the Chief, command</span></span>
+        <span class="trait">Round glasses, grey temples, a grey moustache.</span>
+        <span class="file">aramaki.svg &middot; 256px</span>
+      </figcaption>
+    </figure>
+
+    <figure class="card">
+      <div class="plate"><img src="major.svg" width="256" height="256" alt="The Major: short dark hair and a calm, direct gaze"></div>
+      <figcaption>
+        <h2 class="name">The Major</h2>
+        <span class="code">S9-00 &middot; <span>coordinator</span></span>
+        <span class="trait">A short dark bob and a level, direct gaze.</span>
+        <span class="file">major.svg &middot; 256px</span>
+      </figcaption>
+    </figure>
+
+    <figure class="card">
+      <div class="plate"><img src="batou.svg" width="256" height="256" alt="Batou: a broad face with cropped pale hair and two cybernetic lens eyes"></div>
+      <figcaption>
+        <h2 class="name">Batou</h2>
+        <span class="code">S9-02 &middot; <span>field operative</span></span>
+        <span class="trait">Broad jaw, pale crop and two lens eyes.</span>
+        <span class="file">batou.svg &middot; 256px</span>
+      </figcaption>
+    </figure>
+
+    <figure class="card">
+      <div class="plate"><img src="togusa.svg" width="256" height="256" alt="Togusa: a mullet, an upturned trench collar and a plain tie"></div>
+      <figcaption>
+        <h2 class="name">Togusa</h2>
+        <span class="code">S9-03 &middot; <span>field operative</span></span>
+        <span class="trait">A mullet, a trench collar turned up, a tie.</span>
+        <span class="file">togusa.svg &middot; 256px</span>
+      </figcaption>
+    </figure>
+
+    <figure class="card">
+      <div class="plate"><img src="ishikawa.svg" width="256" height="256" alt="Ishikawa: a bearded man in dark glasses full of falling green data"></div>
+      <figcaption>
+        <h2 class="name">Ishikawa</h2>
+        <span class="code">S9-04 &middot; <span>field operative</span></span>
+        <span class="trait">A full beard, dark glasses full of data.</span>
+        <span class="file">ishikawa.svg &middot; 256px</span>
+      </figcaption>
+    </figure>
+
+    <figure class="card">
+      <div class="plate"><img src="saito.svg" width="256" height="256" alt="Saito: a sniper with one cybernetic scope eye and an amber reticle"></div>
+      <figcaption>
+        <h2 class="name">Saito</h2>
+        <span class="code">S9-05 &middot; <span>field operative</span></span>
+        <span class="trait">One cybernetic scope eye, reticle and all.</span>
+        <span class="file">saito.svg &middot; 256px</span>
+      </figcaption>
+    </figure>
+
+    <figure class="card">
+      <div class="plate"><img src="tachikoma.svg" width="256" height="256" alt="Tachikoma: a round spider-tank with four legs, an antenna and one big lens eye"></div>
+      <figcaption>
+        <h2 class="name">Tachikoma</h2>
+        <span class="code">S9-06 &middot; <span>builder</span></span>
+        <span class="trait">A small spider-tank: pod, four legs, one big lens.</span>
+        <span class="file">tachikoma.svg &middot; 256px</span>
+      </figcaption>
+    </figure>
+
+    <figure class="card">
+      <div class="plate"><img src="jev.svg" width="256" height="256" alt="Jev: a minimal yes/no sigil, a cyan check against a dim cross"></div>
+      <figcaption>
+        <h2 class="name">Jev</h2>
+        <span class="code">S9-07 &middot; <span>sign-off</span></span>
+        <span class="trait">A minimal yes/no sigil: a check against a cross.</span>
+        <span class="file">jev.svg &middot; 256px</span>
+      </figcaption>
+    </figure>
+
+  </section>
+
+  <footer>
+    <div>Original drawings, generated by <code>generate.py</code>; <code>build.sh</code> writes the SVGs and the 256&times;256 PNGs.</div>
+    <div>Same world as the roster at <a href="../">/crew/</a> &middot; phosphor green on near-black, cyan trait, scanlines, dither.</div>
+  </footer>
+
+</div>
+</body>
+</html>
