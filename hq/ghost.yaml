@@ -1,0 +1,228 @@
+# Ghost in the Shell 1995 — a Hermes dashboard theme.
+# Section 9's own HUD: near-black CRT, phosphor green, cyan lenses and amber
+# warnings. An original homage — no film frames, stills or logos are used.
+# Drop this file in ~/.hermes/dashboard-themes/ (the VPS copies hq/*.yaml from
+# main) and pick "Ghost in the Shell 1995" in the header palette menu.
+# See hq/README.md for the design notes and the contrast table.
+
+name: ghost
+label: Ghost in the Shell 1995
+description: Section 9 HUD — near-black CRT, phosphor green, cyan lenses, amber warnings, scanlines and a quiet glitch.
+
+# --- Palette -----------------------------------------------------------------
+# Three colour layers; the dashboard derives every shadcn token from these via
+# color-mix(), so the whole UI follows.
+palette:
+  background:
+    hex: "#060b09"      # near-black, a breath of green in it
+    alpha: 1.0
+  midground:
+    hex: "#8bffbe"      # phosphor green — body text, chrome, most accents
+    alpha: 1.0
+  foreground:
+    hex: "#e6f2ea"      # cool white — the top highlight layer
+    alpha: 1.0
+  warmGlow: "rgba(255, 180, 84, 0.16)"   # amber tube vignette, low and warm
+  noiseOpacity: 0.55                      # grain on, but not gritty
+
+# --- Typography --------------------------------------------------------------
+typography:
+  fontSans: '"Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, monospace'
+  fontMono: '"Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, monospace'
+  fontDisplay: '"Rajdhani", "Segoe UI", system-ui, sans-serif'
+  fontUrl: "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap"
+  baseSize: "14px"
+  lineHeight: "1.5"
+  letterSpacing: "0.02em"
+
+# --- Layout ------------------------------------------------------------------
+layout:
+  radius: "0"           # sharp HUD corners; nothing in 1995 had a soft radius
+  density: compact
+
+layoutVariant: cockpit  # left rail + main content — the ops-room reading
+
+# --- Theme assets ------------------------------------------------------------
+# The crew avatars (crew/avatars/, our own original drawings) reused as theme
+# assets. Served from main so the theme never carries a binary of its own.
+assets:
+  bg: "none"            # keep the canvas near-black; no photographic backdrop
+  crest: "https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/tachikoma.svg"
+  logo: "https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/major.svg"
+  hero: "https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/major.svg"
+  custom:
+    major: "https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/major.png"
+    aramaki: "https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/aramaki.png"
+    batou: "https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/batou.png"
+    tachikoma: "https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/tachikoma.png"
+    togusa: "https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/togusa.png"
+    ishikawa: "https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/ishikawa.png"
+    saito: "https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/saito.png"
+    jev: "https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/main/crew/avatars/jev.png"
+
+# --- Colour overrides --------------------------------------------------------
+# Named tokens the palette cascade won't land exactly. Every pair below is
+# checked against WCAG AA in hq/README.md.
+colorOverrides:
+  primary: "#8bffbe"
+  primaryForeground: "#060b09"
+  secondary: "#0e1a15"
+  secondaryForeground: "#e6f2ea"
+  accent: "#5be7d8"            # cyan lens accent
+  accentForeground: "#04100b"
+  muted: "#0b1410"
+  mutedForeground: "#9db3a7"
+  success: "#4fd68c"
+  warning: "#ffb454"
+  destructive: "#ff8a5c"
+  destructiveForeground: "#04100b"
+  border: "rgba(139, 255, 190, 0.20)"
+  input: "rgba(139, 255, 190, 0.20)"
+  ring: "#ffb454"              # amber focus ring, high visibility
+
+# --- Component chrome --------------------------------------------------------
+componentStyles:
+  card:
+    clipPath: "polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px)"
+    background: "linear-gradient(180deg, rgba(14, 26, 21, 0.96), rgba(11, 20, 16, 0.98))"
+    boxShadow: "inset 0 0 0 1px rgba(139, 255, 190, 0.18), 0 2px 10px rgba(0, 0, 0, 0.45)"
+  header:
+    background: "linear-gradient(180deg, rgba(11, 20, 16, 0.98), rgba(6, 11, 9, 0.92))"
+    boxShadow: "inset 0 -1px 0 rgba(139, 255, 190, 0.22)"
+  sidebar:
+    background: "linear-gradient(180deg, rgba(11, 20, 16, 0.96), rgba(6, 11, 9, 0.96))"
+    boxShadow: "inset -1px 0 0 rgba(139, 255, 190, 0.18)"
+  tab:
+    clipPath: "polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%)"
+  progress:
+    background: "linear-gradient(90deg, #4fd68c, #8bffbe 70%, #5be7d8)"
+  badge:
+    boxShadow: "inset 0 0 0 1px rgba(139, 255, 190, 0.28)"
+  footer:
+    boxShadow: "inset 0 1px 0 rgba(139, 255, 190, 0.16)"
+  backdrop: {}
+  page: {}
+
+# --- Raw CSS -----------------------------------------------------------------
+# Selector-level chrome: the CRT scanlines, a faint wireframe grid, the amber
+# focus ring, themed scrollbars and selection, the cockpit rail, and one quiet
+# glitch on headings. Every animation sits behind prefers-reduced-motion.
+customCSS: |
+  /* Theme-scoped tokens. */
+  :root {
+    --ghost-phos: #8bffbe;
+    --ghost-phos-rgb: 139, 255, 190;
+    --ghost-amber: #ffb454;
+    --ghost-cyan: #5be7d8;
+    --ghost-bg: #060b09;
+  }
+
+  /* Fixed wireframe grid, sitting behind everything. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(var(--ghost-phos-rgb), 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--ghost-phos-rgb), 0.045) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(130% 100% at 50% 0%, #000 25%, rgba(0, 0, 0, 0.35) 70%, transparent 100%);
+            mask-image: radial-gradient(130% 100% at 50% 0%, #000 25%, rgba(0, 0, 0, 0.35) 70%, transparent 100%);
+  }
+
+  /* CRT scanlines over the whole shell. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 2px,
+      rgba(var(--ghost-phos-rgb), 0.035) 3px, rgba(var(--ghost-phos-rgb), 0.035) 4px
+    );
+    mix-blend-mode: screen;
+  }
+
+  /* Cockpit rail: give the 260px rail the feel of an equipment rack. */
+  :root[data-layout-variant="cockpit"] aside,
+  :root[data-layout-variant="cockpit"] [data-slot="sidebar"] {
+    border-image: linear-gradient(180deg,
+      rgba(var(--ghost-phos-rgb), 0.30),
+      rgba(var(--ghost-phos-rgb), 0.06)) 1;
+  }
+
+  /* Headings: display face, a whisper of phosphor bloom, an amber tick. */
+  h1, h2, h3 {
+    font-family: var(--font-display, "Rajdhani", sans-serif);
+    letter-spacing: 0.03em;
+    text-shadow: 0 0 12px rgba(var(--ghost-phos-rgb), 0.14);
+  }
+  h1::after, h2::after {
+    content: "";
+    display: inline-block;
+    width: 0.55em;
+    height: 0.12em;
+    margin-left: 0.45em;
+    vertical-align: 0.14em;
+    background: var(--ghost-amber);
+    opacity: 0.75;
+  }
+
+  /* Browser surfaces carry the design too. */
+  ::selection {
+    background: var(--ghost-phos);
+    color: var(--ghost-bg);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--ghost-phos-rgb), 0.45) rgba(0, 0, 0, 0.35);
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.35); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg,
+      rgba(var(--ghost-phos-rgb), 0.55),
+      rgba(var(--ghost-phos-rgb), 0.30));
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--ghost-phos); }
+  :focus-visible {
+    outline: 2px solid var(--ghost-amber);
+    outline-offset: 2px;
+  }
+  ::placeholder { color: #9db3a7; opacity: 1; }
+
+  /* One authored moment: a rare, brief glitch on headings and the wordmark.
+     Off by default; only runs when the visitor has not asked for less motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes ghost-glitch {
+      0%, 92%, 100% { transform: translate(0, 0); text-shadow: 0 0 12px rgba(var(--ghost-phos-rgb), 0.14); }
+      93% { transform: translate(-1px, 0); text-shadow: 2px 0 0 rgba(91, 231, 216, 0.55), -2px 0 0 rgba(255, 180, 84, 0.45); }
+      95% { transform: translate(1px, 0);  text-shadow: -2px 0 0 rgba(91, 231, 216, 0.45), 2px 0 0 rgba(255, 180, 84, 0.40); }
+      97% { transform: translate(0, 0);    text-shadow: 0 0 12px rgba(var(--ghost-phos-rgb), 0.14); }
+    }
+    h1, [data-wordmark], .ghost-wordmark {
+      animation: ghost-glitch 9s steps(1, end) infinite;
+      animation-delay: 3s;
+    }
+    @keyframes ghost-flicker {
+      0%, 100% { opacity: 0.035; }
+      48% { opacity: 0.035; }
+      49% { opacity: 0.06; }
+      50% { opacity: 0.035; }
+    }
+    body::after { animation: ghost-flicker 7s ease-in-out infinite; }
+  }
+
+  /* Explicit opt-out: no motion, no scanline flicker, no glitch. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+    body::after { opacity: 0.035; }
+  }
