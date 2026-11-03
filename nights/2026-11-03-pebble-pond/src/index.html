@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a2430">
+<title>Pebble Pond</title>
+<style>
+  :root {
+    --ink: #e9e3d4;
+    --dim: #9fa392;
+    --warm: #ffd696;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(120% 90% at 50% 8%, #243040 0%, #18202b 48%, #0d1218 100%);
+    color: var(--ink);
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(10px, 2.2vh, 20px);
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(15px, 2.6vh, 21px);
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(233, 227, 212, 0.62);
+  }
+  .frame {
+    position: relative;
+    width: min(94vw, calc(70vh * 4 / 3));
+    aspect-ratio: 4 / 3;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(233, 227, 212, 0.10),
+      0 18px 50px -12px rgba(0, 0, 0, 0.78),
+      0 0 90px -26px rgba(255, 214, 150, 0.14);
+    background: #141c24;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    touch-action: none;
+    cursor: pointer;
+  }
+  #caption {
+    margin: 0;
+    min-height: 1.2em;
+    font-size: clamp(13px, 2.1vh, 17px);
+    font-style: italic;
+    letter-spacing: 0.03em;
+    color: var(--dim);
+    transition: color 1.6s ease;
+    text-align: center;
+    padding: 0 10px;
+  }
+  #caption.lit { color: var(--warm); }
+  #hint {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: clamp(10px, 1.5vh, 12px);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(233, 227, 212, 0.34);
+    transition: opacity 1.4s ease;
+  }
+  #hint.gone { opacity: 0; }
+  #sound {
+    position: fixed;
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: 1px solid rgba(233, 227, 212, 0.18);
+    background: rgba(18, 24, 32, 0.55);
+    color: rgba(233, 227, 212, 0.5);
+    font-size: 16px;
+    line-height: 1;
+    display: grid; place-items: center;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: color .4s ease, border-color .4s ease, background .4s ease;
+  }
+  #sound.on {
+    color: var(--warm);
+    border-color: rgba(255, 214, 150, 0.42);
+    background: rgba(46, 40, 32, 0.55);
+  }
+  #sound:focus-visible { outline: 2px solid var(--warm); outline-offset: 3px; }
+</style>
+</head>
+<body>
+  <h1>Pebble Pond</h1>
+  <div class="frame">
+    <canvas id="stage" width="320" height="240"
+      aria-label="A pixel-art koi pond at dusk. Tap anywhere to drop a pebble; the rings spread, the koi drift over, and the water slowly goes still again."></canvas>
+  </div>
+  <p id="caption" aria-live="polite">the pond is still</p>
+  <p id="hint">tap the water to drop a pebble</p>
+  <button id="sound" type="button" aria-label="Toggle sound" aria-pressed="true">&#9834;</button>
+  <script src="./pond.wasm.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
