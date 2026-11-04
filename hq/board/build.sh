@@ -91,6 +91,9 @@ for needle, why in (
     ("prefers-color-scheme", "the default theme must follow the OS"),
     ('class="column waits-', "the waits columns must carry their key class"),
     ("START_LIMIT = 3", "Start here must list three cards"),
+    ("min-width:44px", "links need a 44 px tap target"),
+    ('class="pr"', "each card must render the PR link when it has one"),
+    ("Nothing here", "an empty column must read softly"),
 ):
     if needle not in page:
         fail("missing: %s (%s)" % (needle, why))

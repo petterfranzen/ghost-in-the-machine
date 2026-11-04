@@ -7,9 +7,9 @@ every 60 s and renders the crew plus one column per *who a task waits on*.
 so opening the file directly (no server) still renders.
 
 The page code is public; the real titles are not. `board.json` is written by
-`vps/hq-status.py` (agent-manager) and served only behind Cloudflare Access on
-the `hq` host. The checked-in sample uses invented titles only — keep it that
-way: no real issue titles, no names of people, no private topics in this repo.
+the private server half and served only behind the access layer. The
+checked-in sample uses invented titles only — keep it that way: no real issue
+titles, no names of people, no private topics in this repo.
 
 ## Columns
 

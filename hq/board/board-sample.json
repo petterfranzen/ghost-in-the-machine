@@ -114,7 +114,8 @@
       "waits": "major",
       "waitsText": "the bump PR to merge",
       "url": "https://github.com/petterfranzen/section9-hq/issues/104",
-      "updated": "2026-11-02T09:05:00Z"
+      "updated": "2026-11-02T09:05:00Z",
+      "pr": "https://github.com/petterfranzen/ghost-in-the-machine/pull/900"
     },
     {
       "id": 105,
