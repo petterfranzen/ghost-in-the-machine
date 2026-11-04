@@ -1,0 +1,81 @@
+/* ==========================================================================
+   Section 9 theme - the GITS-95 ops room.
+   Near-black CRT, phosphor green chrome, cyan lenses, amber warnings.
+   Dark only: the ops room has no daylight mode, and pretending otherwise
+   would break the look. Use Professional light when paper is the target.
+   Apply with <html data-theme="section9">.
+   ========================================================================== */
+
+html[data-theme="section9"] {
+  color-scheme: dark;
+
+  --bg: #060b09;
+  --bg-soft: #0b1410;
+  --surface: #0b1410;
+  --surface-2: #0e1a15;
+  --surface-3: #13221b;
+  --line: rgba(139, 255, 190, 0.20);
+  --line-strong: rgba(139, 255, 190, 0.42);
+
+  --text: #e6f2ea;
+  --text-muted: #9db3a7;
+  --text-faint: #7f958a;
+
+  --accent: #8bffbe;       /* phosphor: chrome, active state, rules */
+  --accent-ink: #060b09;
+  --accent-soft: rgba(139, 255, 190, 0.09);
+  --accent-line: rgba(139, 255, 190, 0.32);
+
+  --focus: #ffb454;        /* amber ring, as in the Hermes theme */
+  --success: #4fd68c;
+  --warning: #ffb454;
+  --danger: #ff8a5c;
+  --info: #5be7d8;         /* cyan lens */
+
+  --chart-1: #8bffbe;
+  --chart-2: #5be7d8;
+  --chart-3: #ffb454;
+  --chart-4: #7fd4ff;
+  --chart-5: #4fd68c;
+  --chart-6: #ff8a5c;
+  --chart-grid: rgba(139, 255, 190, 0.14);
+  --chart-axis: #9db3a7;
+
+  --font-sans: "Share Tech Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: "Share Tech Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: Rajdhani, "Segoe UI", system-ui, sans-serif;
+
+  /* Sharp HUD corners: no radius anywhere. */
+  --r-xs: 0px;
+  --r-sm: 0px;
+  --r-md: 0px;
+  --r-lg: 0px;
+  --r-xl: 0px;
+  --notch: 14px;
+
+  --shadow-1: 0 0 0 1px rgba(139, 255, 190, 0.06);
+  --shadow-2: 0 0 24px -8px rgba(139, 255, 190, 0.18);
+  --shadow-3: 0 0 48px -12px rgba(139, 255, 190, 0.22);
+
+  /* The room itself. */
+  --grid-image:
+    linear-gradient(rgba(139, 255, 190, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 255, 190, 0.055) 1px, transparent 1px);
+  --grid-size: 48px 48px;
+  --vignette-image: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+  --scan-opacity: 0.18;
+  --card-sheen: linear-gradient(180deg, rgba(139, 255, 190, 0.05), transparent 45%);
+  --display-transform: uppercase;
+  --display-tracking: 0.04em;
+
+  --dur-1: 90ms;
+  --dur-2: 160ms;
+  --dur-3: 260ms;
+  --dur-4: 420ms;
+}
+
+/* The room glow sits behind the page; the grid and scanline are drawn by
+   .shell::before / .shell__scan in components.css. */
+html[data-theme="section9"] body {
+  background-image: radial-gradient(120% 70% at 50% -15%, rgba(80, 255, 170, 0.10), transparent 62%);
+}

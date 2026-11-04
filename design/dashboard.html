@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" data-theme="section9" data-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Section 9 design system — dashboard set</title>
+<meta name="description" content="The dashboard component set: rail, stat tiles, charts, roster table and activity feed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="tokens/base.css">
+<link rel="stylesheet" href="tokens/professional.css">
+<link rel="stylesheet" href="tokens/section9.css">
+<link rel="stylesheet" href="components.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="app">
+  <aside class="app__rail">
+    <a class="shell__brand" href="index.html"><span class="shell__mark" aria-hidden="true">9</span> Section 9</a>
+    <nav aria-label="Sections" class="app__nav">
+      <a href="#main" aria-current="page">Overview</a>
+      <a href="#roster">Roster</a>
+      <a href="#nights">Nights</a>
+      <a href="#budget">Budget</a>
+    </nav>
+    <div class="stack rail__foot" style="margin-top:auto;gap:var(--sp-2)">
+      <p class="card__kicker" style="margin:0">Theme</p>
+      <div class="row" role="group" aria-label="Theme" style="gap:var(--sp-2)">
+        <button class="btn btn--ghost" style="padding:var(--sp-1) var(--sp-2);min-height:2rem;font-size:var(--fs-xs)" type="button" data-theme-set="section9">Section 9</button>
+        <button class="btn btn--ghost" style="padding:var(--sp-1) var(--sp-2);min-height:2rem;font-size:var(--fs-xs)" type="button" data-theme-set="professional">Professional</button>
+      </div>
+      <div class="row" data-mode-wrap role="group" aria-label="Mode" style="gap:var(--sp-2)">
+        <button class="btn btn--ghost" style="padding:var(--sp-1) var(--sp-2);min-height:2rem;font-size:var(--fs-xs)" type="button" data-mode-set="dark">Dark</button>
+        <button class="btn btn--ghost" style="padding:var(--sp-1) var(--sp-2);min-height:2rem;font-size:var(--fs-xs)" type="button" data-mode-set="light">Light</button>
+      </div>
+      <p class="small faint mono rail__version" style="margin:0">v1.0 · 2026-10-30</p>
+    </div>
+  </aside>
+
+  <div class="app__body">
+    <header class="app__topbar">
+      <div>
+        <h1 class="app__title">Section overview</h1>
+        <p class="small faint mono" style="margin:0">crew/status.json · sample data</p>
+      </div>
+      <div class="app__meta">
+        <span class="badge badge--ok">all systems nominal</span>
+        <span class="badge badge--quiet">UTC</span>
+      </div>
+    </header>
+
+    <main class="app__main" id="main">
+      <section aria-labelledby="stats-h">
+        <h2 id="stats-h" class="sr-only">Key figures</h2>
+        <div class="grid grid--4">
+          <div class="stat"><span class="stat__label">Agents active</span><span class="stat__value">2<span class="stat__unit">/5</span></span><span class="stat__delta stat__delta--up">working now</span></div>
+          <div class="stat stat--accent"><span class="stat__label">Budget used</span><span class="stat__value">7<span class="stat__unit">%</span></span><span class="stat__foot">of the October cap</span></div>
+          <div class="stat"><span class="stat__label">Nights shipped</span><span class="stat__value">63</span><span class="stat__delta stat__delta--up">+7 this week</span></div>
+          <div class="stat"><span class="stat__label">Failed runs</span><span class="stat__value">0</span><span class="stat__foot">last 14 days</span></div>
+        </div>
+      </section>
+
+      <div class="grid grid--2 grid--main">
+        <figure class="chart">
+          <div class="chart__head"><figcaption class="chart__title">Runs per night</figcaption><span class="chart__note">14 nights · sample</span></div>
+          <div class="chart__plot" role="img" aria-label="Bar chart of nightly runs over fourteen nights, between 2 and 7 per night, average rising slightly.">
+            <div class="chart__bar"><span style="height:28%"></span></div>
+            <div class="chart__bar"><span style="height:34%"></span></div>
+            <div class="chart__bar"><span style="height:22%"></span></div>
+            <div class="chart__bar"><span style="height:46%"></span></div>
+            <div class="chart__bar"><span style="height:38%"></span></div>
+            <div class="chart__bar"><span style="height:52%"></span></div>
+            <div class="chart__bar"><span style="height:44%"></span></div>
+            <div class="chart__bar"><span style="height:62%"></span></div>
+            <div class="chart__bar"><span style="height:58%"></span></div>
+            <div class="chart__bar"><span class="s2" style="height:70%"></span></div>
+            <div class="chart__bar"><span style="height:64%"></span></div>
+            <div class="chart__bar"><span style="height:78%"></span></div>
+            <div class="chart__bar"><span style="height:72%"></span></div>
+            <div class="chart__bar"><span style="height:86%"></span></div>
+          </div>
+          <div class="chart__axis" aria-hidden="true"><span>17</span><span>19</span><span>21</span><span>23</span><span>25</span><span>27</span><span>30</span></div>
+          <ul class="legend"><li><span class="swatch"></span>Shipped</li><li><span class="swatch swatch--2"></span>Preview only</li></ul>
+        </figure>
+
+        <section class="card" id="budget" aria-labelledby="budget-h">
+          <div class="card__head"><h2 class="card__title" id="budget-h">Budget</h2><span class="badge badge--ok">on track</span></div>
+          <div class="card__body">
+            <p class="stat__label" style="margin-bottom:var(--sp-2)">October · used</p>
+            <p class="stat__value" style="margin-bottom:var(--sp-4)">7<span class="stat__unit">%</span></p>
+            <div class="meter" style="--pct:7%" role="img" aria-label="Budget used: 7 percent"><div class="meter__fill"></div></div>
+            <p class="small muted" style="margin-top:var(--sp-3)">Cap is a percentage of the monthly budget. The figure is never shown in currency.</p>
+            <hr class="rule" style="margin-block:var(--sp-5)">
+            <dl class="kv">
+              <dt>Month</dt><dd>2026-10</dd>
+              <dt>Top spender</dt><dd>Tachikoma · 12%</dd>
+              <dt>Updated</dt><dd>2026-10-30 10:00 UTC</dd>
+            </dl>
+          </div>
+        </section>
+      </div>
+
+      <section aria-labelledby="roster-h" id="roster">
+        <div class="row" style="margin-bottom:var(--sp-3)">
+          <h2 class="h3" id="roster-h" style="margin:0">Roster</h2>
+          <span class="badge badge--quiet">5 agents</span>
+          <span class="spacer"></span>
+          <a class="small" href="docs.html#components">Table specs</a>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <caption>Live state from crew/status.json. Recent work links to the last thing each agent shipped.</caption>
+            <thead><tr><th scope="col">Agent</th><th scope="col">Role</th><th scope="col">State</th><th scope="col">Now</th><th scope="col">Last active</th><th scope="col" class="num">Budget</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="table__title">Tachikoma</td>
+                <td>Nightly builder</td>
+                <td><span class="badge badge--ok">working</span></td>
+                <td>Building tonight's app</td>
+                <td class="mono small">00:48</td>
+                <td class="num">12%</td>
+              </tr>
+              <tr>
+                <td class="table__title">Batou</td>
+                <td>Coder</td>
+                <td><span class="badge badge--accent">working</span></td>
+                <td>Reviewing the crew page brief</td>
+                <td class="mono small">09:40</td>
+                <td class="num">3%</td>
+              </tr>
+              <tr>
+                <td class="table__title">Ishikawa</td>
+                <td>Researcher</td>
+                <td><span class="badge badge--quiet">idle</span></td>
+                <td class="faint">—</td>
+                <td class="mono small">29th 18:20</td>
+                <td class="num">2%</td>
+              </tr>
+              <tr>
+                <td class="table__title">Togusa</td>
+                <td>Backup coordinator</td>
+                <td><span class="badge badge--quiet">idle</span></td>
+                <td class="faint">—</td>
+                <td class="mono small">30th 06:00</td>
+                <td class="num">1%</td>
+              </tr>
+              <tr>
+                <td class="table__title">Saito</td>
+                <td>Ops, read-only</td>
+                <td><span class="badge badge--warn">paused</span></td>
+                <td class="faint">—</td>
+                <td class="mono small">28th 06:30</td>
+                <td class="num">0.5%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="grid grid--2 grid--main" id="nights">
+        <section class="card" aria-labelledby="activity-h">
+          <div class="card__head"><h2 class="card__title" id="activity-h">Activity</h2><span class="badge badge--quiet">today</span></div>
+          <div class="card__body" style="display:grid;gap:var(--sp-3)">
+            <div class="row" style="gap:var(--sp-3);align-items:flex-start">
+              <span class="mono small faint" style="min-width:3.5rem">09:40</span>
+              <p class="small" style="margin:0;flex:1">Batou opened the crew page v2 draft</p>
+              <span class="badge badge--accent">working</span>
+            </div>
+            <div class="row" style="gap:var(--sp-3);align-items:flex-start">
+              <span class="mono small faint" style="min-width:3.5rem">00:48</span>
+              <p class="small" style="margin:0;flex:1">Tachikoma shipped Koi Drift <a href="#nights" class="small">open</a></p>
+              <span class="badge badge--ok">shipped</span>
+            </div>
+            <div class="row" style="gap:var(--sp-3);align-items:flex-start">
+              <span class="mono small faint" style="min-width:3.5rem">06:00</span>
+              <p class="small" style="margin:0;flex:1">Togusa checked the Major's check-in; nothing to do</p>
+              <span class="badge badge--quiet">idle</span>
+            </div>
+          </div>
+          <div class="card__foot"><a href="#main" class="small">Full log</a><span class="spacer"></span><span class="mono small">3 events</span></div>
+        </section>
+
+        <div class="stack">
+          <div class="callout callout--warn"><span class="callout__icon" aria-hidden="true">!</span><div><span class="callout__title">Saito is paused</span> Ops went read-only on 28 Oct. Disk checks resume when the pause lifts.</div></div>
+          <div class="callout"><span class="callout__icon" aria-hidden="true">i</span><div><span class="callout__title">Sample data</span> This dashboard renders the shape of crew/status.json with the fixture's own values. No invented agents, no invented numbers.</div></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="theme.js"></script>
+</body>
+</html>

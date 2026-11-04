@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en" data-theme="professional" data-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Section 9 design system — usage</title>
+<meta name="description" content="Tokens, components and rules for Section 9 documents, decks and dashboards.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="tokens/base.css">
+<link rel="stylesheet" href="tokens/professional.css">
+<link rel="stylesheet" href="tokens/section9.css">
+<link rel="stylesheet" href="components.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+  <div class="shell__scan" aria-hidden="true"></div>
+  <header class="shell__head">
+    <a class="shell__brand" href="index.html"><span class="shell__mark" aria-hidden="true">9</span> Section 9 — design system</a>
+    <nav class="shell__nav" aria-label="Design system">
+      <a href="index.html">Contact sheet</a>
+      <a href="docs.html" aria-current="page">Docs</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="slides.html">Slides</a>
+      <button class="btn btn--ghost" type="button" data-theme-toggle aria-label="Switch theme">Section 9</button>
+    </nav>
+  </header>
+
+  <main class="shell__main" id="main">
+    <p class="eyebrow">Reference · v1.0</p>
+    <h1 class="h1">One system for every Section 9 output</h1>
+    <p class="lede" style="margin-top:var(--sp-4)">Documents, decks and dashboards share one base of tokens. Two themes sit on it: <strong>Professional</strong>, taken from the approved portfolio, and <strong>Section 9</strong>, the GITS-95 ops room. Same components, same spacing scale, different room.</p>
+    <p class="small muted measure" aria-live="polite" id="theme-status" style="margin-top:var(--sp-4)">Theme: <span data-theme-name>Professional</span>, dark mode. Use the button in the header to compare.</p>
+
+    <hr class="rule">
+
+    <div class="docs">
+      <nav class="toc" aria-label="On this page">
+        <span class="toc__title">On this page</span>
+        <a href="#start">Quick start</a>
+        <a href="#themes">Themes and modes</a>
+        <a href="#colour">Colour</a>
+        <a href="#type">Type</a>
+        <a href="#space">Space, radius, elevation</a>
+        <a href="#motion">Motion</a>
+        <a href="#shell">Page shell</a>
+        <a href="#components">Components</a>
+        <a href="#charts">Charts</a>
+        <a href="#slides">Slide layouts</a>
+        <a href="#a11y">Accessibility</a>
+        <a href="#elsewhere">Other tools</a>
+        <a href="#rules">Do and don't</a>
+        <a href="#checks">Checks</a>
+      </nav>
+
+      <div class="prose">
+
+        <h2 class="h2" id="start">Quick start</h2>
+        <p>Three token files and one stylesheet. No build step, no framework, no JavaScript required for the components.</p>
+        <div class="code">
+          <div class="code__bar"><span class="code__lang">html</span><span>head</span></div>
+          <pre><code><span class="c-tag">&lt;html</span> <span class="c-key">data-theme</span>=<span class="c-str">"professional"</span> <span class="c-key">data-mode</span>=<span class="c-str">"dark"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"design/tokens/base.css"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"design/tokens/professional.css"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"design/components.css"</span><span class="c-tag">&gt;</span>
+<span class="c-tag">&lt;/html&gt;</span></code></pre>
+        </div>
+        <p>For the ops room, swap the theme file and drop the mode:</p>
+        <div class="code">
+          <div class="code__bar"><span class="code__lang">html</span><span>ops-room page</span></div>
+          <pre><code><span class="c-tag">&lt;html</span> <span class="c-key">data-theme</span>=<span class="c-str">"section9"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"tokens/base.css"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"tokens/section9.css"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"components.css"</span><span class="c-tag">&gt;</span>
+<span class="c-tag">&lt;/html&gt;</span></code></pre>
+        </div>
+        <p class="small muted">Pages in this folder also load <code>theme.js</code> for the header switch. Consumers do not need it.</p>
+
+        <h2 class="h2" id="themes">Themes and modes</h2>
+        <div class="table-wrap">
+          <table class="table">
+            <caption>Two themes, one component sheet. Never mix them inside one surface.</caption>
+            <thead><tr><th scope="col">Theme</th><th scope="col">Attribute</th><th scope="col">Modes</th><th scope="col">Built for</th></tr></thead>
+            <tbody>
+              <tr><td class="table__title">Professional</td><td><code>data-theme="professional"</code></td><td>dark (default), light</td><td>Portfolio, documents, client-facing decks</td></tr>
+              <tr><td class="table__title">Section 9</td><td><code>data-theme="section9"</code></td><td>dark only</td><td>Ops dashboards, crew HQ, status pages, internal decks</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Light mode is <code>data-mode="light"</code> on the same element. Section 9 has no light mode on purpose: a paper-white ops room is a different room, so when the target is paper or a bright projector, use Professional light.</p>
+        <div class="callout">
+          <span class="callout__icon" aria-hidden="true">i</span>
+          <div><span class="callout__title">One theme per surface</span>
+          Pick a theme per page or deck and stay in it. A Section 9 dashboard with Professional cards reads as an unfinished merge, not as a system.</div>
+        </div>
+
+        <h2 class="h2" id="colour">Colour</h2>
+        <p>Semantic names only, so a component never knows which room it is in. Walks: background, surface, ink, then one accent.</p>
+        <div class="table-wrap">
+          <table class="table">
+            <caption>Semantic colour slots. Values shown are the Professional dark theme; see tokens/professional.css and section9.css for the others.</caption>
+            <thead><tr><th scope="col">Token</th><th scope="col">Dark</th><th scope="col">Light</th><th scope="col">Use</th></tr></thead>
+            <tbody>
+              <tr><td><code>--bg</code></td><td class="mono small">#08090c</td><td class="mono small">#f7f7f4</td><td>Page floor</td></tr>
+              <tr><td><code>--surface</code></td><td class="mono small">#10131a</td><td class="mono small">#ffffff</td><td>Cards, tables, charts, slides</td></tr>
+              <tr><td><code>--surface-2</code></td><td class="mono small">#151922</td><td class="mono small">#f2f2ee</td><td>Table heads, code blocks, hover</td></tr>
+              <tr><td><code>--line</code></td><td class="mono small">rgba(255,255,255,.09)</td><td class="mono small">rgba(16,17,22,.10)</td><td>Hairlines and borders</td></tr>
+              <tr><td><code>--text</code></td><td class="mono small">#f3f4f8</td><td class="mono small">#101116</td><td>Body and headings</td></tr>
+              <tr><td><code>--text-muted</code></td><td class="mono small">#a9aebd</td><td class="mono small">#4d5260</td><td>Lede, secondary copy, labels</td></tr>
+              <tr><td><code>--text-faint</code></td><td class="mono small">#7d8394</td><td class="mono small">#5a5f6e</td><td>Footnotes, captions, slide numbers</td></tr>
+              <tr><td><code>--accent</code></td><td class="mono small">#7af0c8</td><td class="mono small">#0b6b52</td><td>Links, active nav, one stat, series 1</td></tr>
+              <tr><td><code>--accent-soft</code></td><td class="mono small">rgba(122,240,200,.12)</td><td class="mono small">rgba(11,107,82,.10)</td><td>Accent wash behind a mark or active row</td></tr>
+              <tr><td><code>--success</code></td><td class="mono small">#6fe0b0</td><td class="mono small">#116b4c</td><td>Good state text and badges</td></tr>
+              <tr><td><code>--warning</code></td><td class="mono small">#ffc46b</td><td class="mono small">#8a5300</td><td>Attention, budget at risk</td></tr>
+              <tr><td><code>--danger</code></td><td class="mono small">#ff8f8f</td><td class="mono small">#a11d2b</td><td>Failed runs, destructive</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small muted">Every text pair shipped in the tables below clears WCAG AA (4.5:1). The ratio table lives in the <a href="index.html#contrast">contact sheet</a> and is recomputed by <code>tools/check.py</code>.</p>
+
+        <h2 class="h2" id="type">Type</h2>
+        <div class="example">
+          <span class="example__label">Scale</span>
+          <p class="h1" style="margin:0">Heading one</p>
+          <p class="h2" style="margin:0">Heading two</p>
+          <p class="h3" style="margin:0">Heading three</p>
+          <p class="lede" style="margin:0">Lede: a sentence that sets the stakes for what follows.</p>
+          <p style="max-width:var(--measure);margin:0">Body copy sits at 16px with a 1.6 line height and a 68-character measure. It carries the argument; it never competes with the accent.</p>
+          <p class="small muted" style="margin:0">Small: captions, table notes, footers.</p>
+          <p class="eyebrow" style="margin:0">Eyebrow label</p>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th scope="col">Token</th><th scope="col">Size</th><th scope="col">Role</th></tr></thead>
+            <tbody>
+              <tr><td><code>--fs-display</code></td><td class="mono small">clamp(2.5–4.5rem)</td><td>Portfolio and slide heroes</td></tr>
+              <tr><td><code>--fs-2xl</code></td><td class="mono small">36px</td><td><code>.h1</code></td></tr>
+              <tr><td><code>--fs-xl</code></td><td class="mono small">28px</td><td><code>.h2</code>, section titles</td></tr>
+              <tr><td><code>--fs-lg</code></td><td class="mono small">22px</td><td><code>.h3</code>, dashboard titles</td></tr>
+              <tr><td><code>--fs-md</code></td><td class="mono small">18px</td><td><code>.h4</code>, card titles, lede</td></tr>
+              <tr><td><code>--fs-base</code></td><td class="mono small">16px</td><td>Body</td></tr>
+              <tr><td><code>--fs-sm</code></td><td class="mono small">14px</td><td>Tables, secondary copy</td></tr>
+              <tr><td><code>--fs-xs</code></td><td class="mono small">12px</td><td>Labels, table heads, meta</td></tr>
+              <tr><td><code>--fs-2xs</code></td><td class="mono small">11px</td><td>Counts inside a tag only</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Professional uses Inter throughout, with the mono face for numbers, labels and code. Section 9 sets body and code in Share Tech Mono and display in Rajdhani, uppercase with 0.04em tracking. The <code>--font-display</code> token is the hinge: swap it and every heading follows.</p>
+
+        <h2 class="h2" id="space">Space, radius, elevation</h2>
+        <div class="grid grid--2">
+          <div class="card"><div class="card__body">
+            <p class="card__kicker">Spacing</p>
+            <p class="small muted">4px grid, <code>--sp-1</code> (4px) to <code>--sp-24</code> (96px). Section gaps use 8–12, component padding 4–5, page gutters <code>--gutter</code>.</p>
+          </div></div>
+          <div class="card"><div class="card__body">
+            <p class="card__kicker">Radius</p>
+            <p class="small muted">Professional: 16px cards, 10px tiles, 6px controls. Section 9 sets every radius to 0 and notches card corners with <code>--notch</code>.</p>
+          </div></div>
+          <div class="card"><div class="card__body">
+            <p class="card__kicker">Elevation</p>
+            <p class="small muted">Three shadows. Professional reads them as depth; Section 9 turns them into phosphor glow and 1px hairline shadows.</p>
+          </div></div>
+          <div class="card"><div class="card__body">
+            <p class="card__kicker">Measure</p>
+            <p class="small muted">68ch for prose, 46ch for tight column copy, 76rem page wrap. Long-form slides stay under 40 words per bullet block.</p>
+          </div></div>
+        </div>
+
+        <h2 class="h2" id="motion">Motion</h2>
+        <p>Motion is 120–560ms on <code>--ease-out</code>. It confirms a state change; it never decorates one. Section 9's scanline is the only ambient animation and it is off under <code>prefers-reduced-motion</code>.</p>
+        <div class="code">
+          <div class="code__bar"><span class="code__lang">css</span><span>the reduced-motion contract</span></div>
+          <pre><code><span class="c-com">/* base.css, once */</span>
+<span class="c-tag">@media</span> (prefers-reduced-motion: reduce) {
+  :root { <span class="c-key">--dur-1</span>: 1ms; <span class="c-key">--dur-2</span>: 1ms; <span class="c-key">--dur-3</span>: 1ms; <span class="c-key">--dur-4</span>: 1ms; <span class="c-key">--scan-opacity</span>: 0; }
+}
+
+<span class="c-com">/* a component animates only where motion is welcome */</span>
+<span class="c-tag">@media</span> (prefers-reduced-motion: no-preference) {
+  <span class="c-tag">html</span>[data-theme=<span class="c-str">"section9"</span>] .shell__scan { <span class="c-key">animation</span>: shell-scan 14s linear infinite; }
+}</code></pre>
+        </div>
+
+        <h2 class="h2" id="shell">Page shell</h2>
+        <p><code>.shell</code> is the document frame: sticky masthead, a max-width main column, footer. <code>.app</code> is the dashboard frame: a rail on desktop that folds into a wrapped top bar under 860px.</p>
+        <div class="code">
+          <div class="code__bar"><span class="code__lang">html</span><span>document shell</span></div>
+          <pre><code><span class="c-tag">&lt;div</span> <span class="c-key">class</span>=<span class="c-str">"shell"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;div</span> <span class="c-key">class</span>=<span class="c-str">"shell__scan"</span> <span class="c-key">aria-hidden</span>=<span class="c-str">"true"</span><span class="c-tag">&gt;&lt;/div&gt;</span>
+  <span class="c-tag">&lt;header</span> <span class="c-key">class</span>=<span class="c-str">"shell__head"</span><span class="c-tag">&gt;</span>…<span class="c-tag">&lt;/header&gt;</span>
+  <span class="c-tag">&lt;main</span> <span class="c-key">class</span>=<span class="c-str">"shell__main"</span><span class="c-tag">&gt;</span>…<span class="c-tag">&lt;/main&gt;</span>
+  <span class="c-tag">&lt;footer</span> <span class="c-key">class</span>=<span class="c-str">"shell__foot"</span><span class="c-tag">&gt;</span>…<span class="c-tag">&lt;/footer&gt;</span>
+<span class="c-tag">&lt;/div&gt;</span></code></pre>
+        </div>
+
+        <h2 class="h2" id="components">Components</h2>
+
+        <h3 class="h3">Headings and text</h3>
+        <p><code>.h1</code>–<code>.h4</code>, <code>.eyebrow</code>, <code>.lede</code>, <code>.prose</code>, <code>.small</code>, <code>.muted</code>, <code>.faint</code>, <code>.mono</code>. Use the classes on the element that owns the text; do not restyle <code>h1</code> per page.</p>
+
+        <h3 class="h3">Cards</h3>
+        <div class="example">
+          <span class="example__label">.card, .card--accent, .card__head</span>
+          <div class="grid grid--2">
+            <article class="card">
+              <div class="card__head"><h4 class="card__title">Nightly build</h4><span class="badge badge--ok">passing</span></div>
+              <div class="card__body"><p class="small muted">Tachikoma shipped Koi Drift at 00:48. Build 41s, no console errors.</p></div>
+              <div class="card__foot"><span class="mono">2026-10-30</span><a href="#components">Open PR</a></div>
+            </article>
+            <article class="card card--accent">
+              <div class="card__head"><h4 class="card__title">Budget watch</h4><span class="badge badge--warn">74%</span></div>
+              <div class="card__body"><p class="small muted">October spend is on track to close under the cap.</p></div>
+            </article>
+          </div>
+        </div>
+
+        <h3 class="h3">Stat tiles</h3>
+        <div class="example">
+          <span class="example__label">.stat, .stat__value, .spark</span>
+          <div class="grid grid--3">
+            <div class="stat"><span class="stat__label">Agents active</span><span class="stat__value">4<span class="stat__unit">/7</span></span><span class="stat__delta stat__delta--up">+1 this week</span></div>
+            <div class="stat stat--accent"><span class="stat__label">Budget used</span><span class="stat__value">7<span class="stat__unit">%</span></span><span class="stat__foot">of the October cap</span></div>
+            <div class="stat"><span class="stat__label">Failed runs</span><span class="stat__value">0</span>
+              <div class="spark" aria-hidden="true"><span style="height:40%"></span><span style="height:65%"></span><span style="height:30%"></span><span style="height:80%"></span><span style="height:55%"></span><span style="height:20%"></span><span style="height:12%"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="h3">Tables</h3>
+        <div class="example">
+          <span class="example__label">.table-wrap &gt; .table</span>
+          <div class="table-wrap">
+            <table class="table">
+              <caption>Runs, last four nights, newest first.</caption>
+              <thead><tr><th scope="col">Night</th><th scope="col">Agent</th><th scope="col">Stack</th><th scope="col" class="num">Build</th><th scope="col" class="num">Tests</th></tr></thead>
+              <tbody>
+                <tr><td class="table__title">Koi Drift</td><td>Batou</td><td><span class="tag">gleam</span></td><td class="num">41s</td><td class="num">18</td></tr>
+                <tr><td class="table__title">Zen Rake</td><td>Tachikoma</td><td><span class="tag">haxe</span></td><td class="num">58s</td><td class="num">12</td></tr>
+                <tr><td class="table__title">Fireflies</td><td>Tachikoma</td><td><span class="tag">elm</span></td><td class="num">33s</td><td class="num">9</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small muted">Numbers go in <code>.num</code> cells, right-aligned and tabular. Every table gets a <code>caption</code> that says what the data is.</p>
+        </div>
+
+        <h3 class="h3">Callouts</h3>
+        <div class="example">
+          <span class="example__label">.callout + modifiers</span>
+          <div class="callout"><span class="callout__icon" aria-hidden="true">i</span><div><span class="callout__title">Note</span> Accent callout for context that helps the reader.</div></div>
+          <div class="callout callout--warn"><span class="callout__icon" aria-hidden="true">!</span><div><span class="callout__title">Careful</span> A risk the reader must act on, not a decoration.</div></div>
+          <div class="callout callout--danger"><span class="callout__icon" aria-hidden="true">×</span><div><span class="callout__title">Failure</span> Something broke. Say what, say where, say what to do.</div></div>
+          <div class="callout callout--ok"><span class="callout__icon" aria-hidden="true">✓</span><div><span class="callout__title">Passing</span> Verified state, with the check that proves it.</div></div>
+        </div>
+
+        <h3 class="h3">Code</h3>
+        <div class="example">
+          <span class="example__label">.code &gt; .code__bar + pre &gt; code</span>
+          <div class="code">
+            <div class="code__bar"><span class="code__lang">bash</span><span>check the tokens</span></div>
+            <pre><code><span class="c-com"># tokens.json must match the CSS, and every pair must clear AA</span>
+python3 design/tools/check.py design</code></pre>
+          </div>
+        </div>
+
+        <h2 class="h2" id="charts">Charts</h2>
+        <p>Six categorical series in <code>--chart-1</code> to <code>--chart-6</code>, fixed order. Series one is the accent; the rest step away in hue and lightness. Grid and axis lines use <code>--chart-grid</code> and <code>--chart-axis</code>.</p>
+        <div class="example">
+          <span class="example__label">.chart, .chart__bar, .legend</span>
+          <figure class="chart">
+            <div class="chart__head"><figcaption class="chart__title">Runs per night</figcaption><span class="chart__note">last 7 nights</span></div>
+            <div class="chart__plot" role="img" aria-label="Bar chart: seven nights of runs, between 3 and 9 per night, trend flat.">
+              <div class="chart__bar"><span style="height:45%"></span></div>
+              <div class="chart__bar"><span style="height:60%"></span></div>
+              <div class="chart__bar"><span style="height:38%"></span></div>
+              <div class="chart__bar"><span style="height:72%"></span></div>
+              <div class="chart__bar"><span style="height:55%"></span></div>
+              <div class="chart__bar"><span class="s2" style="height:64%"></span></div>
+              <div class="chart__bar"><span style="height:82%"></span></div>
+            </div>
+            <div class="chart__axis" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+            <ul class="legend"><li><span class="swatch"></span>Shipped</li><li><span class="swatch swatch--2"></span>Preview only</li></ul>
+          </figure>
+        </div>
+        <p class="small muted">Charts are hand-built from divs or inline SVG; the palette is the contract, not a library. Give the plot a <code>role="img"</code> and a label that states the finding, and always show the same numbers in a table or a stat beside it.</p>
+
+        <h2 class="h2" id="slides">Slide layouts</h2>
+        <p>Eight layouts cover every deck: title, section, bullets, split, stats, table, quote, closing. Each is a 16:9 <code>.slide</code>; see <a href="slides.html">slides.html</a> for the full template and print rules.</p>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th scope="col">Class</th><th scope="col">Holds</th></tr></thead>
+            <tbody>
+              <tr><td><code>.slide--title</code></td><td>Deck name, one line of stakes, date, owner</td></tr>
+              <tr><td><code>.slide--section</code></td><td>A number and a section name, nothing else</td></tr>
+              <tr><td><code>.slide</code> (default)</td><td>Heading plus bullets, max six</td></tr>
+              <tr><td><code>.slide--split</code></td><td>Argument on the left, evidence on the right</td></tr>
+              <tr><td><code>.slide--stats</code></td><td>Two to four stat tiles and one sentence</td></tr>
+              <tr><td>Table slide</td><td>A table with a caption, six rows maximum</td></tr>
+              <tr><td>Quote slide</td><td>One quoted line at display size, cited below</td></tr>
+              <tr><td><code>.slide--end</code></td><td>What happens next, one action</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="h2" id="a11y">Accessibility</h2>
+        <ul>
+          <li>Every text/background pair in both themes clears <strong>4.5:1</strong>; the lowest shipped pair is 4.91:1 (Professional faint on surface). Large text and UI edges clear 3:1.</li>
+          <li>Focus is always visible: <code>2px solid var(--focus)</code> with a 3px offset. Section 9 uses amber, Professional the accent.</li>
+          <li><code>prefers-reduced-motion</code> kills the scanline, all transitions and the deck transitions; nothing communicates state by motion alone.</li>
+          <li>Do not use colour alone: badges carry a word ("passing", "74%"), calls carry their own icon and title.</li>
+          <li>Targets are at least 40px high (<code>.btn</code> is 2.5rem), one-handed on a phone; the dashboard rail folds at 860px and never scrolls sideways.</li>
+          <li>Use real elements: <code>table</code> with <code>caption</code> and <code>th scope</code>, <code>nav</code> with a label, <code>aria-current</code> for the active page, <code>role="img"</code> plus a sentence for charts.</li>
+        </ul>
+
+        <h2 class="h2" id="elsewhere">Using the tokens outside CSS</h2>
+        <p><code>tokens/tokens.json</code> carries the same values for slides, documents and scripts: base scales under <code>base</code>, per-theme colours under <code>palettes</code>, and the semantic slot list that any renderer must support. CSS remains the source of truth.</p>
+        <p>For Slides decks, <code>claude-design-system.md</code> is the human- and model-readable brief: tokens, type, colour use and the slide rules, in one file.</p>
+        <p>The Hermes dashboard theme (<code>hq/ghost.yaml</code>) maps <code>Section 9</code> onto the dashboard's own palette contract: background <code>#060b09</code>, midground <code>#8bffbe</code>, foreground <code>#e6f2ea</code>, amber focus, zero radius. Keep the two in step when either changes.</p>
+
+        <h2 class="h2" id="rules">Do and don't</h2>
+        <div class="grid grid--2">
+          <div class="callout callout--ok"><span class="callout__icon" aria-hidden="true">✓</span><div><span class="callout__title">Do</span> Use one accent per region; keep body copy at 16px with a 68ch measure; give every table a caption; let Section 9 be dark-only.</div></div>
+          <div class="callout callout--danger"><span class="callout__icon" aria-hidden="true">×</span><div><span class="callout__title">Don't</span> Hardcode a hex outside the token files, tint body text with the accent, mix themes on one surface, or animate anything that is not a state change.</div></div>
+        </div>
+
+        <h2 class="h2" id="checks">Checks</h2>
+        <p><code>tools/check.py</code> parses the three token files, compares every value with <code>tokens.json</code>, and recomputes the contrast pairs declared in <code>tokens/contrast.json</code>. Run it after any token change:</p>
+        <div class="code">
+          <div class="code__bar"><span class="code__lang">bash</span><span>no dependencies</span></div>
+          <pre><code>python3 design/tools/check.py design
+<span class="c-com"># ok 151 checks: 127 token values in sync, 24 contrast pairs pass AA</span></code></pre>
+        </div>
+        <p class="small muted">Visual checks: the contact sheet, the dashboard and the deck template are all served from this folder and screenshotted at 1440px and 390px in both themes, then run through Impeccable (detect).</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="shell__foot">
+    <div class="shell__foot-inner">
+      <span>Section 9 design system · v1.0 · ghost-in-the-machine/design</span>
+      <span><a href="index.html">Contact sheet</a> · <a href="slides.html">Slides</a> · <a href="tokens/tokens.json">tokens.json</a></span>
+    </div>
+  </footer>
+</div>
+<script src="theme.js"></script>
+</body>
+</html>

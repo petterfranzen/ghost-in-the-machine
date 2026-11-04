@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en" data-theme="professional" data-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Section 9 design system — contact sheet</title>
+<meta name="description" content="Every token and component in the Section 9 design system, in both themes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="tokens/base.css">
+<link rel="stylesheet" href="tokens/professional.css">
+<link rel="stylesheet" href="tokens/section9.css">
+<link rel="stylesheet" href="components.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+  <div class="shell__scan" aria-hidden="true"></div>
+  <header class="shell__head">
+    <a class="shell__brand" href="index.html"><span class="shell__mark" aria-hidden="true">9</span> Section 9 — design system</a>
+    <nav class="shell__nav" aria-label="Design system">
+      <a href="index.html" aria-current="page">Contact sheet</a>
+      <a href="docs.html">Docs</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="slides.html">Slides</a>
+      <button class="btn btn--ghost" type="button" data-theme-toggle aria-label="Switch theme">Section 9</button>
+    </nav>
+  </header>
+
+  <main class="shell__main" id="main">
+    <p class="eyebrow">Contact sheet · v1.0</p>
+    <h1 class="h1">Every part of the system, on one page</h1>
+    <p class="lede" style="margin-top:var(--sp-4)">Tokens and components drawn from the same sheet. Switch themes in the header; the Section 9 side drops to a dark ops room with sharp corners, and Professional keeps its soft surfaces.</p>
+
+    <div class="row" style="margin-top:var(--sp-6)">
+      <span class="badge badge--accent badge--quiet">theme: <span data-theme-name>Professional</span></span>
+      <span class="badge badge--quiet">tokens 1.0</span>
+      <span class="badge badge--quiet">WCAG AA</span>
+      <span class="badge badge--quiet">reduced motion honoured</span>
+    </div>
+
+    <h2 class="h2" id="palette">Palette</h2>
+    <p class="small muted" style="max-width:var(--measure)">Live values read from the active theme. Hex is shown where the token is a solid colour; alpha tokens report the composite over the surface.</p>
+    <div class="grid grid--4" id="swatches" aria-hidden="false"></div>
+
+    <h2 class="h2" id="contrast">Contrast</h2>
+    <p class="small muted" style="max-width:var(--measure)">Recomputed live from the active theme, with alpha compositing. Body text needs 4.5:1, large text and graphics 3:1.</p>
+    <div class="table-wrap">
+      <table class="table">
+        <caption>WCAG 2.1 contrast of the active theme. Failure turns the ratio red.</caption>
+        <thead><tr><th scope="col">Pair</th><th scope="col" class="num">Ratio</th><th scope="col">Needs</th><th scope="col">Verdict</th></tr></thead>
+        <tbody id="contrast-body"></tbody>
+      </table>
+    </div>
+
+    <h2 class="h2" id="type">Type scale</h2>
+    <div class="card">
+      <div class="card__body" style="display:grid;gap:var(--sp-3)">
+        <p style="margin:0;font-family:var(--font-display);font-size:var(--fs-display);line-height:var(--lh-tight);letter-spacing:var(--display-tracking);text-transform:var(--display-transform)">Display</p>
+        <p class="h1" style="margin:0">Heading one — 36px</p>
+        <p class="h2" style="margin:0">Heading two — 28px</p>
+        <p class="h3" style="margin:0">Heading three — 22px</p>
+        <p class="h4" style="margin:0">Heading four — 18px</p>
+        <p style="margin:0">Body — 16px, 1.6 line height, measured at 68 characters so a paragraph stays readable across a desk.</p>
+        <p class="small muted" style="margin:0">Small — 14px, for table notes and secondary copy.</p>
+        <p class="eyebrow" style="margin:0">Eyebrow — mono 12px, tracked</p>
+      </div>
+    </div>
+
+    <h2 class="h2" id="space">Space and shape</h2>
+    <div class="grid grid--2">
+      <div class="card"><div class="card__body">
+        <p class="card__kicker">Spacing scale</p>
+        <div style="display:flex;gap:var(--sp-2);align-items:flex-end;margin-top:var(--sp-3)" aria-hidden="true">
+          <span style="flex:1;height:4px;background:var(--accent);opacity:.35"></span>
+          <span style="flex:1;height:8px;background:var(--accent);opacity:.4"></span>
+          <span style="flex:1;height:12px;background:var(--accent);opacity:.5"></span>
+          <span style="flex:1;height:16px;background:var(--accent);opacity:.6"></span>
+          <span style="flex:1;height:20px;background:var(--accent);opacity:.7"></span>
+          <span style="flex:1;height:24px;background:var(--accent);opacity:.8"></span>
+          <span style="flex:1;height:32px;background:var(--accent);opacity:.9"></span>
+          <span style="flex:1;height:40px;background:var(--accent)"></span>
+        </div>
+        <p class="small muted" style="margin-top:var(--sp-3)">4 · 8 · 12 · 16 · 20 · 24 · 32 · 40px</p>
+      </div></div>
+      <div class="card"><div class="card__body">
+        <p class="card__kicker">Radius and elevation</p>
+        <div class="row" style="margin-top:var(--sp-3)">
+          <span style="width:3rem;height:3rem;background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-sm)"></span>
+          <span style="width:3rem;height:3rem;background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-md)"></span>
+          <span style="width:3rem;height:3rem;background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-lg)"></span>
+          <span style="width:3rem;height:3rem;background:var(--surface-2);border:1px solid var(--line-strong);box-shadow:var(--shadow-2)"></span>
+        </div>
+        <p class="small muted" style="margin-top:var(--sp-3)">Radius follows the theme: 6/10/16px in Professional, 0 in Section 9.</p>
+      </div></div>
+    </div>
+
+    <h2 class="h2" id="controls">Buttons and badges</h2>
+    <div class="card"><div class="card__body">
+      <div class="row">
+        <button class="btn btn--primary" type="button">Primary action</button>
+        <button class="btn" type="button">Secondary</button>
+        <button class="btn btn--ghost" type="button">Ghost</button>
+        <a class="btn btn--ghost" href="#contrast">Link button</a>
+      </div>
+      <div class="row" style="margin-top:var(--sp-4)">
+        <span class="badge badge--ok">passing</span>
+        <span class="badge badge--warn">74% budget</span>
+        <span class="badge badge--danger">failed</span>
+        <span class="badge badge--accent">working</span>
+        <span class="badge badge--quiet">dark only</span>
+        <span class="tag">gleam</span><span class="tag">haxe</span><span class="tag">elm</span>
+      </div>
+      <p class="small faint" style="margin-top:var(--sp-4)">Press <kbd>Tab</kbd> to see the focus ring. In Section 9 it is amber, not green.</p>
+    </div></div>
+
+    <h2 class="h2" id="cards">Cards</h2>
+    <div class="grid grid--3">
+      <article class="card">
+        <div class="card__head"><h3 class="card__title">Dossier</h3><span class="badge badge--ok">live</span></div>
+        <div class="card__body"><p class="small muted">Batou, coder. Reviewing the crew page brief; last active 09:40.</p></div>
+        <div class="card__foot"><span class="mono small">batou</span><span class="spacer"></span><a class="small" href="#cards">Open</a></div>
+      </article>
+      <article class="card card--accent">
+        <div class="card__head"><h3 class="card__title">Accent card</h3><span class="badge badge--accent">new</span></div>
+        <div class="card__body"><p class="small muted">One accent mark, at the top edge. Used for the card that matters most in a row.</p></div>
+      </article>
+      <article class="card card--flat">
+        <div class="card__body">
+          <p class="card__kicker">Flat card</p>
+          <h3 class="card__title" style="margin-top:var(--sp-2)">Inside a panel</h3>
+          <p class="small muted" style="margin-top:var(--sp-3)">No shadow, for cards already sitting on a surface.</p>
+        </div>
+      </article>
+    </div>
+
+    <h2 class="h2" id="stats">Stat tiles</h2>
+    <div class="grid grid--4">
+      <div class="stat"><span class="stat__label">Agents active</span><span class="stat__value">4<span class="stat__unit">/7</span></span><span class="stat__delta stat__delta--up">+1 this week</span></div>
+      <div class="stat stat--accent"><span class="stat__label">Budget used</span><span class="stat__value">7<span class="stat__unit">%</span></span><span class="stat__foot">of the October cap</span></div>
+      <div class="stat"><span class="stat__label">Median build</span><span class="stat__value">41<span class="stat__unit">s</span></span><span class="stat__delta stat__delta--down">−7s</span></div>
+      <div class="stat"><span class="stat__label">Nights shipped</span><span class="stat__value">63</span>
+        <div class="spark" aria-hidden="true"><span style="height:35%"></span><span style="height:52%"></span><span style="height:44%"></span><span style="height:68%"></span><span style="height:61%"></span><span style="height:78%"></span><span style="height:100%"></span></div>
+      </div>
+    </div>
+
+    <h2 class="h2" id="table">Table</h2>
+    <div class="table-wrap">
+      <table class="table">
+        <caption>Section 9 roster, live state from crew/status.json. Times in UTC.</caption>
+        <thead><tr><th scope="col">Agent</th><th scope="col">Role</th><th scope="col">State</th><th scope="col">Now</th><th scope="col" class="num">Budget</th></tr></thead>
+        <tbody>
+          <tr><td class="table__title">Tachikoma</td><td>Nightly builder</td><td><span class="badge badge--ok">working</span></td><td>Building tonight's app</td><td class="num">12%</td></tr>
+          <tr><td class="table__title">Batou</td><td>Coder</td><td><span class="badge badge--accent">working</span></td><td>Reviewing the crew page brief</td><td class="num">3%</td></tr>
+          <tr><td class="table__title">Ishikawa</td><td>Researcher</td><td><span class="badge badge--quiet">idle</span></td><td class="faint">—</td><td class="num">2%</td></tr>
+          <tr><td class="table__title">Saito</td><td>Ops, read-only</td><td><span class="badge badge--warn">paused</span></td><td class="faint">—</td><td class="num">0.5%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="h2" id="charts">Charts and meters</h2>
+    <div class="grid grid--2">
+      <figure class="chart">
+        <div class="chart__head"><figcaption class="chart__title">Runs per night</figcaption><span class="chart__note">7 nights</span></div>
+        <div class="chart__plot" role="img" aria-label="Bar chart, runs per night: 3, 4, 3, 6, 4, 5, 7. Flat to rising.">
+          <div class="chart__bar"><span style="height:38%"></span></div>
+          <div class="chart__bar"><span style="height:52%"></span></div>
+          <div class="chart__bar"><span style="height:41%"></span></div>
+          <div class="chart__bar"><span style="height:66%"></span></div>
+          <div class="chart__bar"><span class="s2" style="height:58%"></span></div>
+          <div class="chart__bar"><span style="height:72%"></span></div>
+          <div class="chart__bar"><span style="height:88%"></span></div>
+        </div>
+        <div class="chart__axis" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+        <ul class="legend"><li><span class="swatch"></span>Shipped</li><li><span class="swatch swatch--2"></span>Preview</li></ul>
+      </figure>
+      <div class="card"><div class="card__body">
+        <p class="card__kicker">Meters</p>
+        <p class="small muted" style="margin-block:var(--sp-3) var(--sp-2)">7% of the month's cap</p>
+        <div class="meter" style="--pct:7%" role="img" aria-label="Budget used: 7 percent"><div class="meter__fill"></div></div>
+        <p class="small muted" style="margin-block:var(--sp-5) var(--sp-2)">62% — watch</p>
+        <div class="meter meter--warn" style="--pct:62%" role="img" aria-label="Budget used: 62 percent"><div class="meter__fill"></div></div>
+        <p class="small muted" style="margin-block:var(--sp-5) var(--sp-2)">91% — over</p>
+        <div class="meter meter--danger" style="--pct:91%" role="img" aria-label="Budget used: 91 percent"><div class="meter__fill"></div></div>
+      </div></div>
+    </div>
+
+    <h2 class="h2" id="callouts">Callouts and code</h2>
+    <div class="grid grid--2">
+      <div class="stack">
+        <div class="callout"><span class="callout__icon" aria-hidden="true">i</span><div><span class="callout__title">Note</span> Context that helps the reader, not a warning.</div></div>
+        <div class="callout callout--warn"><span class="callout__icon" aria-hidden="true">!</span><div><span class="callout__title">Careful</span> The portfolio rail overlaps fixed elements if it drifts; keep solids solid.</div></div>
+        <div class="callout callout--danger"><span class="callout__icon" aria-hidden="true">×</span><div><span class="callout__title">Failure</span> Build 2 of 4 failed on the touch handler.</div></div>
+        <div class="callout callout--ok"><span class="callout__icon" aria-hidden="true">✓</span><div><span class="callout__title">Passing</span> Tokens in sync; 24 contrast pairs clear AA.</div></div>
+      </div>
+      <div class="code">
+        <div class="code__bar"><span class="code__lang">css</span><span>one theme, one line</span></div>
+        <pre><code><span class="c-com">/* tokens/base.css + a theme file */</span>
+<span class="c-tag">html</span>[data-theme=<span class="c-str">"section9"</span>] {
+  <span class="c-key">--bg</span>: <span class="c-num">#060b09</span>;
+  <span class="c-key">--accent</span>: <span class="c-num">#8bffbe</span>;
+  <span class="c-key">--r-lg</span>: <span class="c-num">0</span>;
+  <span class="c-key">--font-display</span>: <span class="c-str">"Rajdhani"</span>, sans-serif;
+}
+
+<span class="c-com">/* a component never names a colour */</span>
+.card { <span class="c-key">background</span>: <span class="c-str">var(--surface)</span>; }</code></pre>
+      </div>
+    </div>
+
+    <h2 class="h2" id="slides">Slide layouts</h2>
+    <p class="small muted" style="max-width:var(--measure)">Eight layouts, shown at thumbnail size. The deck template has each at full size, plus print rules for PDF.</p>
+    <div class="grid grid--3">
+      <a class="card" href="slides.html#title" style="text-decoration:none"><div class="card__body">
+        <p class="card__kicker">01</p><p class="h4" style="margin-top:var(--sp-2)">Title</p><p class="small faint">Deck name, one line of stakes</p></div></a>
+      <a class="card" href="slides.html#section" style="text-decoration:none"><div class="card__body">
+        <p class="card__kicker">02</p><p class="h4" style="margin-top:var(--sp-2)">Section</p><p class="small faint">Number and name only</p></div></a>
+      <a class="card" href="slides.html#bullets" style="text-decoration:none"><div class="card__body">
+        <p class="card__kicker">03</p><p class="h4" style="margin-top:var(--sp-2)">Bullets</p><p class="small faint">Heading plus up to six lines</p></div></a>
+      <a class="card" href="slides.html#split" style="text-decoration:none"><div class="card__body">
+        <p class="card__kicker">04</p><p class="h4" style="margin-top:var(--sp-2)">Split</p><p class="small faint">Argument left, evidence right</p></div></a>
+      <a class="card" href="slides.html#stats" style="text-decoration:none"><div class="card__body">
+        <p class="card__kicker">05</p><p class="h4" style="margin-top:var(--sp-2)">Stats</p><p class="small faint">Two to four tiles, one sentence</p></div></a>
+      <a class="card" href="slides.html#table" style="text-decoration:none"><div class="card__body">
+        <p class="card__kicker">06</p><p class="h4" style="margin-top:var(--sp-2)">Table</p><p class="small faint">Six rows, caption, no scroll</p></div></a>
+      <a class="card" href="slides.html#quote" style="text-decoration:none"><div class="card__body">
+        <p class="card__kicker">07</p><p class="h4" style="margin-top:var(--sp-2)">Quote</p><p class="small faint">One line, cited below</p></div></a>
+      <a class="card" href="slides.html#end" style="text-decoration:none"><div class="card__body">
+        <p class="card__kicker">08</p><p class="h4" style="margin-top:var(--sp-2)">Closing</p><p class="small faint">One action, one owner</p></div></a>
+    </div>
+
+    <h2 class="h2" id="motion">Motion</h2>
+    <p class="small muted" style="max-width:var(--measure)">120ms for hover, 200ms for state, 320ms for panels. Section 9 adds a 14s scanline behind the page, switched off under <code>prefers-reduced-motion</code>. Nothing here relies on motion to be understood.</p>
+    <div class="row">
+      <button class="btn btn--ghost" type="button" id="motion-demo">Replay the 320ms panel</button>
+      <div id="motion-panel" style="padding:var(--sp-4);border:1px solid var(--line);background:var(--surface);opacity:1;transform:none;transition:opacity var(--dur-3) var(--ease-out),transform var(--dur-3) var(--ease-out)">A panel that fades and lifts once.</div>
+    </div>
+  </main>
+
+  <footer class="shell__foot">
+    <div class="shell__foot-inner">
+      <span>Section 9 design system · v1.0 · ghost-in-the-machine/design</span>
+      <span><a href="docs.html">Docs</a> · <a href="dashboard.html">Dashboard</a> · <a href="tokens/tokens.json">tokens.json</a></span>
+    </div>
+  </footer>
+</div>
+<script src="theme.js"></script>
+<script>
+(function () {
+  var TOKENS = [
+    ["--bg", "Page floor"], ["--surface", "Cards and tables"], ["--surface-2", "Table heads, code"],
+    ["--text", "Body"], ["--text-muted", "Secondary"], ["--text-faint", "Captions"],
+    ["--accent", "Accent"], ["--success", "Good"], ["--warning", "Attention"],
+    ["--danger", "Failure"], ["--info", "Info"]
+  ];
+  var root = document.documentElement;
+
+  function parseColor(str) {
+    str = str.trim();
+    var m = str.match(/^#([0-9a-f]{6})$/i);
+    if (m) {
+      var n = parseInt(m[1], 16);
+      return { r: n >> 16, g: (n >> 8) & 255, b: n & 255, a: 1 };
+    }
+    m = str.match(/^rgba?\(([^)]+)\)$/i);
+    if (m) {
+      var p = m[1].split(/[,\s/]+/).filter(Boolean).map(parseFloat);
+      return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 };
+    }
+    return null;
+  }
+  function over(fg, bg) {
+    return {
+      r: fg.r * fg.a + bg.r * (1 - fg.a),
+      g: fg.g * fg.a + bg.g * (1 - fg.a),
+      b: fg.b * fg.a + bg.b * (1 - fg.a),
+      a: 1
+    };
+  }
+  function lin(c) { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+  function lum(c) { return 0.2126 * lin(c.r) + 0.7152 * lin(c.g) + 0.0722 * lin(c.b); }
+  function ratio(a, b) {
+    var la = lum(a), lb = lum(b), hi = Math.max(la, lb), lo = Math.min(la, lb);
+    return (hi + 0.05) / (lo + 0.05);
+  }
+  function token(name) {
+    return parseColor(getComputedStyle(root).getPropertyValue(name));
+  }
+  function hex(c) {
+    function h(v) { var s = Math.round(v).toString(16); return s.length < 2 ? "0" + s : s; }
+    return "#" + h(c.r) + h(c.g) + h(c.b);
+  }
+
+  var PAIRS = [
+    ["--text", "--bg", 4.5, "body on page"],
+    ["--text", "--surface", 4.5, "body on card"],
+    ["--text-muted", "--surface", 4.5, "secondary on card"],
+    ["--text-faint", "--surface", 4.5, "caption on card"],
+    ["--accent", "--bg", 4.5, "accent text"],
+    ["--accent-ink", "--accent", 4.5, "label on accent"],
+    ["--success", "--surface", 4.5, "good state"],
+    ["--warning", "--surface", 4.5, "warning"],
+    ["--danger", "--surface", 4.5, "failure"],
+    ["--chart-1", "--surface", 3, "series 1"],
+    ["--chart-2", "--surface", 3, "series 2"],
+    ["--chart-3", "--surface", 3, "series 3"],
+    ["--chart-4", "--surface", 3, "series 4"],
+    ["--chart-5", "--surface", 3, "series 5"],
+    ["--chart-6", "--surface", 3, "series 6"]
+  ];
+
+  function render() {
+    var bg = token("--bg"), surface = token("--surface");
+    var sw = document.getElementById("swatches");
+    sw.innerHTML = TOKENS.map(function (t) {
+      var c = token(t[0]);
+      var solid = c.a === 1 ? c : over(c, t[0] === "--accent" ? surface : surface);
+      return '<div class="swatch-card"><div class="swatch-card__chip" style="background:var(' + t[0] + ')"></div>' +
+        '<div class="swatch-card__meta"><span class="swatch-card__name">' + t[0] + '</span>' +
+        '<span class="swatch-card__hex">' + (c.a < 1 ? "alpha " + c.a.toFixed(2) : hex(c)) + '</span>' +
+        '<span class="swatch-card__hex">' + t[1] + '</span></div></div>';
+    }).join("");
+
+    var body = document.getElementById("contrast-body");
+    body.innerHTML = PAIRS.map(function (p) {
+      var fg = token(p[0]), bgc = token(p[1]);
+      var base = p[1] === "--bg" ? bg : surface;
+      if (fg.a < 1) fg = over(fg, base);
+      if (bgc.a < 1) bgc = over(bgc, bg);
+      var r = ratio(fg, bgc);
+      var pass = r >= p[2];
+      return '<tr><td class="mono small">' + p[0] + ' on ' + p[1] + '<span class="table__sub">' + p[3] + '</span></td>' +
+        '<td class="num ' + (pass ? "" : "mono") + '">' + r.toFixed(2) + ':1</td>' +
+        '<td class="num">' + p[2].toFixed(1) + ':1</td>' +
+        '<td><span class="swatch-card__ratio ' + (pass ? "" : "swatch-card__ratio--fail") + '">' + (pass ? "AA pass" : "FAIL") + '</span></td></tr>';
+    }).join("");
+  }
+
+  render();
+  document.addEventListener("click", function (ev) {
+    if (ev.target.closest("[data-theme-set],[data-mode-set],[data-theme-toggle]")) {
+      requestAnimationFrame(render);
+    }
+  });
+
+  var demo = document.getElementById("motion-demo");
+  var panel = document.getElementById("motion-panel");
+  if (demo && panel) {
+    demo.addEventListener("click", function () {
+      panel.style.opacity = "0";
+      panel.style.transform = "translateY(6px)";
+      setTimeout(function () {
+        panel.style.opacity = "1";
+        panel.style.transform = "none";
+      }, 30);
+    });
+  }
+})();
+</script>
+</body>
+</html>
