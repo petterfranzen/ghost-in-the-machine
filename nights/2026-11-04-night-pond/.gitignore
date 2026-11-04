@@ -1,0 +1,6 @@
+node_modules/
+lib/
+.build/
+*.bs.js
+/src/Pond.res.js
+/phone-check.png

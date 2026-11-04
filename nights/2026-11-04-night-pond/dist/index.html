@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c1713">
+<title>Night Pond</title>
+<style>
+  :root {
+    --ink: #dfe6d8;
+    --dim: #93a89b;
+    --warm: #ffd8a3;
+    --night: #0c1713;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(130% 100% at 50% 8%, #14231c 0%, #0d1a15 42%, #060d0a 100%);
+    color: var(--ink);
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 2vh, 18px);
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
+  }
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9em;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(13px, 2.1vh, 18px);
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(223, 230, 216, 0.6);
+  }
+  .frame {
+    position: relative;
+    width: min(94vw, calc(74vh), 560px);
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(200, 226, 208, 0.09),
+      0 16px 44px -14px rgba(0, 0, 0, 0.8),
+      0 0 80px -28px rgba(255, 206, 148, 0.14);
+    background: #08110e;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    touch-action: none;
+    cursor: pointer;
+  }
+  /* a soft vignette, so the edges of the pond sit into the page */
+  .frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(120% 100% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.34) 100%);
+  }
+  footer {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 3vw, 22px);
+    min-height: 2.2em;
+    font-size: clamp(12px, 1.7vh, 14px);
+    color: var(--dim);
+  }
+  #hint {
+    letter-spacing: 0.06em;
+    transition: opacity 1.6s ease;
+    opacity: 0.85;
+  }
+  #hint.gone { opacity: 0; }
+  #sound {
+    appearance: none;
+    background: rgba(223, 230, 216, 0.05);
+    border: 1px solid rgba(223, 230, 216, 0.16);
+    border-radius: 999px;
+    color: var(--dim);
+    font: inherit;
+    font-size: 0.92em;
+    letter-spacing: 0.09em;
+    padding: 0.42em 0.95em;
+    cursor: pointer;
+    transition: color 0.5s ease, border-color 0.5s ease, background 0.5s ease;
+  }
+  #sound:hover { color: var(--ink); border-color: rgba(223, 230, 216, 0.3); }
+  #sound.on {
+    color: var(--warm);
+    border-color: rgba(255, 216, 163, 0.34);
+    background: rgba(255, 216, 163, 0.07);
+  }
+  #sound:focus-visible { outline: 2px solid rgba(255, 216, 163, 0.5); outline-offset: 2px; }
+  @media (max-height: 520px) {
+    h1 { display: none; }
+    .frame { width: min(94vw, 84vh); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #hint { transition: none; }
+  }
+</style>
+</head>
+<body>
+  <header><h1>Night Pond</h1></header>
+  <div class="frame">
+    <canvas id="stage" width="320" height="320" aria-label="A still pond at dusk. Tap the water."></canvas>
+  </div>
+  <footer>
+    <span id="hint">tap the water</span>
+    <button id="sound" type="button" aria-pressed="false">sound off</button>
+  </footer>
+  <script defer src="./app.js"></script>
+</body>
+</html>

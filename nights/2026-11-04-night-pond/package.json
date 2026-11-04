@@ -1,0 +1,14 @@
+{
+  "name": "night-pond",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "rescript build && esbuild src/host.js --bundle --format=iife --target=es2020 --outfile=dist/app.js",
+    "test": "npm run build && node test/sim.test.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "rescript": "11.1.4"
+  }
+}
