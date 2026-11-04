@@ -33,12 +33,22 @@ const KOI_SKINS: [(Rgb, Rgb, Rgb); 3] = [
     ([228, 198, 118], [150, 94, 44], [88, 56, 28]),   // dusk gold
 ];
 
+/// The whole scene's give, in pixels, at this instant: a gentle shudder that
+/// fades, damped by the motion scale so a reader who prefers reduced motion
+/// gets half of it (see `set_motion_scale`).
+pub fn settle_offsets(w: &World) -> (f32, f32) {
+    let s = w.s[S_SETTLE] * crate::motion();
+    (
+        s * 2.1 * sin_t(w.s[S_SETTLE_T] * 3.4),
+        s * 0.5 * sin_t(w.s[S_SETTLE_T] * 2.6 + 0.25),
+    )
+}
+
 pub fn draw_scene(p: &mut Painter, w: &World) {
     let t = w.s[S_TIME];
-    let settle = w.s[S_SETTLE];
-    // a gentle shudder that fades: the whole scene gives half a pixel, twice
-    let oy = settle * 2.1 * sin_t(w.s[S_SETTLE_T] * 3.4);
-    let ox = settle * 0.5 * sin_t(w.s[S_SETTLE_T] * 2.6 + 0.25);
+    // the settle the scene reads, already damped by the motion scale
+    let settle = w.s[S_SETTLE] * crate::motion();
+    let (oy, ox) = settle_offsets(w);
     p.oy = oy;
     p.ox = 0.0;
     background(p, t, w.s[S_LANTERN]);

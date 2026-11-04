@@ -15,6 +15,11 @@ const FB_LEN: usize = (W as usize) * (H as usize) * 4;
 static mut FB: [u8; FB_LEN] = [0; FB_LEN];
 static mut WORLD: World = World::empty();
 
+/// How much the whole scene is allowed to move: 1.0 normally, 0.5 when the
+/// reader prefers reduced motion. The host sets it once at startup and the
+/// settle (the frame's give) is scaled by it in `render`.
+static mut MOTION: f32 = 1.0;
+
 #[inline]
 fn fb() -> &'static mut [u8] {
     unsafe { core::slice::from_raw_parts_mut((&raw mut FB).cast::<u8>(), FB_LEN) }
@@ -23,6 +28,28 @@ fn fb() -> &'static mut [u8] {
 #[inline]
 fn world() -> &'static mut World {
     unsafe { &mut *(&raw mut WORLD) }
+}
+
+/// The current motion scale — see [`set_motion_scale`].
+#[inline]
+pub fn motion() -> f32 {
+    unsafe { MOTION }
+}
+
+/// Set the motion scale. `0.5` halves the whole-scene settle for a reader who
+/// prefers reduced motion. The value is clamped to `0.0..=1.0` and non-finite
+/// input is ignored, so a host can only make the pond calmer, never wilder.
+#[no_mangle]
+pub extern "C" fn set_motion_scale(scale: f32) {
+    if scale.is_finite() && (0.0..=1.0).contains(&scale) {
+        unsafe { MOTION = scale };
+    }
+}
+
+/// The current motion scale, exported so a headless check can read it back.
+#[no_mangle]
+pub extern "C" fn motion_scale() -> f32 {
+    motion()
 }
 
 /// Seed the pond. Called once when the module instantiates.
@@ -92,5 +119,37 @@ mod tests {
         use crate::world::*;
         assert!(LEN >= FLY_BASE + FLY_N * FLY_STRIDE);
         assert_eq!(SIG, 202611.0);
+    }
+
+    #[test]
+    fn reduced_motion_halves_the_settle() {
+        use crate::render::settle_offsets;
+        use crate::world::{World, S_SETTLE, S_SETTLE_T};
+        use crate::{motion, set_motion_scale};
+        let mut w = World::new(7);
+        w.s[S_SETTLE] = 1.0;
+        w.s[S_SETTLE_T] = 0.31;
+        set_motion_scale(1.0);
+        let full = settle_offsets(&w);
+        set_motion_scale(0.5);
+        let half = settle_offsets(&w);
+        assert!((half.0 * 2.0 - full.0).abs() < 1e-5, "oy did not halve");
+        assert!((half.1 * 2.0 - full.1).abs() < 1e-5, "ox did not halve");
+        set_motion_scale(1.0); // leave the module as we found it
+    }
+
+    #[test]
+    fn the_motion_scale_can_only_calm_the_pond() {
+        use crate::{motion, set_motion_scale};
+        set_motion_scale(1.0);
+        set_motion_scale(4.0); // nonsense: ignored
+        assert_eq!(motion(), 1.0);
+        set_motion_scale(-1.0); // nonsense: ignored
+        assert_eq!(motion(), 1.0);
+        set_motion_scale(f32::NAN); // nonsense: ignored
+        assert_eq!(motion(), 1.0);
+        set_motion_scale(0.5);
+        assert_eq!(motion(), 0.5);
+        set_motion_scale(1.0);
     }
 }

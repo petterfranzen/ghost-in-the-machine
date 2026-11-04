@@ -37,8 +37,12 @@ in five small ways at once, and all five fade on their own:
 5. a soft **sound**, and no more than a soft sound: a low sine falling from 300
    to 120 Hz through a lowpass, with one short filtered noise droplet on top, and
    a whisper of a high bell a beat behind. On the moss it is a duller, shorter
-   noise burst instead. Sound stays silent until you tap, and the small button in
-   the corner turns it off.
+   noise burst instead.
+
+The pond opens **silent**. The ♪ button in the corner starts unpressed
+(`aria-pressed="false"`); one tap on it wakes the audio, and from then on each
+pebble speaks. Nothing plays until you ask for it — the water answers just as
+well without, and the button mutes it again whenever you like.
 
 The koi are why it isn't just a ripple toy: a pebble *interests* them. Every koi
 within reach turns and swims over — noticeably faster, because they are going
@@ -109,13 +113,15 @@ check the committed build still matches its source.
 Three layers, all of them run before this PR:
 
 - **`cargo`-less unit tests** — `rustc --test src/lib.rs` (run for you by
-  `./build.sh`), 10 tests over the pond's rules: that it opens with four koi in
+  `./build.sh`), 12 tests over the pond's rules: that it opens with four koi in
   the water and fireflies only on the moss; that a pebble on the water makes
   three rings, lifts the lantern and calls a koi; that a pebble on the moss makes
   none; that two taps in the same instant are still one pebble; that ripples die
   and the water goes still; that a koi circles and then goes back to wandering;
   that no koi can leave the pond over half a minute of tapping; that every number
-  stays finite after 3,000 steps; that fireflies never drift out over the water.
+  stays finite after 3,000 steps; that fireflies never drift out over the water;
+  and, added after QA, that `set_motion_scale(0.5)` halves the settle while a
+  nonsense scale is ignored.
 - **`tools/smoke.mjs`** — `node tools/smoke.mjs`, no browser: it loads the real
   `.wasm`, checks the signature, plays the pebbles, walks a koi to its splash,
   waits for the water to go still, and asserts every pixel is opaque and every
@@ -134,13 +140,29 @@ cheapest way to iterate on a palette, and it caught two real bugs — a framebuf
 whose alpha channel was never set (an invisible canvas with a "clean" console)
 and a firefly drifting out over the water.
 
+## Calm by default
+
+- **Sound is off until you tap ♪.** The pond makes no sound on its own; the
+  audio context is not even created until the button wakes it.
+- **`prefers-reduced-motion: reduce` halves the whole-scene settle.** The host
+  reads the media query at startup and on change and calls
+  `set_motion_scale(0.5)`, so the frame gives one pixel instead of two and the
+  water, koi and light do the answering. Motion is halved, not removed — the
+  pond still answers, just more quietly.
+- **The one instruction is legible.** `tap the water to drop a pebble` is 14 px
+  at `rgba(233, 227, 212, 0.58)` — 4.59:1 against the lightest part of the page
+  gradient and 5.5:1 against the darkest, so it clears AA everywhere on the page.
+- **The ♪ button is 44×44 px**, the thumb target, tucked in the bottom-right
+  corner where a thumb already rests.
+
 ## What I'm unsure of
 
 - **The settle.** A two-pixel give of the whole scene is the riskiest part of the
   whole thing: it is the difference between "the pond answered" and "the page
   jolted". It is damped twice and gone in a second, and it felt calm in the
   smoke run, but I could only feel it through a screenshot, not under my thumb.
-  If it reads as a jolt, the cheapest fix is halving `2.1` in `draw_scene`.
+  If it reads as a jolt, the cheapest fix is halving `2.1` in `settle_offsets`
+  (or, for everyone at once, calling `set_motion_scale(0.5)`).
 - **The rings are geometric.** They are drawn as chains of 2×2 dots, so at
   close range a big ring can look slightly dotted rather than liquid. I liked it
   (it is honest pixel art) but it is a taste call.

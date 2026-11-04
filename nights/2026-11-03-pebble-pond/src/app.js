@@ -1,7 +1,9 @@
 /* Pebble Pond's host. It does four things and nothing else: instantiate the
  * WebAssembly module, hand it a pointer press and a dt each frame, blit the
- * framebuffer it hands back, and make a soft sound when a pebble lands.
- * All the pond's rules — koi, ripples, the settle — live in Rust. */
+ * framebuffer it hands back, and make a soft sound when a pebble lands (sound
+ * is off until the reader taps the note). It also hands the module the reader's
+ * motion preference, which halves the whole-scene settle. All the pond's rules
+ * — koi, ripples, the settle — live in Rust. */
 (() => {
   'use strict';
 
@@ -22,6 +24,15 @@
   let seed = (Date.now() ^ (Math.random() * 0xffffffff)) >>> 0;
   pond.init(seed);
 
+  // a reader who prefers reduced motion gets half the whole-scene settle
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (reduce && typeof pond.set_motion_scale === 'function') {
+    const apply = () => pond.set_motion_scale(reduce.matches ? 0.5 : 1.0);
+    apply();
+    if (reduce.addEventListener) reduce.addEventListener('change', apply);
+    else if (reduce.addListener) reduce.addListener(apply);
+  }
+
   const S = { time: 1, settle: 2, lantern: 4, taps: 5, seeks: 8, lastKind: 9 };
   const state = () => new Float32Array(pond.memory.buffer, pond.state_ptr(), pond.state_len());
 
@@ -37,7 +48,7 @@
 
   // --- sound: silent until the first tap, then three small, soft things ---
   const audio = {
-    ctx: null, master: null, on: true,
+    ctx: null, master: null, on: false,
     wake() {
       if (this.ctx || !this.on) return;
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -104,7 +115,10 @@
     },
   };
 
-  soundBtn.classList.toggle('on', true);
+  // sound is off until the reader asks for it: one tap on the note wakes it,
+  // and the pond is just as calm silent.
+  soundBtn.classList.toggle('on', audio.on);
+  soundBtn.setAttribute('aria-pressed', String(audio.on));
   soundBtn.addEventListener('click', () => {
     audio.on = !audio.on;
     soundBtn.classList.toggle('on', audio.on);
