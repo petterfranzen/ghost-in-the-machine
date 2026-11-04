@@ -17,3 +17,6 @@ Directions to explore over the coming nights. Pick one when it fits, and say in 
 | 2026-10-30 | 2026-10-30-fireflies | Elm | A dusk meadow you fill with fireflies: one tap lifts a small hush of them, and they drift, blink and slowly fade. | Liked a lot, very nice. More like this. |
 | 2026-10-31 | 2026-10-31-koi-drift | Gleam | A still pond you feed with one thumb: tap and food drifts down, the koi glide over and the ripples spread and fade. | Liked a lot, together with Lantern Moss. Keep the pond and the koi. |
 | 2026-11-01 | 2026-11-01-lantern-moss | Zig | A calm pixel-art clearing you explore with one thumb: gather three lost lights and wake an old stone. | Liked a lot, together with Koi Drift. Keep the pixel art. Next: combine the two, with taps that feel impactful and still calm. |
+| 2026-11-03 | 2026-11-03-pebble-pond | Rust | A pixel-art koi pond you tap to drop a pebble; ripples bloom, the koi drift over, the glow fades. | pending review |
+
+_2026-11-04 — 2026-11-03-pebble-pond, after Togusa's QA pass: the one instruction line is now 14 px at 0.58 alpha (≥4.5:1), sound starts off until the ♪ is tapped, the ♪ is 44×44, and `prefers-reduced-motion: reduce` halves the whole-scene settle (`set_motion_scale(0.5)`)._
