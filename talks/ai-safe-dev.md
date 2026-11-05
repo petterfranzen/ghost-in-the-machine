@@ -37,7 +37,7 @@ Each slide below has four or five blocks:
 
 ## Visual direction — Professional theme
 
-From `design/claude-design-system.md` and `design/tokens/tokens.json`
+From `crew/design/claude-design-system.md` and `crew/design/tokens/tokens.json`
 (Professional, dark). The deck is dark by default; the print/PDF variant is the
 Professional light theme.
 
