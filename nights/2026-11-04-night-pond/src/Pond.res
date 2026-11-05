@@ -80,6 +80,7 @@ type state = {
   mutable taps: int,
   mutable events: array<string>,
   mutable rnd: float,
+  mutable reduced: bool,
 }
 
 /* a tiny deterministic generator, so the pond starts the same way every time */
@@ -121,8 +122,8 @@ let makeKoi = (s, i) => {
   {
     x,
     y,
-    vx: cos(a +. 1.57) *. 7.0,
-    vy: sin(a +. 1.57) *. 7.0,
+    vx: cos(a +. 1.57) *. 7.0 *. (s.reduced ? 0.5 : 1.0),
+    vy: sin(a +. 1.57) *. 7.0 *. (s.reduced ? 0.5 : 1.0),
     ang: a +. 1.57,
     size: randRange(s, 0.85, 1.25),
     hue: i < 3 ? i : 0,
@@ -135,7 +136,7 @@ let makeKoi = (s, i) => {
 
 let makeLantern = (x, y, ph) => {x, y, awake: 0.0, lit: false, ph}
 
-let make = () => {
+let make = (reduced: bool) => {
   let s: state = {
     t: 0.0,
     koi: [],
@@ -156,6 +157,7 @@ let make = () => {
     taps: 0,
     events: [],
     rnd: 20261104.0,
+    reduced,
   }
   s.koi = Belt.Array.makeBy(4, i => makeKoi(s, i))
   s
@@ -179,7 +181,9 @@ let nearestAsleep = (s, x, y) => {
 }
 
 let addRipple = (s, x, y, maxR, str, delay) => {
-  s.ripples = Belt.Array.concat(s.ripples, [{x, y, age: 0.0, delay, life: 3.6, maxR, str}])
+  /* under reduced motion the rings still bloom, but they fade much sooner */
+  let life = s.reduced ? 1.5 : 3.6
+  s.ripples = Belt.Array.concat(s.ripples, [{x, y, age: 0.0, delay, life, maxR, str}])
 }
 
 let addMote = (s, x, y) => {
@@ -209,7 +213,7 @@ let tap = (s, x, y) => {
   addRipple(s, x, y, 32.0 *. k, 1.0 *. k, 0.12)
   addRipple(s, x, y, 20.0 *. k, 0.62 *. k, 0.0)
   addRipple(s, x, y, 48.0 *. k, 0.38 *. k, 0.34)
-  s.settle = 1.0
+  s.settle = s.reduced ? 0.0 : 1.0
   s.bloomX = x
   s.bloomY = y
   s.bloom = water ? 1.0 : 0.35
@@ -293,8 +297,9 @@ let steerKoi = (s, k, dt) => {
   ax := ax.contents +. sin(s.t *. 0.7 +. k.ph) *. 5.0
   ay := ay.contents +. cos(s.t *. 0.53 +. k.ph *. 1.7) *. 5.0
 
-  k.vx = k.vx +. ax.contents *. dt
-  k.vy = k.vy +. ay.contents *. dt
+  let motion = s.reduced ? 0.5 : 1.0
+  k.vx = k.vx +. ax.contents *. dt *. motion
+  k.vy = k.vy +. ay.contents *. dt *. motion
 
   /* water is not free: drift down, never bolt */
   let drag = drag(0.12, dt)
@@ -302,7 +307,7 @@ let steerKoi = (s, k, dt) => {
   k.vy = k.vy *. drag
 
   let sp = hypot(k.vx, k.vy)
-  let cap = 19.0 *. k.size
+  let cap = (s.reduced ? 9.0 : 19.0) *. k.size
   if sp > cap {
     k.vx = k.vx /. sp *. cap
     k.vy = k.vy /. sp *. cap

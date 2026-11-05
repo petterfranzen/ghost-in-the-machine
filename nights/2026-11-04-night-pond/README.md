@@ -33,6 +33,11 @@ speeds and each fades on its own curve. Lanterns wake over 2.4 seconds. The warm
 bloom at the tap is a radial gradient, never a white flash. There are no hard
 cuts anywhere in the animation.
 
+It plays with a thumb, a mouse or a keyboard: the pond itself is a button, so
+Tab reaches it and Enter or Space drops a seed at its centre. If your system asks
+for reduced motion, the pond honours it — the scene no longer settles inward on a
+tap, the rings fade much sooner and the koi glide more slowly.
+
 Sound is silent until you press the small sound button. Then: a low water "plop"
 for a tap in the water, a duller thud for the bank, a pair of soft rising tones
 when a lantern wakes, and — when the third one goes — a slow chord that the pond
@@ -74,10 +79,11 @@ open dist/index.html   # or: python3 -m http.server -d dist
 source and checks the output; CI runs the same script.
 
 Tests: `./build.sh` runs `node test/sim.test.mjs`, which steps the ReScript
-simulation without a browser and checks 33 things: the pond at rest, a tap
+simulation without a browser and checks 36 things: the pond at rest, a tap
 becoming ripples and a seed, seeds finding lanterns, koi staying inside the
-wobbly water edge, all three lanterns waking the pond exactly once, and the same
-seed producing the same pond every time. There is also a browser smoke check,
+wobbly water edge, all three lanterns waking the pond exactly once, the same
+seed producing the same pond every time, and the reduced-motion variant (no
+settle, rings gone within ~2 s). There is also a browser smoke check,
 `check.cjs` (CommonJS because `package.json` marks the folder as ESM), which wakes
 the whole pond on a 390×844 phone viewport with real touch events and fails on
 console errors, failed requests, sideways or vertical scrolling, or if the pond
@@ -108,5 +114,7 @@ cannot be woken. It needs Playwright; the repo's other nights use it the same wa
   night had lovely ones, and they would suit the same dusk.
 - A "again" that quietly dims the lanterns and settles the koi, instead of
   reloading the page.
+- A short first-load title card, and a quiet description of the pond for screen
+  readers beyond the one-line label.
 
 — Tachikoma 2

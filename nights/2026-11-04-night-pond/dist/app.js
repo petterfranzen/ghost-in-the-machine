@@ -577,8 +577,8 @@
     return {
       x,
       y,
-      vx: Math.cos(a + 1.57) * 7,
-      vy: Math.sin(a + 1.57) * 7,
+      vx: Math.cos(a + 1.57) * 7 * (s.reduced ? 0.5 : 1),
+      vy: Math.sin(a + 1.57) * 7 * (s.reduced ? 0.5 : 1),
       ang: a + 1.57,
       size: randRange(s, 0.85, 1.25),
       hue: i < 3 ? i : 0,
@@ -597,7 +597,7 @@
       ph
     };
   }
-  function make() {
+  function make(reduced) {
     var s = {
       t: 0,
       koi: [],
@@ -617,7 +617,8 @@
       doneAt: 0,
       taps: 0,
       events: [],
-      rnd: 20261104
+      rnd: 20261104,
+      reduced
     };
     s.koi = makeBy(4, (function(i) {
       return makeKoi(s, i);
@@ -654,12 +655,13 @@
     return idx.contents;
   }
   function addRipple(s, x, y, maxR, str, delay) {
+    var life = s.reduced ? 1.5 : 3.6;
     s.ripples = concat(s.ripples, [{
       x,
       y,
       age: 0,
       delay,
-      life: 3.6,
+      life,
       maxR,
       str
     }]);
@@ -682,7 +684,7 @@
     addRipple(s, x$1, y$1, 32 * k, 1 * k, 0.12);
     addRipple(s, x$1, y$1, 20 * k, 0.62 * k, 0);
     addRipple(s, x$1, y$1, 48 * k, 0.38 * k, 0.34);
-    s.settle = 1;
+    s.settle = s.reduced ? 0 : 1;
     s.bloomX = x$1;
     s.bloomY = y$1;
     s.bloom = water ? 1 : 0.35;
@@ -768,13 +770,14 @@
     }
     ax = ax + Math.sin(s.t * 0.7 + k.ph) * 5;
     ay = ay + Math.cos(s.t * 0.53 + k.ph * 1.7) * 5;
-    k.vx = k.vx + ax * dt;
-    k.vy = k.vy + ay * dt;
+    var motion = s.reduced ? 0.5 : 1;
+    k.vx = k.vx + ax * dt * motion;
+    k.vy = k.vy + ay * dt * motion;
     var drag = Math.pow(0.12, dt);
     k.vx = k.vx * drag;
     k.vy = k.vy * drag;
     var sp = hypot(k.vx, k.vy);
-    var cap = 19 * k.size;
+    var cap = (s.reduced ? 9 : 19) * k.size;
     if (sp > cap) {
       k.vx = k.vx / sp * cap;
       k.vy = k.vy / sp * cap;
@@ -1435,7 +1438,8 @@
   // src/host.js
   var canvas = document.getElementById("stage");
   var view = createView(canvas);
-  var state = make();
+  var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var state = make(reducedMotion);
   var audio = null;
   var muted = true;
   var master = null;
@@ -1556,9 +1560,24 @@
     };
   }
   var firstTap = true;
+  var status = document.getElementById("status");
+  function announce(text) {
+    if (!status) return;
+    status.textContent = "";
+    requestAnimationFrame(() => {
+      status.textContent = text;
+    });
+  }
+  function handleEvents() {
+    const events = drainEvents(state);
+    if (events.length === 0) return;
+    for (const ev of events) play(ev);
+    if (events.includes("done")) announce("All three lanterns are awake. The pond stays warm.");
+    else if (events.includes("wake")) announce("A lantern wakes.");
+  }
   function tapAt(x, y) {
     tap(state, x, y);
-    for (const ev of drainEvents(state)) play(ev);
+    handleEvents();
     if (firstTap) {
       firstTap = false;
       document.getElementById("hint").classList.add("gone");
@@ -1570,6 +1589,12 @@
     tapAt(p.x, p.y);
   });
   canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+  canvas.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+      e.preventDefault();
+      tapAt(W / 2, H / 2);
+    }
+  });
   var last = performance.now();
   var acc = 0;
   function frame(now) {
@@ -1581,6 +1606,7 @@
       step(state, 1 / 60);
       acc -= 1 / 60;
     }
+    handleEvents();
     const snap = JSON.parse(read(state));
     view.draw(snap, snap.t);
     requestAnimationFrame(frame);

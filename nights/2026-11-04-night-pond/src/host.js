@@ -9,7 +9,9 @@ import { createView, W, H } from "./view.js";
 
 const canvas = document.getElementById("stage");
 const view = createView(canvas);
-const state = Pond.make();
+/* the house reduced-motion variant: no scene settle, shorter rings, slower koi */
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const state = Pond.make(reducedMotion);
 
 /* ---------- sound: silent until you ask for it ---------- */
 
@@ -147,9 +149,26 @@ function toWorld(clientX, clientY) {
 
 let firstTap = true;
 
+const status = document.getElementById("status");
+function announce(text) {
+  if (!status) return;
+  status.textContent = "";
+  /* a fresh node each time, so screen readers read repeated wakes */
+  requestAnimationFrame(() => { status.textContent = text; });
+}
+
+function handleEvents() {
+  const events = Pond.drainEvents(state);
+  if (events.length === 0) return;
+  for (const ev of events) play(ev);
+  /* one announcement per batch: the pond finishing outranks a single lantern */
+  if (events.includes("done")) announce("All three lanterns are awake. The pond stays warm.");
+  else if (events.includes("wake")) announce("A lantern wakes.");
+}
+
 function tapAt(x, y) {
   Pond.tap(state, x, y);
-  for (const ev of Pond.drainEvents(state)) play(ev);
+  handleEvents();
   if (firstTap) {
     firstTap = false;
     document.getElementById("hint").classList.add("gone");
@@ -162,6 +181,14 @@ canvas.addEventListener("pointerdown", (e) => {
   tapAt(p.x, p.y);
 });
 canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
+/* keyboard: the pond is a button, so Enter or Space drops a seed at its centre */
+canvas.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+    e.preventDefault();
+    tapAt(W / 2, H / 2);
+  }
+});
 
 /* ---------- the loop ---------- */
 
@@ -178,6 +205,8 @@ function frame(now) {
     Pond.step(state, 1 / 60);
     acc -= 1 / 60;
   }
+  /* events can happen between taps (a seed reaching a lantern), so drain every frame */
+  handleEvents();
   const snap = JSON.parse(Pond.read(state));
   view.draw(snap, snap.t);
   requestAnimationFrame(frame);

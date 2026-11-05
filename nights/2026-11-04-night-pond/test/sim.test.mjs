@@ -29,7 +29,7 @@ const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
 
 /* --- a pond at rest ---------------------------------------------------- */
 {
-  const s = Pond.make();
+  const s = Pond.make(false);
   run(s, 1.0);
   const st = JSON.parse(Pond.read(s));
   check("four koi", st.koi.length === 4, `got ${st.koi.length}`);
@@ -43,7 +43,7 @@ const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
 
 /* --- a tap is a tap ---------------------------------------------------- */
 {
-  const s = Pond.make();
+  const s = Pond.make(false);
   Pond.tap(s, 120, 120);
   const st = JSON.parse(Pond.read(s));
   check("a tap makes three rings", st.ripples === 3, `got ${st.ripples}`);
@@ -56,7 +56,7 @@ const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
 
 /* --- a tap on the bank is quieter, and drops nothing ------------------- */
 {
-  const s = Pond.make();
+  const s = Pond.make(false);
   Pond.tap(s, 3, 3);
   const st = JSON.parse(Pond.read(s));
   check("a bank tap drops no seed", st.seeds === 0, `got ${st.seeds}`);
@@ -69,7 +69,7 @@ const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
 
 /* --- one tap, one lantern waking -------------------------------------- */
 {
-  const s = Pond.make();
+  const s = Pond.make(false);
   const t0 = JSON.parse(Pond.read(s)).lanterns;
   Pond.tap(s, t0[0].x, t0[0].y - 12);
   run(s, 18);
@@ -82,7 +82,7 @@ const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
 
 /* --- the whole pond, woken in three taps ------------------------------ */
 {
-  const s = Pond.make();
+  const s = Pond.make(false);
   const start = JSON.parse(Pond.read(s)).lanterns;
   const wakes = [];
   for (const l of start) {
@@ -98,7 +98,7 @@ const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
 
 /* --- a second seed for a lantern that is already lit just dissolves --- */
 {
-  const s = Pond.make();
+  const s = Pond.make(false);
   const l = JSON.parse(Pond.read(s)).lanterns[1];
   Pond.tap(s, l.x, l.y);
   Pond.tap(s, l.x + 4, l.y + 4);
@@ -114,7 +114,7 @@ const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
 
 /* --- koi stay in the pond, for a long while ---------------------------- */
 {
-  const s = Pond.make();
+  const s = Pond.make(false);
   let strayed = 0;
   let maxSpeed = 0;
   let prev = JSON.parse(Pond.read(s)).koi;
@@ -139,10 +139,22 @@ const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
   check("sixty idle seconds make no lanterns", st.lit === 0, `lit ${st.lit}`);
 }
 
+/* --- reduced motion: no settle, rings fade sooner --------------------- */
+{
+  const s = Pond.make(true);
+  Pond.tap(s, 120, 120);
+  const st = JSON.parse(Pond.read(s));
+  check("reduced motion drops the scene settle", near(st.settle, 0.0), `settle ${st.settle}`);
+  check("reduced motion still ripples", st.ripples === 3, `got ${st.ripples}`);
+  run(s, 2.2);
+  check("reduced rings fade within ~2 s", JSON.parse(Pond.read(s)).ripples === 0,
+        `left ${JSON.parse(Pond.read(s)).ripples}`);
+}
+
 /* --- the pond starts the same way every time -------------------------- */
 {
-  const a = Pond.make();
-  const b = Pond.make();
+  const a = Pond.make(false);
+  const b = Pond.make(false);
   run(a, 6);
   run(b, 6);
   check("the pond is deterministic", Pond.read(a) === Pond.read(b));
@@ -150,7 +162,7 @@ const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
 
 /* --- a long session stays bounded ------------------------------------- */
 {
-  const s = Pond.make();
+  const s = Pond.make(false);
   for (let i = 0; i < 40; i++) {
     Pond.tap(s, 30 + (i * 53) % 250, 40 + (i * 37) % 150);
     run(s, 0.9);

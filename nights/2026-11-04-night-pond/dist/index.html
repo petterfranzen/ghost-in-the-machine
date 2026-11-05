@@ -78,7 +78,7 @@
     align-items: center;
     gap: clamp(10px, 3vw, 22px);
     min-height: 2.2em;
-    font-size: clamp(12px, 1.7vh, 14px);
+    font-size: clamp(16px, 2.1vh, 18px);
     color: var(--dim);
   }
   #hint {
@@ -89,38 +89,58 @@
   #hint.gone { opacity: 0; }
   #sound {
     appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
     background: rgba(223, 230, 216, 0.05);
-    border: 1px solid rgba(223, 230, 216, 0.16);
+    border: 1px solid rgba(223, 230, 216, 0.42);
     border-radius: 999px;
     color: var(--dim);
     font: inherit;
-    font-size: 0.92em;
+    font-size: 0.95em;
     letter-spacing: 0.09em;
-    padding: 0.42em 0.95em;
+    padding: 0.55em 1.05em;
     cursor: pointer;
     transition: color 0.5s ease, border-color 0.5s ease, background 0.5s ease;
   }
-  #sound:hover { color: var(--ink); border-color: rgba(223, 230, 216, 0.3); }
+  #sound:hover { color: var(--ink); border-color: rgba(223, 230, 216, 0.65); }
   #sound.on {
     color: var(--warm);
-    border-color: rgba(255, 216, 163, 0.34);
+    border-color: rgba(255, 216, 163, 0.55);
     background: rgba(255, 216, 163, 0.07);
   }
-  #sound:focus-visible { outline: 2px solid rgba(255, 216, 163, 0.5); outline-offset: 2px; }
+  #sound:focus-visible { outline: 2px solid rgba(255, 216, 163, 0.75); outline-offset: 2px; }
+  /* the pond itself is a keyboard control too */
+  #stage:focus { outline: none; }
+  #stage:focus-visible { outline: 2px solid rgba(255, 216, 163, 0.75); outline-offset: -4px; }
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
   @media (max-height: 520px) {
     h1 { display: none; }
     .frame { width: min(94vw, 84vh); }
   }
   @media (prefers-reduced-motion: reduce) {
     #hint { transition: none; }
+    #sound { transition: none; }
+    #hint.gone { opacity: 0.6; }
   }
 </style>
 </head>
 <body>
   <header><h1>Night Pond</h1></header>
   <div class="frame">
-    <canvas id="stage" width="320" height="320" aria-label="A still pond at dusk. Tap the water."></canvas>
+    <canvas id="stage" width="320" height="320" tabindex="0" role="button" aria-label="A still pond at dusk. Tap the water, or press Enter or Space, to drop a light-seed."></canvas>
   </div>
+  <p id="status" class="sr-only" role="status" aria-live="polite"></p>
   <footer>
     <span id="hint">tap the water</span>
     <button id="sound" type="button" aria-pressed="false">sound off</button>
