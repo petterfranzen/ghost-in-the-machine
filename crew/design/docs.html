@@ -62,9 +62,9 @@
         <div class="code">
           <div class="code__bar"><span class="code__lang">html</span><span>head</span></div>
           <pre><code><span class="c-tag">&lt;html</span> <span class="c-key">data-theme</span>=<span class="c-str">"professional"</span> <span class="c-key">data-mode</span>=<span class="c-str">"dark"</span><span class="c-tag">&gt;</span>
-  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"design/tokens/base.css"</span><span class="c-tag">&gt;</span>
-  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"design/tokens/professional.css"</span><span class="c-tag">&gt;</span>
-  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"design/components.css"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"crew/design/tokens/base.css"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"crew/design/tokens/professional.css"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"crew/design/components.css"</span><span class="c-tag">&gt;</span>
 <span class="c-tag">&lt;/html&gt;</span></code></pre>
         </div>
         <p>For the ops room, swap the theme file and drop the mode:</p>
@@ -261,7 +261,7 @@
           <div class="code">
             <div class="code__bar"><span class="code__lang">bash</span><span>check the tokens</span></div>
             <pre><code><span class="c-com"># tokens.json must match the CSS, and every pair must clear AA</span>
-python3 design/tools/check.py design</code></pre>
+python3 crew/design/tools/check.py design</code></pre>
           </div>
         </div>
 
@@ -329,7 +329,7 @@ python3 design/tools/check.py design</code></pre>
         <p><code>tools/check.py</code> parses the three token files, compares every value with <code>tokens.json</code>, and recomputes the contrast pairs declared in <code>tokens/contrast.json</code>. Run it after any token change:</p>
         <div class="code">
           <div class="code__bar"><span class="code__lang">bash</span><span>no dependencies</span></div>
-          <pre><code>python3 design/tools/check.py design
+          <pre><code>python3 crew/design/tools/check.py design
 <span class="c-com"># ok 151 checks: 127 token values in sync, 24 contrast pairs pass AA</span></code></pre>
         </div>
         <p class="small muted">Visual checks: the contact sheet, the dashboard and the deck template are all served from this folder and screenshotted at 1440px and 390px in both themes, then run through Impeccable (detect).</p>

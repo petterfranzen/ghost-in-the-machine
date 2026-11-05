@@ -31,9 +31,9 @@ status pages) and the portfolio.
 
 ```html
 <html data-theme="professional" data-mode="dark">
-  <link rel="stylesheet" href="design/tokens/base.css">
-  <link rel="stylesheet" href="design/tokens/professional.css">
-  <link rel="stylesheet" href="design/components.css">
+  <link rel="stylesheet" href="crew/design/tokens/base.css">
+  <link rel="stylesheet" href="crew/design/tokens/professional.css">
+  <link rel="stylesheet" href="crew/design/components.css">
 </html>
 ```
 
@@ -43,7 +43,7 @@ room. One theme per surface; never mix them.
 ## Check it
 
 ```bash
-python3 design/tools/check.py design
+python3 crew/design/tools/check.py design
 # ok 127 checks: tokens in sync, 24 contrast pairs pass AA
 ```
 

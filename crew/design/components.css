@@ -1026,7 +1026,7 @@ html[data-theme="section9"] .slide--end::before {
 }
 .panel-note .card__kicker { color: var(--text-muted); }
 
-/* ---------- Documentation chrome (used by design/docs.html) --------------- */
+/* ---------- Documentation chrome (used by crew/design/docs.html) --------------- */
 
 .docs {
   display: grid;

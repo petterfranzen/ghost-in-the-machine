@@ -5,7 +5,7 @@ it is the complete brief. It describes the **Professional** theme only. The
 Section 9 ops-room theme is a different room and is not for decks unless the
 deck is internal and explicitly says so.
 
-Version 1.0 · 4 November 2026 · source: `ghost-in-the-machine/design/`
+Version 1.0 · 4 November 2026 · source: `ghost-in-the-machine/crew/design/`
 
 ---
 
@@ -162,8 +162,8 @@ Gradients, glows, glassmorphism, stock photography, icon grids, drop-cap letters
 
 ## 5. Build notes
 
-CSS lives in `design/tokens/` and `design/components.css`; `design/slides.html` is a working deck with all eight layouts. Use these class names so the deck stays editable in the same sheet: `.slide`, `.slide--title`, `.slide--section`, `.slide--split`, `.slide--stats`, `.slide--end`, `.slide__kick`, `.slide__foot`, `.slide__no`, `.stat`, `.card`, `.table`.
+CSS lives in `crew/design/tokens/` and `crew/design/components.css`; `crew/design/slides.html` is a working deck with all eight layouts. Use these class names so the deck stays editable in the same sheet: `.slide`, `.slide--title`, `.slide--section`, `.slide--split`, `.slide--stats`, `.slide--end`, `.slide__kick`, `.slide__foot`, `.slide__no`, `.stat`, `.card`, `.table`.
 
-Machine-readable tokens: `design/tokens/tokens.json` (`palettes.professional.dark` / `.light`). If a tool needs values, read them there rather than transcribing this file.
+Machine-readable tokens: `crew/design/tokens/tokens.json` (`palettes.professional.dark` / `.light`). If a tool needs values, read them there rather than transcribing this file.
 
 When a deck is done, check it: 16:9 at both 1440px and 390px, no sideways scroll, every text pair AA, reduced motion honoured, and no more than one accent per slide.
