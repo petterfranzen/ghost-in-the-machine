@@ -32,7 +32,7 @@ echo "→ writing dist/wasm.js ($(du -h .build/game.wasm | cut -f1) module)"
   echo " * as base64. Do not edit; run ./build.sh instead. */"
   cat "$WASM_EXEC"
   printf '\nconst WASM_B64 = "'
-  base64 -w0 .build/game.wasm
+  base64 .build/game.wasm | tr -d "\n"
   printf '";\n'
   cat tools/boot.js
 } > "$DIST/wasm.js"
