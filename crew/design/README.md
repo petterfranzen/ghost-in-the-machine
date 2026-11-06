@@ -43,8 +43,8 @@ room. One theme per surface; never mix them.
 ## Check it
 
 ```bash
-python3 crew/design/tools/check.py design
-# ok 127 checks: tokens in sync, 24 contrast pairs pass AA
+python3 crew/design/tools/check.py crew/design
+# ok 151 checks: 127 token values in sync, 24 contrast pairs pass AA
 ```
 
 Screenshots and a served-page Impeccable scan back the accessibility claims:

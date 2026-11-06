@@ -148,6 +148,9 @@ button { font: inherit; color: inherit; }
   flex-wrap: wrap;
 }
 .shell__nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   padding: var(--sp-2) var(--sp-3);
   font-size: var(--fs-sm);
   color: var(--text-muted);
@@ -346,7 +349,7 @@ h2.h2 + .lede, h2.h2 + p { margin-block-start: calc(var(--sp-4) * -1 + var(--sp-
   align-items: center;
   gap: var(--sp-2);
   padding: var(--sp-2) var(--sp-4);
-  min-height: 2.5rem;
+  min-height: 2.75rem;
   border: 1px solid var(--line-strong);
   background: var(--surface);
   color: var(--text);

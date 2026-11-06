@@ -63,15 +63,23 @@ html[data-theme="section9"] {
     linear-gradient(90deg, rgba(139, 255, 190, 0.055) 1px, transparent 1px);
   --grid-size: 48px 48px;
   --vignette-image: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
-  --scan-opacity: 0.18;
   --card-sheen: linear-gradient(180deg, rgba(139, 255, 190, 0.05), transparent 45%);
   --display-transform: uppercase;
   --display-tracking: 0.04em;
+}
 
-  --dur-1: 90ms;
-  --dur-2: 160ms;
-  --dur-3: 260ms;
-  --dur-4: 420ms;
+/* Motion durations and the scanline only exist when the reader has not asked
+   for reduced motion. Wrapping them here (rather than setting them flat on the
+   Section 9 selector) lets base.css's reduce override win, since
+   html[data-theme="section9"] would otherwise out-specify :root. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="section9"] {
+    --scan-opacity: 0.18;
+    --dur-1: 90ms;
+    --dur-2: 160ms;
+    --dur-3: 260ms;
+    --dur-4: 420ms;
+  }
 }
 
 /* The room glow sits behind the page; the grid and scanline are drawn by

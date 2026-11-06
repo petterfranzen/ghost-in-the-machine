@@ -6,7 +6,7 @@
 3. Recompute every pair in tokens/contrast.json with alpha compositing and
    fail anything under its WCAG minimum.
 
-Usage: python3 crew/design/tools/check.py design
+Usage: python3 crew/design/tools/check.py crew/design
 Exit code 0 means in sync and AA-clean; 1 means it printed a failure.
 """
 import json
