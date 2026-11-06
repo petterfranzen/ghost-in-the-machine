@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en" data-theme="professional" data-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Section 9 design system — deck template</title>
+<meta name="description" content="Eight slide layouts for Section 9 decks, in both themes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="tokens/base.css">
+<link rel="stylesheet" href="tokens/professional.css">
+<link rel="stylesheet" href="tokens/section9.css">
+<link rel="stylesheet" href="components.css">
+</head>
+<body>
+<a class="skip-link" href="#deck">Skip to the deck</a>
+<div class="shell">
+  <div class="shell__scan" aria-hidden="true"></div>
+  <header class="shell__head">
+    <a class="shell__brand" href="index.html"><span class="shell__mark" aria-hidden="true">9</span> Section 9 — deck template</a>
+    <nav class="shell__nav" aria-label="Design system">
+      <a href="index.html">Contact sheet</a>
+      <a href="docs.html">Docs</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="slides.html" aria-current="page">Slides</a>
+      <button class="btn btn--ghost" type="button" data-theme-toggle aria-label="Switch theme">Section 9</button>
+    </nav>
+  </header>
+
+  <main id="deck">
+    <div class="deck">
+      <div class="deck__tools">
+        <span>16:9 · eight layouts · print to PDF with <kbd>Ctrl</kbd>+<kbd>P</kbd></span>
+        <span class="spacer"></span>
+        <span>Theme: <span data-theme-name>Professional</span></span>
+      </div>
+
+      <!-- 01 Title -->
+      <section class="slide slide--title" id="title" aria-labelledby="s1">
+        <p class="slide__kick">Section 9 · design system · v1.0</p>
+        <h1 id="s1">One system for every output</h1>
+        <p class="lede" style="max-width:34ch">Documents, decks and dashboards now share one base of tokens. Two themes sit on it, and both are checked against WCAG AA.</p>
+        <p class="slide__cite" style="margin-top:var(--sp-4)">4 November 2026 · prepared for the Major</p>
+        <div class="slide__foot"><span>Section 9</span><span>Draft</span></div>
+        <span class="slide__no">01</span>
+      </section>
+
+      <!-- 02 Section divider -->
+      <section class="slide slide--section" id="section" aria-labelledby="s2">
+        <p class="slide__kick">01 — Why</p>
+        <h2 id="s2">Two rooms, one set of parts.</h2>
+        <p class="lede" style="max-width:40ch">The ops room and the client-facing room should not be two design languages that happen to share a repo.</p>
+        <span class="slide__no">02</span>
+      </section>
+
+      <!-- 03 Bullets -->
+      <section class="slide" id="bullets" aria-labelledby="s3">
+        <p class="slide__kick">The problem</p>
+        <h2 id="s3">Every surface was solving the same problems alone</h2>
+        <ul>
+          <li>Three palettes, four type stacks and no shared spacing scale.</li>
+          <li>Tables, cards and stat tiles rebuilt per page, each with its own contrast mistakes.</li>
+          <li>Decks drifting from the dashboard they described.</li>
+          <li>No machine-readable tokens, so slides and scripts guessed.</li>
+        </ul>
+        <p class="small muted" style="margin-top:auto">One base fixes all four without flattening the two looks into one.</p>
+        <span class="slide__no">03</span>
+      </section>
+
+      <!-- 04 Split -->
+      <section class="slide slide--split" id="split" aria-labelledby="s4">
+        <div class="stack">
+          <p class="slide__kick">The answer</p>
+          <h2 id="s4">One base, two themes</h2>
+          <p><strong>Professional</strong> takes its tokens from the approved portfolio: Inter, one accent, soft surfaces, dark and light.</p>
+          <p><strong>Section 9</strong> is the GITS-95 ops room: mono body, Rajdhani display, phosphor green, zero radius, amber focus. Dark only, on purpose.</p>
+        </div>
+        <div class="grid grid--2 grid--tight">
+          <div class="panel-note">
+            <p class="card__kicker">Professional</p>
+            <div class="row" style="gap:var(--sp-2);margin-top:var(--sp-3)">
+              <span style="width:2rem;height:2rem;background:#08090c;border:1px solid var(--line-strong)"></span>
+              <span style="width:2rem;height:2rem;background:#10131a;border:1px solid var(--line-strong)"></span>
+              <span style="width:2rem;height:2rem;background:#7af0c8"></span>
+            </div>
+            <p class="small faint" style="margin-top:var(--sp-3)">#08090c · #10131a · #7af0c8</p>
+          </div>
+          <div class="panel-note">
+            <p class="card__kicker">Section 9</p>
+            <div class="row" style="gap:var(--sp-2);margin-top:var(--sp-3)">
+              <span style="width:2rem;height:2rem;background:#060b09;border:1px solid var(--line-strong)"></span>
+              <span style="width:2rem;height:2rem;background:#0b1410;border:1px solid var(--line-strong)"></span>
+              <span style="width:2rem;height:2rem;background:#8bffbe"></span>
+            </div>
+            <p class="small faint" style="margin-top:var(--sp-3)">#060b09 · #0b1410 · #8bffbe</p>
+          </div>
+        </div>
+        <span class="slide__no">04</span>
+      </section>
+
+      <!-- 05 Stats -->
+      <section class="slide slide--stats" id="stats" aria-labelledby="s5">
+        <p class="slide__kick">What ships</p>
+        <h2 id="s5">One sheet, everything covered</h2>
+        <div class="grid grid--3">
+          <div class="stat"><span class="stat__label">Themes</span><span class="stat__value">2</span><span class="stat__foot">dark and light, plus ops room</span></div>
+          <div class="stat stat--accent"><span class="stat__label">Contrast pairs</span><span class="stat__value">24</span><span class="stat__foot">all clear WCAG AA</span></div>
+          <div class="stat"><span class="stat__label">Build steps</span><span class="stat__value">0</span><span class="stat__foot">plain CSS and HTML</span></div>
+        </div>
+        <p class="small muted">Tokens in CSS and JSON, one component sheet, eight slide layouts, and a checker that proves the copies stay in sync.</p>
+        <span class="slide__no">05</span>
+      </section>
+
+      <!-- 06 Table -->
+      <section class="slide slide--table" id="table" aria-labelledby="s6">
+        <p class="slide__kick">Coverage</p>
+        <h2 id="s6" style="font-size:clamp(1.25rem,0.8rem+1.4vw,1.9rem)">Where each theme is used</h2>
+        <div class="table-wrap">
+          <table class="table table--compact">
+            <caption>Theme by surface. One theme per surface, never mixed within one.</caption>
+            <thead><tr><th scope="col">Surface</th><th scope="col">Theme</th><th scope="col">Mode</th><th scope="col">Owner</th></tr></thead>
+            <tbody>
+              <tr><td class="table__title">Portfolio</td><td>Professional</td><td>both</td><td>Petter</td></tr>
+              <tr><td class="table__title">Documents</td><td>Professional</td><td>light for print</td><td>Major</td></tr>
+              <tr><td class="table__title">Client decks</td><td>Professional</td><td>light</td><td>Major</td></tr>
+              <tr><td class="table__title">Hermes dashboard</td><td>Section 9</td><td>dark</td><td>Section 9</td></tr>
+              <tr><td class="table__title">Crew HQ, status pages</td><td>Section 9</td><td>dark</td><td>Section 9</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <span class="slide__no">06</span>
+      </section>
+
+      <!-- 07 Quote -->
+      <section class="slide slide--quote" id="quote" aria-labelledby="s7">
+        <p class="slide__kick">Principle</p>
+        <blockquote class="slide__quote" id="s7" style="margin:0">“The accent marks the one thing that matters on the screen. Everything else is ink, surface and space.”</blockquote>
+        <p class="slide__cite">crew/design/docs.html — colour rules</p>
+        <span class="slide__no">07</span>
+      </section>
+
+      <!-- 08 Closing -->
+      <section class="slide slide--end" id="end" aria-labelledby="s8">
+        <p class="slide__kick">Next</p>
+        <h2 id="s8">Build the two decks on this sheet</h2>
+        <p class="lede" style="max-width:42ch">#29 and #30 are unblocked: the deck template and <code>claude-design-system.md</code> carry the tokens, the type and the layout rules.</p>
+        <p class="small faint" style="margin-top:var(--sp-4)">Action: the Major loads the design system, then writes the decks.</p>
+        <span class="slide__no">08</span>
+      </section>
+    </div>
+  </main>
+</div>
+<script src="theme.js"></script>
+</body>
+</html>

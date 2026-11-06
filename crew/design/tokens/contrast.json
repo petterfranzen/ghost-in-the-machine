@@ -1,0 +1,29 @@
+{
+  "$comment": "Text and UI pairs the system promises. check.py recomputes each with alpha compositing and fails below the minimum.",
+  "pairs": [
+    { "theme": "professional", "mode": "dark", "fg": "--text", "bg": "--bg", "min": 4.5, "use": "body on page" },
+    { "theme": "professional", "mode": "dark", "fg": "--text", "bg": "--surface", "min": 4.5, "use": "body on card" },
+    { "theme": "professional", "mode": "dark", "fg": "--text-muted", "bg": "--surface", "min": 4.5, "use": "secondary copy" },
+    { "theme": "professional", "mode": "dark", "fg": "--text-faint", "bg": "--surface", "min": 4.5, "use": "captions" },
+    { "theme": "professional", "mode": "dark", "fg": "--accent", "bg": "--surface", "min": 4.5, "use": "links and figures" },
+    { "theme": "professional", "mode": "dark", "fg": "--accent-ink", "bg": "--accent", "min": 4.5, "use": "text on accent" },
+    { "theme": "professional", "mode": "dark", "fg": "--warning", "bg": "--surface", "min": 4.5, "use": "warning text" },
+    { "theme": "professional", "mode": "dark", "fg": "--danger", "bg": "--surface", "min": 4.5, "use": "failure text" },
+    { "theme": "professional", "mode": "light", "fg": "--text", "bg": "--bg", "min": 4.5, "use": "body on page" },
+    { "theme": "professional", "mode": "light", "fg": "--text", "bg": "--surface", "min": 4.5, "use": "body on card" },
+    { "theme": "professional", "mode": "light", "fg": "--text-muted", "bg": "--surface", "min": 4.5, "use": "secondary copy" },
+    { "theme": "professional", "mode": "light", "fg": "--text-faint", "bg": "--surface", "min": 4.5, "use": "captions" },
+    { "theme": "professional", "mode": "light", "fg": "--accent", "bg": "--surface", "min": 4.5, "use": "links and figures" },
+    { "theme": "professional", "mode": "light", "fg": "--accent-ink", "bg": "--accent", "min": 4.5, "use": "text on accent" },
+    { "theme": "professional", "mode": "light", "fg": "--warning", "bg": "--surface", "min": 4.5, "use": "warning text" },
+    { "theme": "professional", "mode": "light", "fg": "--danger", "bg": "--surface", "min": 4.5, "use": "failure text" },
+    { "theme": "section9", "mode": "dark", "fg": "--text", "bg": "--bg", "min": 4.5, "use": "body on page" },
+    { "theme": "section9", "mode": "dark", "fg": "--text", "bg": "--surface", "min": 4.5, "use": "body on card" },
+    { "theme": "section9", "mode": "dark", "fg": "--text-muted", "bg": "--surface", "min": 4.5, "use": "secondary copy" },
+    { "theme": "section9", "mode": "dark", "fg": "--text-faint", "bg": "--surface", "min": 4.5, "use": "captions" },
+    { "theme": "section9", "mode": "dark", "fg": "--accent", "bg": "--surface", "min": 4.5, "use": "accent text" },
+    { "theme": "section9", "mode": "dark", "fg": "--accent-ink", "bg": "--accent", "min": 4.5, "use": "text on accent" },
+    { "theme": "section9", "mode": "dark", "fg": "--focus", "bg": "--bg", "min": 3.0, "use": "focus ring" },
+    { "theme": "section9", "mode": "dark", "fg": "--warning", "bg": "--surface", "min": 4.5, "use": "warning text" }
+  ]
+}
