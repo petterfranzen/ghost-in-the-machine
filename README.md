@@ -8,9 +8,9 @@ in the middle, where it settles and the stone glows a little warmer. Find all
 three and the clearing quietly comes alight. Nothing chases you, nothing runs out,
 nothing counts down. A tiny quest you can finish in a minute and then just sit in.
 
-![The finished clearing, desktop](https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/shots/night-2026-11-01-lantern-moss/desktop.png)
+![The finished clearing, desktop](shots/desktop.png)
 
-![The clearing on a 390 px phone](https://raw.githubusercontent.com/petterfranzen/ghost-in-the-machine/shots/night-2026-11-01-lantern-moss/phone.png)
+![The clearing on a 390 px phone](shots/phone.png)
 
 ## The idea
 
@@ -58,12 +58,11 @@ for a page this size.
 
 ## Build and run
 
-Requires [mise](https://mise.jdx.dev) (the repo's nights all pin their tools
-this way). Then:
+Requires [mise](https://mise.jdx.dev), which pins the toolchain in `mise.toml`.
+Then:
 
 ```sh
-cd nights/2026-11-01-lantern-moss
-mise install        # installs Zig 0.15.2 and Node 22.23.4 from mise.toml
+mise install        # installs Zig 0.15.2 and Node 22.23.4
 ./build.sh          # builds src/main.zig -> .build/game.wasm, embeds it in dist/wasm.js and copies src/
 open dist/index.html   # or: python3 -m http.server -d dist
 ```
@@ -91,6 +90,13 @@ quest cannot be completed.
   my ear, but audio is the easiest thing to get subtly wrong.
 - I did not add a way to reset the clearing except reloading the page. For a
   minute-long thing that seemed fine, but a "again" would be kind.
+
+## Where this came from
+
+Lantern Moss was built as the 2026-11-01 night in
+[ghost-in-the-machine](https://github.com/petterfranzen/ghost-in-the-machine)
+and graduated into this repository with `git subtree split`, so its original
+commit and history came along with it.
 
 ## What I'd do next
 
