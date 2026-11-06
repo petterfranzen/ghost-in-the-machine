@@ -63,7 +63,7 @@ this way). Then:
 
 ```sh
 cd nights/2026-11-01-lantern-moss
-mise install        # installs Zig 0.15.2 and Node 22.23.4 from mise.toml
+mise install        # installs Zig 0.15.2 and Node 24.22.2 from mise.toml
 ./build.sh          # builds src/main.zig -> .build/game.wasm, embeds it in dist/wasm.js and copies src/
 open dist/index.html   # or: python3 -m http.server -d dist
 ```

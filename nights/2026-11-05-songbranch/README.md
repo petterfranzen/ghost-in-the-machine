@@ -27,7 +27,7 @@ server, no network, no fonts, no CDNs: everything is in `dist/`.
 ## Build it
 
 ```sh
-mise install        # Go 1.27.2 and Node 22.23.4
+mise install        # Go 1.27.2 and Node 24.22.2
 ./build.sh          # writes dist/ (module as base64, four files)
 ```
 
