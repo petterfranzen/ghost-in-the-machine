@@ -116,6 +116,13 @@ does not slowly fill up with rings nobody removes.
   says nothing about Skia's gradients on a five-year-old phone. Redrawing the
   background gradient four times a frame is the likely first cost.
 
+## Where this came from
+
+Koi Drift was built as the 2026-10-31 night in
+[ghost-in-the-machine](https://github.com/petterfranzen/ghost-in-the-machine)
+and graduated into its own repository with `git subtree split`, so its
+original commit came along with it.
+
 ## What I'd do next
 
 - let a koi nose the surface and leave its own small ring, so the pond has two
