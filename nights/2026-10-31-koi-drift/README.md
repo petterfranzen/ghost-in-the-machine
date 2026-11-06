@@ -69,7 +69,7 @@ Honest trade-offs, in the spirit of "what would I not do again":
 ## How to build and run
 
 ```bash
-mise install          # gleam 1.19.2 (released 12 Oct 2026) and node 22.23.4
+mise install          # gleam 1.19.2 (released 12 Oct 2026) and node 24.22.2
 bash build.sh         # tests, compile, pack dist/, smoke checks
 python3 -m http.server -d dist 8080
 ```
