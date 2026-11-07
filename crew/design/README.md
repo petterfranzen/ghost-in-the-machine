@@ -44,7 +44,7 @@ room. One theme per surface; never mix them.
 
 ```bash
 python3 crew/design/tools/check.py crew/design
-# ok 151 checks: 127 token values in sync, 24 contrast pairs pass AA
+# ok 152 checks: 128 token values in sync, 24 contrast pairs pass AA
 ```
 
 Screenshots and a served-page Impeccable scan back the accessibility claims:
@@ -59,3 +59,7 @@ all transitions, and the pages hold at 390px without sideways scroll.
 - Section 9 stays dark. Paper and projectors take Professional light.
 - The Hermes dashboard theme in `hq/ghost.yaml` is the same palette expressed in
   the dashboard's own contract; keep the two in step.
+- Text is 16px. Labels — eyebrow, badge, tag, table header, kicker and small
+  copy — are the exception: 12px is the floor. The eyebrow is a label, not
+  decoration: it names the section, so it stays at 12px, and it never carries
+  the only copy of a fact. The decision lives in `--fs-eyebrow`.
