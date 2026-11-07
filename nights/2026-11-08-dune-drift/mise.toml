@@ -1,0 +1,3 @@
+# CI installs this toolchain, then runs build.sh inside it.
+[tools]
+node = "24.22.2"
