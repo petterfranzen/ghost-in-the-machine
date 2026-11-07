@@ -196,6 +196,26 @@
 <span class="c-tag">&lt;/div&gt;</span></code></pre>
         </div>
 
+        <h3 class="h3">Phone navigation</h3>
+        <p>At 390px the demo dashboard folds its rail into a wrapped top strip so the theme and mode controls stay next to the page they change and never cover the charts. A product dashboard should dock the same controls to the bottom instead, inside thumb reach: fix the rail to the bottom edge, keep one row of 44px targets, and reserve matching space at the end of the scrolling content.</p>
+        <div class="code">
+          <div class="code__bar"><span class="code__lang">css</span><span>bottom dock</span></div>
+          <pre><code>@media (max-width: 860px) {
+  .app__rail {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 20;
+    border-block-start: 1px solid var(--line);
+    border-block-end: 0;
+    padding-block: var(--sp-2) calc(var(--sp-2) + env(safe-area-inset-bottom));
+  }
+  .app__body { padding-block-end: calc(7rem + env(safe-area-inset-bottom)); }
+  .app__nav { display: flex; gap: var(--sp-1); }
+  .app__nav a { flex: 1 1 0; justify-content: center; min-height: 2.75rem; }
+}</code></pre>
+        </div>
+
         <h2 class="h2" id="components">Components</h2>
 
         <h3 class="h3">Headings and text</h3>
@@ -310,7 +330,7 @@ python3 crew/design/tools/check.py crew/design</code></pre>
           <li>Focus is always visible: <code>2px solid var(--focus)</code> with a 3px offset. Section 9 uses amber, Professional the accent.</li>
           <li><code>prefers-reduced-motion</code> kills the scanline, all transitions and the deck transitions; nothing communicates state by motion alone.</li>
           <li>Do not use colour alone: badges carry a word ("passing", "74%"), calls carry their own icon and title.</li>
-          <li>Targets are at least 40px high (<code>.btn</code> is 2.5rem), one-handed on a phone; the dashboard rail folds at 860px and never scrolls sideways.</li>
+          <li>Targets are at least 44px high (<code>.btn</code> is 2.75rem), including the dashboard rail links and the skip link; aim for one-handed reach on a phone. The dashboard rail folds at 860px and never scrolls sideways.</li>
           <li>Use real elements: <code>table</code> with <code>caption</code> and <code>th scope</code>, <code>nav</code> with a label, <code>aria-current</code> for the active page, <code>role="img"</code> plus a sentence for charts.</li>
         </ul>
 

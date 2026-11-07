@@ -59,6 +59,9 @@ button { font: inherit; color: inherit; }
   left: var(--sp-4);
   top: var(--sp-4);
   z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   padding: var(--sp-2) var(--sp-4);
   background: var(--accent);
   color: var(--accent-ink);
@@ -1107,6 +1110,9 @@ html[data-theme="section9"] .slide--end::before {
 
 .app__nav { display: grid; gap: 2px; }
 .app__nav a {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
   padding: var(--sp-2) var(--sp-3);
   color: var(--text-muted);
   text-decoration: none;
