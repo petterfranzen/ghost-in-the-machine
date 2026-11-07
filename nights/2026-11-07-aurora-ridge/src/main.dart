@@ -13,6 +13,7 @@
 //     flash; nothing is timed, scored, or auto-playing.
 
 import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 import 'dart:math';
 
 import 'package:web/web.dart' as web;
@@ -448,12 +449,18 @@ void main() {
   final reduce = web.window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   final scene = Scene(canvas, Palette.fromTokens(), reduce);
 
-  // Pointer: map screen coords onto the 192x108 grid.
-  void fromPointer(num clientX, num clientY) {
+  // Pointer: map screen coords onto the 192x108 grid. Real browsers hand us
+  // fractional clientX/clientY (trackpads, page zoom, high-DPI displays), but
+  // package:web 1.1.2 types them as `int`, so the typed getter throws on a
+  // fractional value. Read the raw JS number and keep it as a double.
+  double _client(web.PointerEvent e, String name) =>
+      (e as JSObject).getProperty<JSNumber>(name.toJS).toDartDouble;
+
+  void fromPointer(web.PointerEvent e) {
     final r = canvas.getBoundingClientRect();
     scene.tapAt(
-      (clientX - r.left) / r.width * W,
-      (clientY - r.top) / r.height * H,
+      (_client(e, 'clientX') - r.left) / r.width * W,
+      (_client(e, 'clientY') - r.top) / r.height * H,
     );
   }
 
@@ -461,7 +468,7 @@ void main() {
     'pointerdown',
     ((web.PointerEvent e) {
       e.preventDefault();
-      fromPointer(e.clientX, e.clientY);
+      fromPointer(e);
     }).toJS,
   );
 

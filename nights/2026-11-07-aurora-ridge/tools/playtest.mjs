@@ -64,6 +64,16 @@ await page.waitForTimeout(600);
 await page.screenshot({ path: 'shots/phone-tap.png' });
 check(!before.equals(await page.screenshot()), 'a tap changes the scene');
 
+// --- fractional pointer coordinates ----------------------------------------------
+// Trackpads, page zoom and high-DPI screens hand the page fractional
+// clientX/clientY. A whole-pixel click must not be the only working case.
+const errorsBeforeFractional = errors.length;
+const beforeFractional = await page.screenshot();
+await page.mouse.click(195.5, 400.5);
+await page.waitForTimeout(600);
+check(errors.length === errorsBeforeFractional, 'a fractional click raises no page error');
+check(!beforeFractional.equals(await page.screenshot()), 'a fractional click changes the scene');
+
 // --- raise button and keyboard --------------------------------------------------
 await page.click('#raise');
 await page.waitForTimeout(200);

@@ -66,12 +66,13 @@ check. The result is six files in `dist/`.
 | Reduced-motion variant | `matchMedia` in Dart plus the design system's CSS media query |
 | No external requests | no `@font-face`, no `@import`, no fetch; the playtest asserts zero non-`file:` requests |
 | Works on a phone | 390 × 844 tested: no sideways scroll, controls in thumb reach |
+| Text size | body, lede, hint and footer text are 16 px; the eyebrow is the design system's 12 px mono label |
 
 ## Checks
 
 ```sh
 node tools/smoke.mjs dist        # static: self-contained, house rules present
-node tools/playtest.mjs          # Chromium at 390x844: taps, sound, targets, motion
+node tools/playtest.mjs          # Chromium at 390x844: taps, sound, targets, motion, fractional clicks
 ```
 
 `tools/playtest.mjs` needs Playwright; it is a development check, not part of

@@ -22,6 +22,7 @@ check(/<canvas[^>]+width="192"[^>]+height="108"/.test(html), 'the scene is 192x1
 check(html.includes('role="img"'), 'the canvas is announced as an image');
 check(html.includes('aria-pressed="false"'), 'sound starts off (aria-pressed="false")');
 check(/<h1[^>]*>/.test(html), 'the page has an h1');
+check(html.includes('rel="icon"'), 'the page declares an inline favicon');
 check(html.includes('Skip to the sky'), 'a skip link is present');
 check(html.includes('design/section9.css'), 'the Section 9 theme is linked');
 check(html.includes('design/base.css'), 'the design-system base tokens are linked');
