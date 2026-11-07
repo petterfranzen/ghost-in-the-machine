@@ -11,7 +11,9 @@ One folder per night: `YYYY-MM-DD-<slug>/`, containing
 Every night answers the same house rules — calm; nothing that counts, times or
 scores; sound off until the user asks for it; one thumb, 44 px tap targets, no
 sideways scroll; body, hint and footer text at 16 px on a phone (12 px is
-allowed for a short label); a `prefers-reduced-motion` variant. Check the built
+allowed for a short label — a control, a `label`/`legend`/`kbd`, or an
+`eyebrow`/`kicker`, all at the design system's `--fs-xs` floor); a
+`prefers-reduced-motion` variant. Check the built
 night against the ones a machine can see before opening a PR:
 
 ```sh

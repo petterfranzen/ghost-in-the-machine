@@ -106,7 +106,7 @@ const cssText = [
   ...files.css.map((f) => readFileSync(f, 'utf8')),
 ].join('\n');
 const jsText = [
-  ...[...html.matchAll(/<script\b(?![^>]*\bsrc=)(?![^>]*type\s*=\s*["']?(?:application\/(?:ld\+)?json|text\/template))/gi)]
+  ...[...html.matchAll(/<script\b(?![^>]*\bsrc=)(?![^>]*type\s*=\s*["']?(?:application\/(?:ld\+)?json|text\/template))[^>]*>([\s\S]*?)<\/script>/gi)]
     .map((m) => m[1] ?? ''),
   ...files.js.map((f) => readFileSync(f, 'utf8')),
 ].join('\n;\n');
@@ -233,8 +233,11 @@ function behindGesture(positions) {
 
 // 3. The sound toggle is not on at load.
 {
-  const pressed = [...html.matchAll(/aria-pressed\s*=\s*["']true["']/gi)];
-  if (pressed.length) fail('sound-default', 'index.html ships aria-pressed="true" (the toggle starts pressed)');
+  // The attribute only counts on an element, never inside a <style> selector
+  // or a <script> body: drop those first, then look for it inside a tag.
+  const markup = html.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/gi, '');
+  const pressed = [...markup.matchAll(/<[a-zA-Z][^>]*\baria-pressed\s*=\s*["']true["']/gi)];
+  if (pressed.length) fail('sound-default', 'index.html ships aria-pressed="true" on an element (the toggle starts pressed)');
   else if (/aria-pressed\s*=\s*["']true["']/i.test(jsText)) {
     warn('sound-default', 'the built JS contains aria-pressed="true" — check it is only set after a tap, not at load');
   }
@@ -271,7 +274,11 @@ function extToType(p) {
 async function browserChecks(chromium) {
   // Serve dist/ the way Pages does, so absolute paths and fetch() behave.
   const server = createServer((rq, rs) => {
-    const p = resolve(distDir, decodeURIComponent(rq.url.split('?')[0]).replace(/^\/+/, '') || 'index.html');
+    const rel = decodeURIComponent(rq.url.split('?')[0]);
+    // Chromium asks for /favicon.ico on its own; answer it so a missing favicon
+    // never surfaces as a flaky console 404. A real 404 still fails below.
+    if (rel === '/favicon.ico') { rs.statusCode = 204; return rs.end(); }
+    const p = resolve(distDir, rel.replace(/^\/+/, '') || 'index.html');
     if (!p.startsWith(distDir) || !existsSync(p) || !statSync(p).isFile()) { rs.statusCode = 404; return rs.end(); }
     rs.setHeader('content-type', extToType(p));
     rs.end(readFileSync(p));
@@ -296,7 +303,11 @@ async function browserChecks(chromium) {
   });
   const page = await ctx.newPage();
   const consoleErrors = [];
-  page.on('console', (m) => { if (m.type() === 'error') consoleErrors.push('console: ' + m.text()); });
+  page.on('console', (m) => {
+    if (m.type() !== 'error') return;
+    const loc = m.location(); // log the URL, so a real 404 names its resource
+    consoleErrors.push('console: ' + m.text() + (loc && loc.url ? ` (${loc.url})` : ''));
+  });
   page.on('pageerror', (e) => consoleErrors.push('pageerror: ' + e.message));
   page.on('requestfailed', (r) => consoleErrors.push('request failed: ' + r.url()));
 
@@ -356,7 +367,9 @@ async function browserChecks(chromium) {
         if (el.closest('label')) return true;
         if (['button', 'input', 'select', 'textarea'].includes(t)) return true;
         if (el.getAttribute('role') === 'button') return true;
-        const re = /\b(label|tag|badge|chip|kbd|caption)\b/;
+        // A short label may sit at 12 px. "eyebrow" and "kicker" are the
+        // design system's label classes (crew/design: --fs-xs, the floor).
+        const re = /(^|[^a-z0-9])(label|tag|badge|chip|kbd|caption|eyebrow|kicker)($|[^a-z0-9])/i;
         return re.test(String(el.className)) || re.test(String(el.closest('[class]') ? el.closest('[class]').className : ''));
       };
       const out = [];

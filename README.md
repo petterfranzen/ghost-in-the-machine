@@ -17,7 +17,10 @@ before, built by an AI agent while Petter sleeps. Most are calm, relaxing toys.
   ```
 
   It reads `dist/` and nothing else, prints one line per finding and exits
-  non-zero when one fails. The static checks (a reduced-motion rule, no
+  non-zero when one fails. Its own tests run with
+  `node scripts/night-a11y.test.mjs` (a synthetic night with an inline
+  `<script>`, and a CSS-only `aria-pressed="true"` that must not fail).
+  The static checks (a reduced-motion rule, no
   autoplaying audio, a sound toggle that is not on at load) always run; the
   browser checks need Playwright and a Chromium, and say so and skip when they
   are missing. It is separate from the folder lint that wants every night to
