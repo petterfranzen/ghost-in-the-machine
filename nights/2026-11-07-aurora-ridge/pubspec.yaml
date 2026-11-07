@@ -1,0 +1,7 @@
+name: aurora_ridge
+description: A quiet pixel-art ridge under an aurora, for the night of 2026-11-07.
+publish_to: none
+environment:
+  sdk: ^3.9.0
+dependencies:
+  web: ^1.1.1

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-theme="section9">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Aurora Ridge — a quiet night sky</title>
+<link rel="stylesheet" href="./design/base.css">
+<link rel="stylesheet" href="./design/section9.css">
+<link rel="stylesheet" href="./design/components.css">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<a class="skip-link" href="#scene">Skip to the sky</a>
+<main class="wrap">
+  <header class="head">
+    <p class="eyebrow">ghost-in-the-machine · night 2026-11-07</p>
+    <h1 class="h1">Aurora Ridge</h1>
+    <p class="lede">Tap the night sky and a ribbon of light blooms over the ridge,
+      drifts and fades. Nothing here is timed or scored — stay as long as you like.</p>
+  </header>
+
+  <section class="stage" aria-labelledby="scene-label">
+    <h2 id="scene-label" class="sr-only">The night sky over the ridge</h2>
+    <canvas id="scene" width="192" height="108" tabindex="0" role="img"
+      aria-label="A pixel-art ridge under a still night sky. Tap the sky, or focus it and press Enter, to raise an aurora ribbon."></canvas>
+  </section>
+
+  <div class="controls">
+    <button id="raise" class="btn btn--primary" type="button">Raise a ribbon</button>
+    <button id="sound" class="btn btn--ghost" type="button" aria-pressed="false">
+      <span aria-hidden="true">♪</span> <span id="sound-label">Sound off</span>
+    </button>
+  </div>
+
+  <p class="hint">Tip: tap high in the sky for a higher note, low for a deeper one.</p>
+
+  <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+
+  <footer class="foot">
+    <p>Built for the night of 2026-11-07 · Dart compiled to JavaScript ·
+      one page, no requests, no accounts.</p>
+  </footer>
+</main>
+<script src="./main.dart.js" defer></script>
+</body>
+</html>
