@@ -1,0 +1,71 @@
+/* Aurora Ridge — layout and scene frame.
+   Colours come from the house design system (crew/design/tokens/*): nothing
+   here hardcodes a hue, and every value is a token. */
+html, body { height: 100%; }
+
+body {
+  background:
+    radial-gradient(120% 90% at 50% 0%,
+      color-mix(in srgb, var(--accent) 7%, var(--bg)) 0%,
+      var(--bg) 62%);
+  min-height: 100dvh;
+}
+
+.wrap {
+  min-height: 100dvh;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: var(--sp-6) var(--gutter) calc(var(--sp-8) + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  justify-content: center;
+}
+
+.head { display: flex; flex-direction: column; gap: var(--sp-2); }
+.head .lede { max-width: var(--measure); margin: 0; }
+
+/* The house skip link measures 42 px; lift it to the 44 px rule here. */
+.skip-link { min-height: 44px; display: inline-flex; align-items: center; }
+
+.stage {
+  position: relative;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-2);
+}
+
+#scene {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  touch-action: manipulation;
+  cursor: crosshair;
+}
+#scene:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+/* One-handed: controls sit under the scene, in easy thumb reach. */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  justify-content: center;
+}
+.controls .btn { font-size: var(--fs-base); }
+
+.hint { margin: 0; text-align: center; color: var(--text-muted); }
+
+.foot {
+  border-block-start: 1px solid var(--line);
+  padding-block-start: var(--sp-4);
+  color: var(--text-faint);
+}
+.foot p { margin: 0; text-align: center; }
+
+@media (max-width: 30rem) {
+  .wrap { padding-block-start: var(--sp-4); gap: var(--sp-3); }
+}
