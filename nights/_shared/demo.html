@@ -36,9 +36,12 @@
   [data-motion="motion"] #bloom { transition: opacity .18s ease, transform .18s ease; }
   [data-motion="motion"] #ring { animation: spread 900ms ease-out; }
   @keyframes spread { from { transform: translate(-50%,-50%) scale(.4); opacity: .9; } to { transform: translate(-50%,-50%) scale(9); opacity: 0; } }
-  #hint { color: rgba(230,236,247,.42); font-size: 16px; letter-spacing: .12em; text-transform: lowercase; text-align: center; opacity: 0; }
+  #hint { color: rgba(230,236,247,.55); font-size: 16px; letter-spacing: .12em; text-transform: lowercase; text-align: center; opacity: 0; }
   #hint.is-idle { opacity: 1; }
   [data-motion="motion"] #hint { transition: opacity 1.4s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    #bloom, #ring, #hint { transition: none; animation: none; }
+  }
   footer { display: flex; gap: 12px; align-items: center; }
   button {
     min-height: 44px; min-width: 44px; padding: 0 16px; font: 16px/1 inherit;
@@ -57,7 +60,7 @@
 </div>
 <div id="hint">rest a finger on the water, or tap it</div>
 <footer>
-  <button id="fs" aria-pressed="false">full screen</button>
+  <button id="fs">full screen</button>
   <span id="log"></span>
 </footer>
 

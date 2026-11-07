@@ -29,12 +29,15 @@
   #hint {
     position: fixed; left: 50%; bottom: max(1.4rem, env(safe-area-inset-bottom));
     transform: translateX(-50%);
-    color: rgba(190, 215, 255, 0.42);
+    color: rgba(190, 215, 255, 0.55);
     font-size: 16px; letter-spacing: 0.16em; text-transform: lowercase;
     pointer-events: none; user-select: none;
     opacity: 0; white-space: nowrap;
   }
   [data-motion="motion"] #hint { transition: opacity 1.6s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    #bloom, #hint, .pill { transition: none; }
+  }
   #hint.is-idle { opacity: 1; }
   .pill {
     position: fixed; bottom: max(1rem, env(safe-area-inset-bottom));
@@ -63,7 +66,7 @@
 <div id="bloom" aria-hidden="true"></div>
 <div id="hint">tap the water</div>
 <button id="sound-toggle" class="pill" aria-label="Toggle sound" title="Toggle sound">🔇</button>
-<button id="full-toggle" class="pill" aria-label="Toggle full screen" aria-pressed="false" title="Toggle full screen" hidden>⛶</button>
+<button id="full-toggle" class="pill" aria-label="Toggle full screen" title="Toggle full screen" hidden>⛶</button>
 <script src="app.js"></script>
 <script type="module">
   import { onTap, nudge, idleHint, fullscreenOnMobile } from './interact.js';

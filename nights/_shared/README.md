@@ -8,7 +8,9 @@ night copies the file into its own folder with `build.sh`, so each night stays
 self-contained and the page never reaches outside `dist/`.
 
 This folder is not a night: it has no `build.sh` or `dist/`, and it is not in
-`LOG.md`, so the Pages landing page and the night build job ignore it.
+`LOG.md`, so the Pages landing page ignores it. The CI job that builds changed
+nights must skip names starting with `_` when it collects night folders; the
+one-line change to its `awk` filter is in the PR that adds this folder.
 
 ## The four exports
 
