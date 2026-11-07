@@ -401,13 +401,13 @@ function addChars__stdZprivateZdigitsutils_u202(result_p0, result_p0_Idx, x_p1, 
          else {result_p0[result_p0_Idx].length = Temporary1; };
     Label2: {
       var iHEX60gensym4_335544542 = 0;
-      var i_570426524 = 0;
+      var i_570426507 = 0;
       Label3: {
           Label4: while (true) {
-          if (!(i_570426524 < n_p3)) break Label4;
-            iHEX60gensym4_335544542 = i_570426524;
+          if (!(i_570426507 < n_p3)) break Label4;
+            iHEX60gensym4_335544542 = i_570426507;
             result_p0[result_p0_Idx][(old_335544528 + iHEX60gensym4_335544542)] = x_p1.charCodeAt((start_p2 + iHEX60gensym4_335544542));
-            i_570426524 += 1;
+            i_570426507 += 1;
           }
       };
     };
@@ -593,7 +593,7 @@ function max__system_u1214(x_p0, y_p1) {
 
 }
 
-function onTap__main_u888(ev_p0) {
+function rippleTap(ev_p0) {
     var e_570426237 = (ev_p0);
     var rect_570426241 = canvas_570425351.getBoundingClientRect();
     var x_570426256 = ((e_570426237.clientX) - (rect_570426241.left));
@@ -748,12 +748,12 @@ function failedAssertImpl__stdZassertions_u86(msg_p0) {
 function drawStones__main_u558() {
     Label1: {
       var s_570425942 = {Field0: 0.0, Field1: 0.0};
-      var i_570426540 = 0;
-      var L_570426541 = (stones_570425418[0]).length;
+      var i_570426523 = 0;
+      var L_570426524 = (stones_570425418[0]).length;
       Label2: {
           Label3: while (true) {
-          if (!(i_570426540 < L_570426541)) break Label3;
-            s_570425942 = nimCopy(s_570425942, stones_570425418[0][chckIndx(i_570426540, 0, (stones_570425418[0]).length - 1)], NTI570425373);
+          if (!(i_570426523 < L_570426524)) break Label3;
+            s_570425942 = nimCopy(s_570425942, stones_570425418[0][chckIndx(i_570426523, 0, (stones_570425418[0]).length - 1)], NTI570425373);
             ctx_570425375.beginPath();
             ctx_570425375.arc((s_570425942.Field0), (s_570425942.Field1), (4.0), (0.0), (6.283185307179586));
             ctx_570425375.fillStyle = "rgba(40, 70, 110, 0.85)";
@@ -762,8 +762,8 @@ function drawStones__main_u558() {
             ctx_570425375.arc(((s_570425942.Field0 - 1.0)), ((s_570425942.Field1 - 1.0)), (1.2), (0.0), (6.283185307179586));
             ctx_570425375.fillStyle = "rgba(180, 220, 255, 0.55)";
             ctx_570425375.fill();
-            i_570426540 += 1;
-            if (!(((stones_570425418[0]).length == L_570426541))) {
+            i_570426523 += 1;
+            if (!(((stones_570425418[0]).length == L_570426524))) {
             failedAssertImpl__stdZassertions_u86(makeNimstrLit("iterators.nim(254, 11) `len(a) == L` the length of the seq changed while iterating over it"));
             }
             
@@ -802,20 +802,20 @@ function drawFrame__main_u770(t_p0) {
     var alive_570426120 = [];
     Label1: {
       var r_570426143 = ({x: 0.0, y: 0.0, r0: 0.0, r1: 0.0, t0: 0.0, dur: 0.0});
-      var i_570426535 = 0;
-      var L_570426536 = (ripples_570425411[0]).length;
+      var i_570426518 = 0;
+      var L_570426519 = (ripples_570425411[0]).length;
       Label2: {
           Label3: while (true) {
-          if (!(i_570426535 < L_570426536)) break Label3;
-            r_570426143 = nimCopy(r_570426143, ripples_570425411[0][chckIndx(i_570426535, 0, (ripples_570425411[0]).length - 1)], NTI570425362);
+          if (!(i_570426518 < L_570426519)) break Label3;
+            r_570426143 = nimCopy(r_570426143, ripples_570425411[0][chckIndx(i_570426518, 0, (ripples_570425411[0]).length - 1)], NTI570425362);
             if (((t_p0 - r_570426143.t0) < r_570426143.dur)) {
             var Temporary4 = nimCopy(null, r_570426143, NTI570425362);
             alive_570426120.push(Temporary4);;
             drawRipple__main_u703(r_570426143, t_p0);
             }
             
-            i_570426535 += 1;
-            if (!(((ripples_570425411[0]).length == L_570426536))) {
+            i_570426518 += 1;
+            if (!(((ripples_570425411[0]).length == L_570426519))) {
             failedAssertImpl__stdZassertions_u86(makeNimstrLit("iterators.nim(254, 11) `len(a) == L` the length of the seq changed while iterating over it"));
             }
             
@@ -830,7 +830,7 @@ function drawFrame__main_u770(t_p0) {
 }
 var Temporary1;
 
-function HEX3Aanonymous__main_u1090(ev_p0) {
+function HEX3Aanonymous__main_u1073(ev_p0) {
     resize__main_u77();
 
   
@@ -843,9 +843,8 @@ var ripples_570425411 = [[]];
 var stones_570425418 = [[]];
 var audioCtx_570425419 = [null];
 var soundOn_570425420 = [false];
-canvas_570425351.addEventListener(("pointerdown"), (onTap__main_u888));
 soundBtn_570425379.addEventListener(("click"), (onSoundToggle__main_u1054));
-Temporary1 = HEX3Aanonymous__main_u1090.bind(null); Temporary1.ClP_0 = HEX3Aanonymous__main_u1090; Temporary1.ClE_0 = null;
+Temporary1 = HEX3Aanonymous__main_u1073.bind(null); Temporary1.ClP_0 = HEX3Aanonymous__main_u1073; Temporary1.ClE_0 = null;
 window.addEventListener("resize", Temporary1, false);
 resize__main_u77();
 Temporary2 = drawFrame__main_u770.bind(null); Temporary2.ClP_0 = drawFrame__main_u770; Temporary2.ClE_0 = null;

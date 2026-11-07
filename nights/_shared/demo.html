@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101524">
+<title>interact.js — alive demo</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: radial-gradient(120% 90% at 50% 15%, #1b2338 0%, #101524 55%, #080a12 100%);
+    color: #e6ecf7;
+    font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px; overflow: hidden;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    -webkit-tap-highlight-color: transparent; user-select: none;
+  }
+  h1 { margin: 0; font-size: 18px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: rgba(230,236,247,.6); }
+  /* the pond: nudge for a soft bloom, tap for a ring */
+  #pond {
+    position: relative; width: min(92vw, 460px); aspect-ratio: 1;
+    border-radius: 24px; border: 1px solid rgba(160,200,255,.14);
+    background: radial-gradient(60% 60% at 50% 45%, rgba(90,150,220,.16), rgba(20,40,75,.25) 70%);
+    touch-action: none; cursor: crosshair; overflow: hidden;
+  }
+  #bloom, #ring {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    transform: translate(-50%, -50%); opacity: 0;
+  }
+  #bloom { width: 160px; height: 160px; background: radial-gradient(circle, rgba(150,205,255,.55), rgba(150,205,255,0) 70%); }
+  #ring { width: 20px; height: 20px; border: 2px solid rgba(180,220,255,.8); }
+  /* motion only when the player allows it */
+  [data-motion="motion"] #bloom { transition: opacity .18s ease, transform .18s ease; }
+  [data-motion="motion"] #ring { animation: spread 900ms ease-out; }
+  @keyframes spread { from { transform: translate(-50%,-50%) scale(.4); opacity: .9; } to { transform: translate(-50%,-50%) scale(9); opacity: 0; } }
+  #hint { color: rgba(230,236,247,.42); font-size: 16px; letter-spacing: .12em; text-transform: lowercase; text-align: center; opacity: 0; }
+  #hint.is-idle { opacity: 1; }
+  [data-motion="motion"] #hint { transition: opacity 1.4s ease; }
+  footer { display: flex; gap: 12px; align-items: center; }
+  button {
+    min-height: 44px; min-width: 44px; padding: 0 16px; font: 16px/1 inherit;
+    color: #e6ecf7; background: rgba(255,255,255,.07); border: 1px solid rgba(160,200,255,.2);
+    border-radius: 999px; cursor: pointer;
+  }
+  button:active { transform: scale(.96); }
+  #log { font-size: 16px; color: rgba(230,236,247,.55); min-height: 1.5em; }
+</style>
+</head>
+<body>
+<h1>interact.js</h1>
+<div id="pond" role="img" aria-label="A calm pond. Rest a finger to bloom it, tap for a ring.">
+  <div id="bloom"></div>
+  <div id="ring"></div>
+</div>
+<div id="hint">rest a finger on the water, or tap it</div>
+<footer>
+  <button id="fs" aria-pressed="false">full screen</button>
+  <span id="log"></span>
+</footer>
+
+<script type="module">
+import { onTap, nudge, idleHint, fullscreenOnMobile } from './interact.js';
+
+const pond = document.getElementById('pond');
+const bloom = document.getElementById('bloom');
+const ring = document.getElementById('ring');
+const hint = document.getElementById('hint');
+const log = document.getElementById('log');
+const fs = document.getElementById('fs');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const say = (t) => { log.textContent = t; };
+let last = { x: '50%', y: '50%' }; // where the last touch landed
+
+// rest a finger: the bloom grows with the strength the helper reports, and
+// fades when it reports 0. Nothing here ever ends — that is the whole point.
+nudge(pond, (strength, e) => {
+  if (e) { const r = pond.getBoundingClientRect(); last = { x: `${e.clientX - r.left}px`, y: `${e.clientY - r.top}px` }; }
+  bloom.style.left = last.x; bloom.style.top = last.y;
+  bloom.style.opacity = String(strength);
+  bloom.style.transform = `translate(-50%,-50%) scale(${0.5 + strength})`;
+  if (strength > 0) say(`nudge ${strength.toFixed(2)}`);
+});
+
+// a completed tap (one finger, no drag): a ring spreads and fades.
+onTap(pond, (e) => {
+  const r = pond.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  last = { x: `${x}px`, y: `${y}px` };
+  ring.style.left = last.x;
+  ring.style.top = last.y;
+  ring.style.animation = 'none';
+  void ring.offsetWidth; // restart the animation
+  ring.style.animation = '';
+  say(reduced ? 'tap' : 'tap — a ring spreads');
+});
+
+// after four seconds of quiet, fade the hint in; any input fades it out. Three
+// times at most. show/hide are handed the element, so the class does the fade.
+idleHint(hint, {
+  after: 4000,
+  show: (el) => el.classList.add('is-idle'),
+  hide: (el) => el.classList.remove('is-idle'),
+});
+
+// fill the screen, and offer the Fullscreen API where the platform has one.
+const screen = fullscreenOnMobile(document.documentElement);
+fs.hidden = !screen.supported;
+fs.addEventListener('click', async () => {
+  const on = await screen.toggle();
+  fs.setAttribute('aria-pressed', String(screen.isOn()));
+  say(on ? 'full screen on' : 'full screen off');
+});
+document.documentElement.dataset.motion = reduced ? 'reduced' : 'motion';
+</script>
+</body>
+</html>

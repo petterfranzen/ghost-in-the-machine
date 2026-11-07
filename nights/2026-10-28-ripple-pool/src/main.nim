@@ -115,7 +115,9 @@ proc drawFrame(t: float) =
   discard window.requestAnimationFrame(drawFrame)
 
 # ---- Interaction -----------------------------------------------------------
-proc onTap(ev: Event) =
+# Exported so the page can drive taps through the shared nights helper
+# (nights/_shared/interact.js) instead of a raw listener of its own.
+proc rippleTap(ev: Event) {.exportc.} =
   let e = ev.toJs
   let rect = canvas.getBoundingClientRect()
   let x = e.clientX.to(float) - rect.left.to(float)
@@ -140,7 +142,6 @@ proc onSoundToggle(ev: Event) =
   if soundOn: initAudio()
 
 # ---- Boot ------------------------------------------------------------------
-canvas.addEventListener("pointerdown", onTap)
 soundBtn.addEventListener("click", onSoundToggle)
 window.addEventListener("resize", proc(ev: Event) = resize())
 resize()

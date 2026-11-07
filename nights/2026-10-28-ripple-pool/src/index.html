@@ -13,25 +13,31 @@
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   #pool {
-    display: block; width: 100vw; height: 100vh;
+    display: block; width: 100%; height: 100%;
     touch-action: none;
     -webkit-tap-highlight-color: transparent;
     cursor: crosshair;
   }
+  /* the gentle answer to a rested finger: a soft bloom, never a stone */
+  #bloom {
+    position: fixed; left: 50%; top: 50%; width: 90px; height: 90px;
+    margin: -45px 0 0 -45px; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, rgba(150, 205, 255, 0.5), rgba(150, 205, 255, 0) 70%);
+    opacity: 0; transform: scale(0.5);
+  }
+  [data-motion="motion"] #bloom { transition: opacity 0.2s ease, transform 0.2s ease; }
   #hint {
     position: fixed; left: 50%; bottom: max(1.4rem, env(safe-area-inset-bottom));
     transform: translateX(-50%);
     color: rgba(190, 215, 255, 0.42);
-    font-size: 0.82rem; letter-spacing: 0.16em; text-transform: lowercase;
+    font-size: 16px; letter-spacing: 0.16em; text-transform: lowercase;
     pointer-events: none; user-select: none;
-    transition: opacity 1.6s ease;
-    white-space: nowrap;
+    opacity: 0; white-space: nowrap;
   }
-  #hint.gone { opacity: 0; }
-  #sound-toggle {
-    position: fixed;
-    right: max(1rem, env(safe-area-inset-right));
-    bottom: max(1rem, env(safe-area-inset-bottom));
+  [data-motion="motion"] #hint { transition: opacity 1.6s ease; }
+  #hint.is-idle { opacity: 1; }
+  .pill {
+    position: fixed; bottom: max(1rem, env(safe-area-inset-bottom));
     width: 44px; height: 44px;
     border-radius: 50%;
     border: 1px solid rgba(160, 200, 255, 0.18);
@@ -46,27 +52,64 @@
     touch-action: manipulation;
     transition: background 0.3s ease, transform 0.15s ease;
   }
-  #sound-toggle:active { transform: scale(0.92); }
-  #sound-toggle:hover { background: rgba(40, 70, 120, 0.7); }
+  .pill:active { transform: scale(0.92); }
+  .pill:hover { background: rgba(40, 70, 120, 0.7); }
+  #sound-toggle { right: max(1rem, env(safe-area-inset-right)); }
+  #full-toggle { right: calc(max(1rem, env(safe-area-inset-right)) + 52px); }
 </style>
 </head>
 <body>
 <canvas id="pool" aria-label="A calm pool of water. Tap to make ripples."></canvas>
+<div id="bloom" aria-hidden="true"></div>
 <div id="hint">tap the water</div>
-<button id="sound-toggle" aria-label="Toggle sound" title="Toggle sound">🔇</button>
+<button id="sound-toggle" class="pill" aria-label="Toggle sound" title="Toggle sound">🔇</button>
+<button id="full-toggle" class="pill" aria-label="Toggle full screen" aria-pressed="false" title="Toggle full screen" hidden>⛶</button>
 <script src="app.js"></script>
-<script>
-  (function () {
-    var hint = document.getElementById('hint');
-    var hidden = false;
-    function fade() {
-      if (hidden) return;
-      hidden = true;
-      hint.classList.add('gone');
+<script type="module">
+  import { onTap, nudge, idleHint, fullscreenOnMobile } from './interact.js';
+
+  const canvas = document.getElementById('pool');
+  const bloom = document.getElementById('bloom');
+  const hint = document.getElementById('hint');
+  const fullBtn = document.getElementById('full-toggle');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.documentElement.dataset.motion = reduced ? 'reduced' : 'motion';
+
+  // A tap drops a stone. The helper decides that "one finger, down and up in
+  // the same spot" is a tap; a second finger or a drag is ignored.
+  onTap(canvas, (e) => window.rippleTap(e));
+
+  // A rested finger only blooms the water at that spot. It answers, then fades
+  // when the finger lifts, so nothing is dropped and nothing ends.
+  nudge(canvas, (strength, e) => {
+    if (e) {
+      bloom.style.left = `${e.clientX}px`;
+      bloom.style.top = `${e.clientY}px`;
     }
-    window.addEventListener('pointerdown', fade, { once: true });
-    setTimeout(fade, 9000);
-  })();
+    bloom.style.opacity = String(strength);
+    bloom.style.transform = `scale(${0.5 + strength})`;
+  });
+
+  // After a while with no touch, the hint breathes back in; the next touch
+  // fades it out. At most three times, never a tutorial.
+  idleHint(hint, {
+    after: 12000,
+    show: (el) => el.classList.add('is-idle'),
+    hide: (el) => el.classList.remove('is-idle'),
+  });
+
+  // Fill the phone screen: 100dvh so the browser chrome leaves no gap, and the
+  // Fullscreen API where the platform has it (iOS Safari does not, so there we
+  // just keep the CSS fill). The pool stays full-bleed; the controls respect
+  // the safe-area insets through their own env() padding.
+  const screen = fullscreenOnMobile(document.documentElement, { padding: false });
+  if (screen.supported) {
+    fullBtn.hidden = false;
+    fullBtn.addEventListener('click', async () => {
+      await screen.toggle();
+      fullBtn.setAttribute('aria-pressed', String(screen.isOn()));
+    });
+  }
 </script>
 </body>
 </html>

@@ -25,27 +25,46 @@ cleanly through `mise`, so CI and my sandbox share the same toolchain.
 
 ```bash
 mise install          # installs the pinned Nim 2.2.12 toolchain
-./build.sh            # compiles src/main.nim -> dist/app.js, checks dist/
-python3 -m http.server -d dist 8080   # or just open dist/index.html
+./build.sh            # compiles src/main.nim -> dist/app.js, copies the helper in
+python3 -m http.server -d dist 8080   # then open http://localhost:8080
 ```
 
-`build.sh` writes `dist/app.js` and leaves `dist/index.html` in place, so the
-static site in `dist/` is exactly what Pages publishes. Both files are committed.
+`build.sh` writes `dist/app.js`, copies `dist/index.html` across and copies the
+shared helper `nights/_shared/interact.js` to `dist/interact.js`, so the folder
+Pages publishes is complete on its own. All three files are committed. Serve it
+over http (not `file://`): the page imports the helper as an ES module, and a
+browser refuses to load modules from `file://`.
 
 ## How to try it
 
-Open `dist/index.html` in a browser (serving `dist/` over http also works).
-Tap or click anywhere on the water to drop a stone and watch the rings spread.
-The hint fades after the first tap or after a few seconds. The speaker button in
-the bottom-right corner toggles sound; it starts muted. The first tap unlocks the
-audio context, and turning sound on gives each stone a soft, pitch-shifted plink.
-The layout is full-screen and touch-friendly, so it works one-handed on a phone.
+Serve `dist/` and open it in a browser. Tap the water to drop a stone and watch
+the rings spread; rest a finger on the water instead and it only blooms softly
+under your touch, then fades — a nudge, not a splash. Past a tap, the "tap the
+water" hint breathes back in after twelve quiet seconds (three times at most),
+and the next touch fades it out. The speaker button toggles sound; it starts
+muted, and the first tap unlocks the audio context. The ⛶ button asks the browser
+for real full screen where the platform offers it (iOS Safari does not, so there
+the page just fills the viewport), and the layout is full-screen and
+one-handed-friendly on a phone either way.
+
+## Shared interaction helper
+
+Input comes through `nights/_shared/interact.js`, the small ES module every night
+is asked to share: `onTap` for the stone (pointer events, no 300 ms delay,
+multi-touch and drags ignored), `nudge` for the gentle bloom, `idleHint` for the
+hint after a quiet spell, and `fullscreenOnMobile` for the 100dvh fill plus the
+Fullscreen API where it exists. Reduced motion is respected: the hint appears
+without a fade and `nudge` answers in one static step. `build.sh` copies the
+helper into `dist/` so the night still ships nothing of its own outside its
+folder; see [`nights/_shared/README.md`](../_shared/README.md). Nim keeps the
+simulation, and the page hands it a tap through an exported `rippleTap`.
 
 ## Tests / smoke check
 
 `./build.sh` fails if the Nim compiler reports an error, then checks that
-`dist/index.html` and `dist/app.js` exist, that the HTML still contains the
-canvas element, and that the compiled JS contains the canvas `getContext` call.
+`dist/index.html`, `dist/app.js` and the copied `dist/interact.js` exist, that
+the HTML still contains the canvas element and imports the helper, and that the
+compiled JS contains the canvas `getContext` call.
 That is the CI gate: `./build.sh`.
 
 I also executed the compiled app in Node against a stub DOM/Canvas/AudioContext
@@ -58,11 +77,10 @@ confirms valid colours, the speaker label toggling, and a plink firing only afte
 sound is switched on. The harness lives outside the repo; `build.sh` stays the CI
 gate.
 
-I could not capture a screenshot in this sandbox — the browser automation image
-here has no desktop stack (no Xvnc/xfwm4), so a real page render was not
-possible. The app is a dark blue pond with a soft central glow, pale blue rings,
-and small stones where you tap. If you want a screenshot for the next night, I
-can commit one from a machine with a display.
+The retrofit was rendered in a headless browser: a dark blue pond with a soft
+central glow, pale blue rings, and a small stone where you tap. Desktop and
+phone screenshots, plus a tap-through on the phone viewport, are attached to the
+retrofit PR.
 
 ## What I'd do next
 

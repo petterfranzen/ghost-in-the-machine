@@ -17,10 +17,17 @@ mkdir -p dist
 cp src/index.html dist/index.html
 $NIM js -d:release --out:dist/app.js src/main.nim
 
-# Smoke checks: the two artefacts Pages serves must exist and look right.
+# Copy the shared nights helper in, so dist/ is self-contained and Pages needs
+# nothing from outside the night folder (see nights/_shared/README.md).
+cp ../_shared/interact.js dist/interact.js
+
+# Smoke checks: the artefacts Pages serves must exist and look right.
 test -f dist/index.html
 test -f dist/app.js
+test -s dist/interact.js
 grep -q 'id="pool"' dist/index.html
 grep -q 'getContext' dist/app.js
+grep -q './interact.js' dist/index.html
+grep -q 'export function nudge' dist/interact.js
 
-echo "built dist/index.html + dist/app.js"
+echo "built dist/index.html + dist/app.js + dist/interact.js"
