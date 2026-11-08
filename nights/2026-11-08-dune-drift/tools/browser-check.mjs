@@ -56,10 +56,19 @@ await page.waitForTimeout(1400)
 ok(Buffer.compare(before, await canvas.screenshot()) !== 0,
   `a tap at fractional (120.4, 88.7) changed the field`)
 
+// The moon is a discovery: a quick tap reveals nothing; a slow press answers.
 const mx = cbb.x + cbb.width * 0.78, my = cbb.y + cbb.height * 0.17
 await page.mouse.click(mx + 0.3, my + 0.6)
-await page.waitForTimeout(400)
-ok(/moon/i.test(await page.locator('#hint').innerText()), 'tapping the moon answers')
+await page.waitForTimeout(350)
+ok(!(await page.evaluate(() => window.DuneDrift.moon().fired)), 'a quick tap on the moon does not fire the secret')
+ok(!/moon/i.test(await page.locator('#hint').innerText()), 'a quick tap on the moon reveals nothing')
+await page.mouse.move(mx + 0.4, my + 0.5)
+await page.mouse.down()
+await page.waitForTimeout(1900)
+await page.mouse.up()
+await page.waitForTimeout(250)
+ok(await page.evaluate(() => window.DuneDrift.moon().fired), 'a slow press on the moon answers')
+ok(/moon/i.test(await page.locator('#hint').innerText()), 'the moon secret announces itself once found')
 
 const dragBefore = await canvas.screenshot()
 await page.mouse.move(cbb.x + cbb.width * 0.2, cbb.y + cbb.height * 0.08)
@@ -71,6 +80,23 @@ for (let i = 1; i <= 8; i++) {
 await page.mouse.up()
 await page.waitForTimeout(1200)
 ok(Buffer.compare(dragBefore, await canvas.screenshot()) !== 0, 'dragging sifts sand')
+
+// A long press on the play area pours sand and never selects text: the iOS
+// long-press fix, checked headlessly.
+const pressBefore = await canvas.screenshot()
+const lpx = cbb.x + cbb.width * 0.34 + 0.5, lpy = cbb.y + cbb.height * 0.10 + 0.25
+await page.mouse.move(lpx, lpy)
+await page.mouse.down()
+await page.waitForTimeout(1100)
+const sel = await page.evaluate(() => { const s = window.getSelection(); return { n: s.rangeCount, text: String(s) } })
+await page.mouse.up()
+await page.waitForTimeout(900)
+ok(sel.n === 0 && sel.text === '', `long press selects no text (ranges ${sel.n}${sel.text ? ', "' + sel.text + '"' : ''})`)
+ok(Buffer.compare(pressBefore, await canvas.screenshot()) !== 0, 'a long press keeps pouring sand')
+ok((await page.evaluate(() => getComputedStyle(document.getElementById('stage')).touchAction)) === 'none',
+  'canvas touch-action is none')
+const usel = await page.evaluate(() => { const s = getComputedStyle(document.getElementById('stage')); return s.userSelect || s.webkitUserSelect || '' })
+ok(usel === 'none', `canvas user-select is none (${usel})`)
 
 await btn.click()
 await page.waitForTimeout(200)

@@ -64,12 +64,13 @@ ok('no grains left in flight', s.liveGrains() === 0)
 ok('no NaN heights after a tap', !anyNan())
 ok('post-tap slope still lies down', maxSlope() <= 6, `max slope ${maxSlope()}`)
 
-// 4. the whole-scene give fires on a landing and decays back to rest
+// 4. the whole-scene give fires on a landing, stays gentle, then rests
 boot(96, 160, 7)
 s.tap(30.5, 4.5)
-let sawSettle = false
-for (let i = 0; i < 800; i++) { s.step(1 / 60); if (s.amount() > 0.3) sawSettle = true }
+let sawSettle = false, settlePeak = 0
+for (let i = 0; i < 800; i++) { s.step(1 / 60); settlePeak = Math.max(settlePeak, s.amount()); if (s.amount() > 0.3) sawSettle = true }
 ok('a landing gives the whole scene a settle', sawSettle)
+ok('the give stays gentle (soft impact)', settlePeak <= 0.6, `peak ${settlePeak.toFixed(2)}`)
 ok('the settle damps back to rest', s.amount() === 0)
 
 // 5. tapping a dune nudges it rather than removing anything

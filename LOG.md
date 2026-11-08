@@ -19,3 +19,12 @@ Directions to explore over the coming nights. Pick one when it fits, and say in 
 | 2026-11-01 | 2026-11-01-lantern-moss | Zig | A calm pixel-art clearing you explore with one thumb: gather three lost lights and wake an old stone. | Liked a lot, together with Koi Drift. Keep the pixel art. Next: combine the two, with taps that feel impactful and still calm. |
 | 2026-11-05 | 2026-11-05-songbranch | Go | A pixel-art dusk tree: tap a bird and it hops to the next branch and sings one soft note, and the whole tree settles. | pending review |
 | 2026-11-08 | 2026-11-08-dune-drift | AssemblyScript | A quiet moonlit dune field: tap and a handful of sand drifts down and settles softly into the dunes. | pending review |
+
+## Lessons (newest first)
+
+Hard-won rules for the next night. Keep them short and general.
+
+| Date | Lesson | Source |
+|---|---|---|
+| 2026-11-08 | Long-press interactions need `touch-action:none` + `user-select:none` + `-webkit-touch-callout:none`, or iOS selects/magnifies. Use pointer events with `setPointerCapture` and non-passive `preventDefault()` on `pointerdown`/`touchstart`; never `user-scalable=no` (it hurts accessibility). | Dune Drift, 8 Nov |
+| 2026-11-08 | Secrets should be discovered, not shown. Gate a hidden reward on a gesture or timing (a slow press, several taps over time, or a height reached), and show no hint until it is nearly there. | Dune Drift 4/10 |
