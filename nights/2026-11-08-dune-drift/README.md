@@ -46,8 +46,7 @@ base64'd into `dist/app.js`, so it runs from `file://` or a static server.
 
 ```bash
 cd nights/2026-11-08-dune-drift
-npm ci                    # the pinned AssemblyScript compiler
-bash build.sh             # compiles, smoke-tests, and writes dist/
+bash build.sh             # installs, compiles, smoke-tests, writes dist/
 ```
 
 `build.sh` runs three steps: `npm ci`, `asc` (AssemblyScript -> WebAssembly),
@@ -63,8 +62,8 @@ Then open `dist/index.html`, or serve it:
 python3 -m http.server -d dist 8080
 ```
 
-CI builds every changed night on each PR, so the committed `dist/` is rebuilt
-and compared by hand — the folder is committed so Pages can publish it as is.
+CI runs the same `build.sh` for every changed night on each PR. The built
+`dist/` is committed so Pages can publish it as is.
 
 ## Accessibility and the house rules
 
