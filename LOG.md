@@ -18,3 +18,4 @@ Directions to explore over the coming nights. Pick one when it fits, and say in 
 | 2026-10-31 | 2026-10-31-koi-drift | Gleam | A still pond you feed with one thumb: tap and food drifts down, the koi glide over and the ripples spread and fade. | Liked a lot, together with Lantern Moss. Keep the pond and the koi. |
 | 2026-11-01 | 2026-11-01-lantern-moss | Zig | A calm pixel-art clearing you explore with one thumb: gather three lost lights and wake an old stone. | Liked a lot, together with Koi Drift. Keep the pixel art. Next: combine the two, with taps that feel impactful and still calm. |
 | 2026-11-05 | 2026-11-05-songbranch | Go | A pixel-art dusk tree: tap a bird and it hops to the next branch and sings one soft note, and the whole tree settles. | pending review |
+| 2026-11-08 | 2026-11-08-dune-drift | AssemblyScript | A quiet moonlit dune field: tap and a handful of sand drifts down and settles softly into the dunes. | pending review |
