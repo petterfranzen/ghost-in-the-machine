@@ -24,6 +24,7 @@ status pages) and the portfolio.
 | `dashboard.html` | Dashboard component set (rail, stats, chart, roster, activity) on real `crew/status.json` values. |
 | `slides.html` | Deck template: eight 16:9 layouts, print rules. |
 | `claude-design-system.md` | The Professional brief for Slides work, written to be loaded whole. |
+| `favicon.svg` | The Section 9 mark as a favicon. Every page inlines it as an SVG data URI; `check.py` keeps the inline copy in step with the file. |
 | `theme.js` | Optional header theme switch, used by the sample pages only. |
 | `tools/check.py` | Proves `tokens.json` matches the CSS and recomputes every contrast pair. |
 
@@ -36,6 +37,11 @@ status pages) and the portfolio.
   <link rel="stylesheet" href="crew/design/components.css">
 </html>
 ```
+
+Every page also carries the favicon — the mark in `favicon.svg`, inlined as
+`<link rel="icon" href="data:image/svg+xml,…" type="image/svg+xml">` — so a
+static server never 404s on `/favicon.ico`. A night folder does the same in its
+`dist/index.html`; `tools/check.py` fails if an inline copy drifts from the file.
 
 Swap `professional.css` for `section9.css` and drop `data-mode` for the ops
 room. One theme per surface; never mix them.
