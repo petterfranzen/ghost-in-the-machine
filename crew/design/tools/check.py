@@ -13,6 +13,7 @@ import json
 import pathlib
 import re
 import sys
+import urllib.parse
 
 # token name -> path inside tokens.json
 BASE_MAP = {}
@@ -29,7 +30,7 @@ for name, path in [
     ("--font-display", ("base", "font", "display")),
 ]:
     BASE_MAP[name] = path
-for key in ("2xs", "xs", "sm", "base", "md", "lg", "xl", "2xl", "3xl", "display"):
+for key in ("2xs", "xs", "eyebrow", "sm", "base", "md", "lg", "xl", "2xl", "3xl", "display"):
     BASE_MAP[f"--fs-{key}"] = ("base", "fontSize", key)
 for key in ("1", "2", "3", "4", "5", "6", "8", "10", "12", "16", "24"):
     BASE_MAP[f"--sp-{key}"] = ("base", "space", key)
@@ -151,6 +152,41 @@ def normalise(value):
     return " ".join(value.split()).replace("0.", ".").replace(" 0.", ".")
 
 
+def check_favicon(root):
+    """Every page in this folder links a favicon, and any inline copy is
+    byte-identical to favicon.svg, so the file and the data URI cannot drift."""
+    failures = []
+    checked = 0
+    icon_file = root / "favicon.svg"
+    icon_bytes = icon_file.read_bytes() if icon_file.exists() else None
+    if icon_bytes is None:
+        failures.append("favicon.svg: missing")
+    for page in sorted(root.glob("*.html")):
+        checked += 1
+        tag = re.search(r'<link[^>]*\brel="icon"[^>]*>', page.read_text())
+        if not tag:
+            failures.append(f"{page.name}: no <link rel=\"icon\">")
+            continue
+        href = re.search(r'href="([^"]*)"', tag.group(0))
+        if not href:
+            failures.append(f"{page.name}: favicon link has no href")
+            continue
+        value = href.group(1)
+        if value.startswith("data:image/svg+xml,"):
+            if icon_bytes is None:
+                continue
+            inline = urllib.parse.unquote(value.split(",", 1)[1]).encode()
+            if inline != icon_bytes:
+                failures.append(
+                    f"{page.name}: inline favicon differs from favicon.svg "
+                    f"({len(inline)} vs {len(icon_bytes)} bytes)"
+                )
+        elif not value.startswith(("http:", "https:", "data:")):
+            if not (root / value).exists():
+                failures.append(f"{page.name}: favicon {value!r} not found")
+    return failures, checked
+
+
 def main(argv):
     root = pathlib.Path(argv[1] if len(argv) > 1 else ".").resolve()
     data = json.loads((root / "tokens/tokens.json").read_text())
@@ -213,13 +249,20 @@ def main(argv):
                 f"{value:.2f}:1 < {pair['min']}:1"
             )
 
+    # 4. favicon (page-level, separate counter so the token/contrast
+    #    summary above stays meaningful).
+    favicon_failures, favicon_checked = check_favicon(root)
+    failures += favicon_failures
+    checked += favicon_checked
+
     if failures:
         print(f"FAIL {len(failures)} of {checked} checks")
         for line in failures:
             print("  " + line)
         return 1
     pairs = len(contrast["pairs"])
-    print(f"ok {checked} checks: {checked - pairs} token values in sync, {pairs} contrast pairs pass AA")
+    print(f"ok {checked - favicon_checked} checks: {checked - favicon_checked - pairs} token values in sync, {pairs} contrast pairs pass AA")
+    print(f"   favicon: {favicon_checked} page(s) carry favicon.svg inline")
     return 0
 
 

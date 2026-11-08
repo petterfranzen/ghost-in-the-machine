@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Dune Drift — a quiet moonlit dune field</title>
+<meta name="description" content="A calm pixel-art dune field. Tap and a handful of sand sifts down and settles; nothing is timed, counted or lost.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="scene" id="scene">
+  <h1 class="sr-only">Dune Drift</h1>
+  <canvas id="stage" tabindex="0" role="application"
+    aria-label="A moonlit dune field. Tap anywhere and a handful of sand sifts down and settles into the dunes. Tap a dune to nudge its crest. Press Enter to sift sand over the middle of the field."></canvas>
+  <p class="hint" id="hint" role="status" aria-live="polite"></p>
+  <div class="dock">
+    <p class="caption">dune drift</p>
+    <button class="btn" id="sound" type="button" aria-pressed="false">♪ off</button>
+  </div>
+</main>
+<script src="app.js" defer></script>
+</body>
+</html>
