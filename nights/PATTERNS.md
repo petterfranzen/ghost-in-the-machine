@@ -31,11 +31,11 @@ Two more, for hidden things in particular:
 Teach, do not explain. Never a tutorial wall: at most one line of text, and only
 when the player has stopped.
 
-The crew's shared nights helper offers an idle hint: `idleHint(el, { after:
-12000, show, hide })` shows one soft hint after about twelve seconds with no
-input, hides it on the next input, and shows it no more than three times; under
-reduced motion the hint is static. Use it, or copy its shape into an older night
-that does not have it yet.
+A shared nights helper (in PR #35, `nights/_shared/interact.js`, not yet on
+`main`) offers an idle hint: `idleHint(el, { after: 12000, show, hide })` shows
+one soft hint after about twelve seconds with no input, hides it on the next
+input, and shows it no more than three times; under reduced motion the hint is
+static. Until #35 lands, copy its shape into the night that needs it.
 
 A good hint is a nudge ("something here is watching back"), not instructions.
 More often the object answering the first tap is hint enough on its own.
@@ -213,7 +213,8 @@ the player learns it is the thing that answers.
 **Failure to avoid:** never make the whole scene dead except one pixel. Tapping
 elsewhere should still do something gentle, so a miss is not silence.
 
-**Seen in:** Lantern Moss ("tap near a lost spark, it will follow you home") and
+**Seen in:** Lantern Moss (come close to a lost light and it falls in behind,
+then the walker carries it home) and
 Songbranch (a tap on a bird hops it; a tap on the trunk knocks the tree). This
 is the repo's most-used hidden-ish pattern and the safest to start from.
 
@@ -249,7 +250,7 @@ kindest for a one-handed session that gets interrupted.
 day", no decay. An empty return starts the scene fresh, with no reproach.
 
 **Seen in:** no night ships it, but three READMEs name it as their next step:
-Ripple Pool, Zen Rake and Koi Drift all plan to keep their state in
+Ripple Pool, Zen Rake and Fireflies all plan to keep their state in
 `localStorage`.
 
 ## 12. A secret on the sound button (press it twice)
