@@ -19,7 +19,12 @@ const listen = (el, handlers, on) => {
 
 /* One tap: a finger down and up on the same spot. Fires on pointerup so a
  * press-and-hold can be a nudge instead; a second finger or a drag is ignored.
- * Returns a function that removes the listeners. */
+ * Each down point is tracked per pointer id and released on pointerup or
+ * pointercancel anywhere on the window, so a drag that starts on the element
+ * and ends off it cannot leave a stale entry behind and gag later taps.
+ * Returns a function that removes the listeners. This answers pointer events,
+ * not click: a night that also binds a click handler to the same element will
+ * hear both, so bind one or the other. */
 export function onTap(el, fn) {
   if (!el || typeof fn !== 'function') return () => {};
   tapReady(el);
@@ -37,12 +42,20 @@ export function onTap(el, fn) {
       if (!start) return;
       down.delete(e.pointerId);
       const drift = Math.hypot(e.clientX - start.x, e.clientY - start.y);
-      if (!multi && down.size === 0 && drift <= 12) fn(e);
+      const tap = !multi && down.size === 0 && drift <= 12;
+      if (down.size === 0) multi = false; // ready for the next gesture
+      if (tap) fn(e);
     },
-    pointercancel(e) { down.delete(e.pointerId); },
+    pointercancel(e) { down.delete(e.pointerId); if (down.size === 0) multi = false; },
   };
-  listen(el, handlers, true);
-  return () => listen(el, handlers, false);
+  el.addEventListener('pointerdown', handlers.pointerdown);
+  window.addEventListener('pointerup', handlers.pointerup);
+  window.addEventListener('pointercancel', handlers.pointercancel);
+  return () => {
+    el.removeEventListener('pointerdown', handlers.pointerdown);
+    window.removeEventListener('pointerup', handlers.pointerup);
+    window.removeEventListener('pointercancel', handlers.pointercancel);
+  };
 }
 
 /* A nudge: rest a finger on something and it answers gently. fn gets the

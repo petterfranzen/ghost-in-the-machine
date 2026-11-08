@@ -21,8 +21,12 @@ import { onTap, nudge, idleHint, fullscreenOnMobile } from './interact.js';
 - `onTap(el, fn)` — one tap: a finger down and up in the same spot. It listens
   to pointer events, so there is no 300 ms delay, and it ignores multi-touch
   and drags (a second finger or a move of more than 12 px is not a tap). It
-  fires on `pointerup`, so a press-and-hold can be a nudge instead. Returns a
-  function that removes the listeners.
+  fires on `pointerup`, so a press-and-hold can be a nudge instead. The down
+  point is released wherever the finger lifts, so a drag that starts here and
+  ends elsewhere cannot swallow a later tap. It answers pointer events and not
+  `click`, and it does not prevent the browser's synthetic click — so do not
+  also bind a `click` handler to the same element, or that night hears both.
+  Returns a function that removes the listeners.
 - `nudge(el, fn)` — a poke gets a gentle answer. `fn` is called with the
   strength (0 to 1) easing up while the finger rests, then 0 when it lifts so
   the night can settle back, plus the pointer event so you know where the poke
@@ -77,6 +81,22 @@ Then the page imports it and wires only what it needs:
 ES modules must be served over http(s); a `file://` page cannot import them. In
 practice that means `python3 -m http.server -d dist` while you work — the same
 thing Pages does for you in the morning.
+
+## Tests
+
+`interact.test.mjs` is a small, dependency-free test for the helper — it shims
+the few browser globals `interact.js` touches and drives the four exports with
+synthetic pointer events (a tap, a drag, a drag that ends off the element, and
+multi-touch for `onTap`; ramp/settle for `nudge`; show/hide/limit for
+`idleHint`; the fill and the no-Fullscreen path for `fullscreenOnMobile`). Run
+it with plain Node, no install:
+
+```bash
+node nights/_shared/interact.test.mjs
+```
+
+It is not wired into CI (the changed-nights job runs each night's `build.sh`
+with that night's toolchain), so run it by hand whenever `interact.js` changes.
 
 ## The demo
 
