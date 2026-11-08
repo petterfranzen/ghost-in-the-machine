@@ -30,7 +30,7 @@ for name, path in [
     ("--font-display", ("base", "font", "display")),
 ]:
     BASE_MAP[name] = path
-for key in ("2xs", "xs", "sm", "base", "md", "lg", "xl", "2xl", "3xl", "display"):
+for key in ("2xs", "xs", "eyebrow", "sm", "base", "md", "lg", "xl", "2xl", "3xl", "display"):
     BASE_MAP[f"--fs-{key}"] = ("base", "fontSize", key)
 for key in ("1", "2", "3", "4", "5", "6", "8", "10", "12", "16", "24"):
     BASE_MAP[f"--sp-{key}"] = ("base", "space", key)

@@ -16,6 +16,7 @@
   /* --- Type scale (rem, 16px root) ------------------------------------ */
   --fs-2xs: 0.6875rem;   /* 11px - tag counts only, never body */
   --fs-xs: 0.75rem;      /* 12px - labels, table headers */
+  --fs-eyebrow: 0.75rem; /* 12px - eyebrow labels; a label, not text, so exempt from the 16px text minimum. See README. */
   --fs-sm: 0.875rem;     /* 14px - secondary copy, dense tables */
   --fs-base: 1rem;       /* 16px - body */
   --fs-md: 1.125rem;     /* 18px - lede, card titles */
