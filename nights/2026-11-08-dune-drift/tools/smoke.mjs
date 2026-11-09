@@ -121,6 +121,9 @@ ok('the settle damps back to rest', s.amount() === 0)
   boot(96, 160, 42)
   const b = []; for (let x = 0; x < W; x++) b.push(s.heightAt(x))
   ok('same seed -> same dunes', a.join(',') === b.join(','))
+  boot(96, 160, 43)
+  const c = []; for (let x = 0; x < W; x++) c.push(s.heightAt(x))
+  ok('a different seed -> a different field', a.join(',') !== c.join(','))
 }
 
 // 9. a long quiet run stays sane and never overflows the frame

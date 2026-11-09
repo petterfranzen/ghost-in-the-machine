@@ -16,8 +16,11 @@ terrain is a per-column height field: sand stacks, so a dune is just a number.
 Wherever two neighbours differ by more than four cells, a single grain crosses
 over and the dune slumps — it can never hold a cliff. A tap on the sky releases
 grains that fall and land; a tap on a dune's face nudges the crest and the sand
-redistributes. The moon, if you tap it, gives one long slow wave across the
-whole field.
+redistributes. The field is **seeded per visit**: each visit draws a fresh
+ridge line, and `?seed=<n>` in the URL pins one so a shape you like can be
+revisited or shared. The moon is a **discovery** — press and hold it still for a
+moment and it answers with one long slow wave across the whole field; a quick
+tap there is just a handful of sand, like anywhere else in the sky.
 
 Two things make it feel calm rather than busy:
 
@@ -39,7 +42,7 @@ frame buffer — lives in the module and works on linear memory with fixed
 addresses and no allocator. The host only resizes it, taps it, steps it and
 blits the colour-index frame it hands back.
 
-The compiled module is 6.9 KB. The page makes no request at all: the wasm is
+The compiled module is 7.8 KB. The page makes no request at all: the wasm is
 base64'd into `dist/app.js`, so it runs from `file://` or a static server.
 
 ## Build and run
@@ -52,15 +55,19 @@ bash build.sh             # installs, compiles, smoke-tests, writes dist/
 `build.sh` runs three steps: `npm ci`, `asc` (AssemblyScript -> WebAssembly),
 and `tools/embed.mjs` (folds the wasm and the host into `dist/app.js`). It also
 runs `tools/smoke.mjs`, which instantiates the module in plain Node and checks
-23 invariants — sand is conserved, dunes rest at repose, fractional taps land,
+25 invariants — sand is conserved, dunes rest at repose, fractional taps land,
 the render buffer only holds known colour indices, reduced motion never
-settles, and 30 taps leave the field intact.
+settles, 30 taps leave the field intact, and the same seed rebuilds the same
+field while a different seed builds a different one.
 
 Then open `dist/index.html`, or serve it:
 
 ```bash
 python3 -m http.server -d dist 8080
 ```
+
+Open `dist/index.html?seed=4242` to pin a specific field; leave the query off
+for a fresh landscape each visit.
 
 CI runs the same `build.sh` for every changed night on each PR. The built
 `dist/` is committed so Pages can publish it as is.

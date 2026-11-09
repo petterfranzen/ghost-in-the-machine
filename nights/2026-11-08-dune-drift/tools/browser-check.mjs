@@ -113,6 +113,27 @@ const ratio = await page.evaluate(() => {
 })
 ok(ratio >= 4.5, `caption contrast ${ratio.toFixed(2)}:1 (AA needs 4.5)`)
 
+// Seeded per visit: no ?seed= draws a fresh landscape each load; ?seed=<n> pins
+// one. (The simulation's own smoke test proves a seed actually shapes the field;
+// here we prove the host wires the URL and the randomness.)
+{
+  const seedOf = async (query) => {
+    const p = await ctx.newPage()
+    await p.goto(url + (query || ''))
+    await p.waitForFunction(() => !!window.DuneDrift)
+    const v = await p.evaluate(() => window.DuneDrift.seed())
+    await p.close()
+    return v
+  }
+  const a = await seedOf('')
+  const b = await seedOf('')
+  ok(Number.isInteger(a) && a >= 0, `an unseeded visit draws a 32-bit seed (${a})`)
+  ok(a !== b, `two unseeded visits build different fields (${a} vs ${b})`)
+  const s1 = await seedOf('?seed=4242')
+  const s2 = await seedOf('?seed=4242')
+  ok(s1 === 4242 && s2 === 4242, `?seed= pins the landscape (${s1}, ${s2})`)
+}
+
 const ctx2 = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' })
 const p2 = await ctx2.newPage()
 await p2.goto(url)

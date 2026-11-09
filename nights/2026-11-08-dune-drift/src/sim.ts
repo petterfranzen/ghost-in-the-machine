@@ -86,19 +86,34 @@ function relax(iters: i32): void {
   }
 }
 
+// The ridge line is seeded: the same seed rebuilds the same field, a new one
+// draws a different calm silhouette. A fixed primary swell carries the relief;
+// the seed only shifts its phase and the two smaller harmonics, so every visit
+// looks like this piece while none of them look identical.
 function initField(): void {
   for (let i = 0; i < NPART; i++) store<i32>(PLIVE + (i << 2), 0);
   for (let i = 0; i < NDUST; i++) store<f64>(DL + (i << 3), 0);
   const h0 = f64(dH);
+  const base = 0.28 + frand() * 0.06;
+  const tilt = 0.10 + frand() * 0.06;                  // a gentle fall to the right
+  const p1 = frand() * 6.2831853;
+  const k1 = 1.00 + frand() * 0.60;
+  const a2 = 0.03 + frand() * 0.04;
+  const p2 = frand() * 6.2831853;
+  const k2 = 2.10 + frand() * 1.20;
+  const a3 = 0.02 + frand() * 0.03;
+  const p3 = frand() * 6.2831853;
+  const k3 = 3.60 + frand() * 1.60;
   for (let x = 0; x < dW; x++) {
     const t = f64(x) / f64(dW);
-    let h = h0 * 0.30
-      + h0 * 0.11 * Math.sin(t * 6.2831853 * 1.15 + 0.7)
-      + h0 * 0.05 * Math.sin(t * 6.2831853 * 2.60 + 2.1)
-      - h0 * 0.12 * t;                       // a gentle fall to the right
+    let h = h0 * base
+      + h0 * 0.11 * Math.sin(t * 6.2831853 * k1 + p1)
+      + h0 * a2 * Math.sin(t * 6.2831853 * k2 + p2)
+      + h0 * a3 * Math.sin(t * 6.2831853 * k3 + p3)
+      - h0 * tilt * t;
     hSet(x, cl(i32(Math.floor(h)), 2, dH - 4));
   }
-  relax(60);
+  relax(90);
   settle = 0; settleV = 0; wave = 0; gust = 0; gustT = 9;
 }
 

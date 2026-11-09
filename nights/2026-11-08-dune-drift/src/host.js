@@ -46,6 +46,7 @@
   let reduced = false;
   let idleTimer = 0, noted = false, noteTimer = 0;
   let actx = null, soundOn = false, lastSound = 0, noiseBuf = null;
+  let currentSeed = 0;
 
   const MOON_HOLD = 1300;   // ms a still press rests on the moon before it answers
   const POUR_MS = 150;      // a held finger keeps pouring sand (no text selection)
@@ -57,6 +58,14 @@
     return out;
   }
 
+  // The landscape is seeded per visit. A numeric ?seed= wins; otherwise draw a
+  // fresh 32-bit value so no two visits share a field.
+  function readSeed() {
+    const want = new URLSearchParams(location.search).get('seed');
+    if (want !== null && /^\d{1,10}$/.test(want)) return Number(want) >>> 0;
+    return (Math.floor(Math.random() * 0xffffffff) >>> 0);
+  }
+
   async function boot() {
     const { instance } = await WebAssembly.instantiate(fromB64(WASM_B64), {
       env: { abort: () => { throw new Error('simulation aborted'); } },
@@ -64,7 +73,10 @@
     sim = instance.exports;
     mem = sim.memory;
 
-    sim.seed(20261108);            // a fixed field, so it looks the same tomorrow
+    // A fresh field every visit; ?seed=<n> pins one so a particular landscape
+    // can be revisited or shared. Seed 0 is remapped inside the simulation.
+    currentSeed = readSeed();
+    sim.seed(currentSeed);
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     const apply = m => { reduced = m.matches; sim.setReduce(m.matches ? 1 : 0); };
     apply(mq);
@@ -79,6 +91,7 @@
     // A tiny read-only handle so the headless check can watch the slow press.
     window.DuneDrift = {
       reduce: () => reduced,
+      seed: () => currentSeed,
       moon: () => ({ pressing: moonDown, progress: moonHold / MOON_HOLD, fired: moonFired }),
     };
 
