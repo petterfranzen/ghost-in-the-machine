@@ -2,10 +2,10 @@
   --bg: #14121c;
   --bg-soft: #1c1a28;
   --ink: #f4ecdd;
-  --dim: #a99e8e;
+  --dim: #b9af9f;
   --warm: #ffcc8a;
-  --line: rgba(244, 236, 221, 0.42);
-  --line-soft: rgba(244, 236, 221, 0.18);
+  --line: rgba(244, 236, 221, 0.46);
+  --line-soft: rgba(244, 236, 221, 0.20);
 }
 
 * { box-sizing: border-box; }
@@ -13,10 +13,9 @@
 html, body { margin: 0; padding: 0; }
 
 body {
-  min-height: 100svh;
-  background:
-    radial-gradient(120% 70% at 50% -10%, #221f30 0%, rgba(34, 31, 48, 0) 60%),
-    var(--bg);
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg);
   color: var(--ink);
   font: 16px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   display: flex;
@@ -25,6 +24,7 @@ body {
 }
 
 main {
+  position: relative;
   width: 100%;
   max-width: 430px;
   padding: max(14px, env(safe-area-inset-top)) 18px max(14px, env(safe-area-inset-bottom));
@@ -50,8 +50,6 @@ h1 {
   color: var(--dim);
 }
 
-.stage-wrap { width: 100%; display: flex; justify-content: center; }
-
 #stage {
   display: block;
   width: min(100%, 340px);
@@ -65,7 +63,7 @@ h1 {
     0 0 70px -30px rgba(255, 204, 138, 0.20);
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  touch-action: manipulation;
+  touch-action: none;
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;
   outline: none;
@@ -92,6 +90,12 @@ h1 {
 .foot {
   width: 100%;
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.row {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
@@ -103,6 +107,8 @@ h1 {
   color: var(--dim);
   line-height: 1.35;
 }
+
+#hint.hint { color: var(--warm); }
 
 #sound {
   min-width: 44px;
@@ -137,15 +143,92 @@ h1 {
 
 #sound .glyph { font-size: 18px; line-height: 1; }
 
-
 @media (min-width: 900px) {
   main { max-width: 470px; }
   #stage { width: min(100%, 380px); }
 }
 
-@media (max-height: 700px) {
-  .sub { display: none; }
+@media (max-height: 820px) and (pointer: fine) {
   #stage { width: min(100%, 300px); }
+}
+
+@media (max-height: 700px) and (pointer: fine) {
+  .sub { display: none; }
+  #stage { width: min(100%, 280px); }
+}
+
+/* --- phones: the scene is the whole screen ------------------------------- */
+
+@media (pointer: coarse) {
+  html, body { height: 100%; }
+  body { overflow: hidden; display: block; }
+
+  main {
+    width: 100vw;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+  }
+
+  #stage {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    border-radius: 0;
+    box-shadow: none;
+    aspect-ratio: auto;
+  }
+
+  #stage:focus-visible {
+    box-shadow: inset 0 0 0 3px var(--warm);
+  }
+
+  header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    padding: max(10px, env(safe-area-inset-top)) 16px 0;
+    text-align: center;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(20, 18, 28, 0.62), rgba(20, 18, 28, 0));
+  }
+
+  h1 { font-size: 20px; }
+
+  .foot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 10px 16px max(12px, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, rgba(20, 18, 28, 0.80), rgba(20, 18, 28, 0));
+    pointer-events: none;
+  }
+
+  #hint { max-width: 58%; pointer-events: none; }
+  #sound { pointer-events: auto; }
+}
+
+/* landscape phones: keep the title and hint out of the tree's way */
+@media (pointer: coarse) and (orientation: landscape) {
+  header {
+    padding: max(8px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-right));
+    text-align: left;
+  }
+  h1 { font-size: 18px; }
+  .foot {
+    padding: 8px max(16px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-right));
+  }
+  #hint { max-width: 44%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -153,5 +236,5 @@ h1 {
 }
 
 @media (prefers-contrast: more) {
-  :root { --dim: #d8cdbb; --line: rgba(244, 236, 221, 0.7); }
+  :root { --dim: #ded3c2; --line: rgba(244, 236, 221, 0.75); }
 }

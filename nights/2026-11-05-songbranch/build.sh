@@ -15,7 +15,7 @@ export GOARCH=wasm
 echo "→ building the module"
 rm -rf "$DIST" .build
 mkdir -p "$DIST" .build
-go build -trimpath -ldflags="-s -w -buildid=" -o .build/game.wasm ./cmd/wasm
+go build -trimpath -buildvcs=false -ldflags="-s -w -buildid=" -o .build/game.wasm ./cmd/wasm
 
 WASM_EXEC="$(go env GOROOT)/lib/wasm/wasm_exec.js"
 if [ ! -f "$WASM_EXEC" ]; then
@@ -46,6 +46,8 @@ grep -q './wasm.js' "$DIST/index.html"
 grep -q './app.js' "$DIST/index.html"
 grep -q 'pointerdown' "$DIST/app.js"
 grep -q 'requestAnimationFrame' "$DIST/app.js"
+grep -q 'songbranchHold' "$DIST/app.js"
+grep -q 'songbranchSwipe' "$DIST/app.js"
 grep -q 'aria-pressed="false"' "$DIST/index.html"
 grep -q 'prefers-reduced-motion' "$DIST/style.css"
 grep -q 'prefers-reduced-motion' "$DIST/app.js"
