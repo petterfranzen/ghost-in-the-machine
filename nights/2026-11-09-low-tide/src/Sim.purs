@@ -59,6 +59,7 @@ type State =
   , motion :: Number -- 1.0, or ~0.35 under prefers-reduced-motion
   , t :: Number
   , salt :: Number
+  , seed :: Number
   , seaY :: Number
   , pools :: Array Pool
   , beasts :: Array Beast
@@ -113,14 +114,36 @@ pushCapped cap r arr =
 -- --------------------------------------------------------------- geometry
 
 -- Where everything sits. Pools are placed as fractions of the rock shelf so
--- the same four pools survive a resize and any phone or desktop aspect.
-poolFracs :: Array { cx :: Number, cy :: Number, rx :: Number, ry :: Number }
-poolFracs =
-  [ { cx: 0.25, cy: 0.24, rx: 0.160, ry: 0.120 }
-  , { cx: 0.69, cy: 0.18, rx: 0.135, ry: 0.095 }
-  , { cx: 0.47, cy: 0.56, rx: 0.205, ry: 0.150 }
-  , { cx: 0.79, cy: 0.82, rx: 0.125, ry: 0.100 }
-  ]
+-- the same four pools survive a resize and any phone or desktop aspect. The
+-- seed nudges that base layout: one seed rebuilds the same shore, a fresh one
+-- draws a different one, so no two visits are identical.
+poolFracs :: Number -> Array { cx :: Number, cy :: Number, rx :: Number, ry :: Number }
+poolFracs seed =
+  A.mapWithIndex nudge shelf
+  where
+  shelf =
+    [ { cx: 0.25, cy: 0.24, rx: 0.160, ry: 0.120 }
+    , { cx: 0.69, cy: 0.18, rx: 0.135, ry: 0.095 }
+    , { cx: 0.47, cy: 0.56, rx: 0.205, ry: 0.150 }
+    , { cx: 0.79, cy: 0.82, rx: 0.125, ry: 0.100 }
+    ]
+
+  -- Small, bounded nudges: each pool drifts a little and swells or shrinks a
+  -- little, but stays fully on the shelf (centre clamped against its own
+  -- radius), so no seeded pool ever runs off the edge of the screen.
+  nudge i p =
+    let k = I.toNumber i
+        cxo = (hash seed (k * 4.0 + 1.0) - 0.5) * 0.13
+        cyo = (hash seed (k * 4.0 + 2.0) - 0.5) * 0.15
+        sxo = 1.0 + (hash seed (k * 4.0 + 3.0) - 0.5) * 0.32
+        syo = 1.0 + (hash seed (k * 4.0 + 4.0) - 0.5) * 0.32
+        rx = clampN 0.100 0.210 (p.rx * sxo)
+        ry = clampN 0.070 0.165 (p.ry * syo)
+    in { rx
+       , ry
+       , cx: clampN (0.05 + rx) (0.95 - rx) (p.cx + cxo)
+       , cy: clampN (0.05 + ry) (0.90 - ry) (p.cy + cyo)
+       }
 
 type Geo =
   { seaY :: Number
@@ -129,8 +152,8 @@ type Geo =
   , moonY :: Number
   }
 
-geo :: Number -> Number -> Geo
-geo w h =
+geo :: Number -> Number -> Number -> Geo
+geo w h seed =
   let seaY = h * 0.40
       band = max 24.0 (h - seaY)
       pools =
@@ -144,7 +167,7 @@ geo w h =
               , kind: i
               }
           )
-          poolFracs
+          (poolFracs seed)
   in { seaY, pools, moonX: w * 0.79, moonY: seaY * 0.34 }
 
 beastSpeed :: Array Number
@@ -175,9 +198,9 @@ poolOf ps i = fromMaybe dud (A.index ps i)
 
 -- ------------------------------------------------------------------ life
 
-initial :: Number -> Number -> Number -> State
-initial w h motion =
-  let g = geo w h
+initial :: Number -> Number -> Number -> Number -> State
+initial w h motion seed =
+  let g = geo w h seed
       beasts =
         A.mapWithIndex
           ( \i p ->
@@ -195,7 +218,8 @@ initial w h motion =
      , h
      , motion
      , t: 0.0
-     , salt: 0.37
+     , salt: seed
+     , seed: seed
      , seaY: g.seaY
      , pools: g.pools
      , beasts
@@ -224,7 +248,7 @@ initial w h motion =
 
 resize :: Number -> Number -> State -> State
 resize w h s =
-  let g = geo w h
+  let g = geo w h s.seed
       keepWet = A.length s.pools == 4
       pools = if keepWet then A.zipWith (\nw old -> nw { wet = old.wet }) g.pools s.pools else g.pools
       beasts =

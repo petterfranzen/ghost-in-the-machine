@@ -5,8 +5,17 @@ import * as S from '../output/Sim/index.js';
 
 const TAU = Math.PI * 2;
 
+// The shore is seeded once per visit: a numeric ?seed= pins the world (so a
+// particular shore can be revisited or shared), otherwise a fresh 32-bit value
+// is drawn, so no two visits are identical.
+function readSeed() {
+  const want = new URLSearchParams(location.search).get('seed');
+  if (want !== null && /^[0-9]{1,10}$/.test(want)) return Number(want) >>> 0;
+  return Math.floor(Math.random() * 4294967296) >>> 0;
+}
+
 const sim = {
-  initial: (w, h, m) => S.initial(w)(h)(m),
+  initial: (w, h, m, seed) => S.initial(w)(h)(m)(seed),
   resize: (w, h, s) => S.resize(w)(h)(s),
   motion: (m, s) => S.withMotion(m)(s),
   tick: (dt, s) => S.tick(dt)(s),
@@ -46,6 +55,7 @@ let W = 0, H = 0, SCALE = 2, vw = 0, vh = 0;
 let buf = null, backdrop = null, offImg = null, stars = [];
 let motion = 1;
 let state = null;
+let SEED = 0;
 let fade = 0;
 let frames = 0, lastFrameMs = 0;
 let lastSeq = 0;
@@ -169,7 +179,7 @@ function relayout() {
   stones = STONE_SEED.map((s) => ({ ...s, x: Math.round(s.x * W), y: Math.round(s.y * H) }));
   backdrop = buildBackdrop();
   stars = makeStars();
-  state = state ? sim.resize(W, H, state) : sim.initial(W, H, motion);
+  state = state ? sim.resize(W, H, state) : sim.initial(W, H, motion, SEED);
 }
 
 // ------------------------------------------------------------------ pieces
@@ -519,6 +529,8 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
+// Seed the shore once, before the first layout, then build it.
+SEED = readSeed();
 relayout();
 motion = reduced.matches ? 0.35 : 1.0;
 state = sim.motion(motion, state);
@@ -527,6 +539,7 @@ requestAnimationFrame(frame);
 // A small read-only handle so a smoke check can drive the piece.
 window.lowTide = {
   size: () => ({ w: W, h: H, scale: SCALE }),
+  seed: () => SEED,
   read: () => JSON.parse(JSON.stringify(state)),
   poolCentre: (i) => {
     const p = state.pools[i];

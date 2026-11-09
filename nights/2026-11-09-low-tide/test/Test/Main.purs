@@ -9,7 +9,7 @@ import Data.Number as N
 import Effect (Effect)
 import Effect.Console (log)
 import Effect.Exception (throw)
-import Sim (State, initial, move, press, release, tap, tick, withMotion)
+import Sim (State, initial, move, press, release, resize, tap, tick, withMotion)
 import Test.Speed (clockNow)
 
 check :: String -> Boolean -> Effect Unit
@@ -36,7 +36,9 @@ wakeAll s =
 
 main :: Effect Unit
 main = do
-  let base = initial 320.0 200.0 1.0
+  let seedA = 4242.0
+  let seedB = 99.0
+  let base = initial 320.0 200.0 1.0 seedA
   let openWater = { x: base.w * 0.5, y: base.seaY * 0.5 }
 
   -- 1. a tap blooms
@@ -92,3 +94,10 @@ main = do
   log ("     " <> show perFrame <> " ms per 16.6 ms frame (budget 16 ms)")
   check "600 frames fit the frame budget" (perFrame < 16.0)
   check "the frames did something" (frames.t >= 9.0)
+
+  -- 8. the shore is seeded: one seed rebuilds it, a fresh one redraws it
+  let centres s = map (\p -> p.cx * 1024.0 + p.cy) s.pools
+  check "the shore still has four pools" (A.length base.pools == 4)
+  check "the same seed rebuilds the same shore" (centres (initial 320.0 200.0 1.0 seedA) == centres base)
+  check "a different seed draws a different shore" (centres (initial 320.0 200.0 1.0 seedB) /= centres base)
+  check "a resize keeps the seeded shore" (centres (resize 320.0 200.0 base) == centres base)

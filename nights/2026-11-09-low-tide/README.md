@@ -38,14 +38,20 @@ npx http-server dist -p 8080   # or any static server; open the page
 `dist/` is committed: Pages publishes it as it is, and CI rebuilds it to check.
 `dist/index.html` is the entry point. Everything is local — no network, no fonts.
 
+The shore is seeded per visit: a fresh 32-bit value is drawn at load, so no two
+visits share the same four pools. Add `?seed=4242` to the URL to pin one — the
+same number rebuilds exactly the same shore, which is how the tests and the
+screenshots below stay repeatable.
+
 ## Tests
 
 ```bash
 npx --no-install spago test   # pure simulation rules, plus a 600-frame budget check
 ```
 
-Twenty rules cover the pool geometry, waking and settling, the tide and visitor,
-reduced motion, and the moon press. The budget test keeps the simulation loop
+Twenty-four rules cover the pool geometry, waking and settling, the tide and visitor,
+reduced motion, the moon press, and that one seed rebuilds the shore while another
+redraws it. The budget test keeps the simulation loop
 under 16 ms per frame.
 
 ## How it works
