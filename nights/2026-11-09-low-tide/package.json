@@ -1,0 +1,14 @@
+{
+  "name": "low-tide",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Night 2026-11-09: a quiet low-tide rock shore, in PureScript",
+  "scripts": {
+    "build": "spago build",
+    "test": "spago test"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "spago": "1.0.5"
+  }
+}
