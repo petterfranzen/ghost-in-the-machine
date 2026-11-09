@@ -94,3 +94,4 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: mkdir -p /tmp/site && python3 scripts/build-index.py /tmp/site && test -s /tmp/site/index.html
+# scope test
