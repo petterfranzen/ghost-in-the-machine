@@ -125,6 +125,7 @@ button { font: inherit; color: inherit; }
 }
 .shell__brand {
   display: flex;
+  min-height: 2.75rem;
   align-items: center;
   gap: var(--sp-3);
   font-family: var(--font-display);
@@ -288,7 +289,7 @@ html[data-theme="section9"] .shell__nav a[aria-current="page"] {
   gap: var(--sp-2);
   margin: 0 0 var(--sp-3);
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-eyebrow);
   letter-spacing: var(--ls-wide);
   text-transform: uppercase;
   color: var(--accent);
@@ -465,6 +466,15 @@ html[data-theme="section9"] .card {
   gap: var(--sp-3);
   align-items: center;
   flex-wrap: wrap;
+}
+
+/* A standalone text link still needs a 44px target. Inline links inside a
+   sentence keep the WCAG inline exception; this class is for links that sit
+   alone in a row or a card foot. */
+.link--target {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
 }
 .card--flat { box-shadow: none; }
 .card--accent { border-color: var(--accent-line); }
@@ -1130,6 +1140,60 @@ html[data-theme="section9"] .slide--end::before {
   .app__nav { grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; gap: var(--sp-1); }
   .app__nav a { border-inline-start: 0; border-block-end: 2px solid transparent; }
   .app__nav a[aria-current="page"] { border-block-end-color: var(--accent); }
+}
+
+/* Phones: the rail docks to the bottom edge. The nav stays one row of
+   thumb-sized targets and the theme controls stack under it. The scroll
+   area gets matching bottom padding, so the last row never sits under the
+   dock. At 481-860px the rail stays the wrapped top strip. */
+@media (max-width: 480px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .app__rail {
+    position: fixed;
+    inset-inline: 0;
+    top: auto;
+    bottom: 0;
+    z-index: 20;
+    height: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--gutter) calc(var(--sp-2) + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--bg-soft) 94%, transparent);
+    border-inline-end: 0;
+    border-block-start: 1px solid var(--line);
+    border-block-end: 0;
+    overflow-y: visible;
+    backdrop-filter: blur(10px);
+  }
+  .app__rail .shell__brand,
+  .app__rail .card__kicker,
+  .app__rail .rail__version { display: none; }
+  .app__nav { display: flex; gap: var(--sp-1); }
+  .app__nav a {
+    flex: 1 1 0;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding-inline: var(--sp-2);
+    border-inline-start: 0;
+    border-block-end: 0;
+  }
+  .app__nav a[aria-current="page"] { border-block-end-color: transparent; background: var(--accent-soft); }
+  .rail__foot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    margin-top: 0 !important;
+  }
+  .rail__foot .row { display: flex; gap: var(--sp-2); }
+  .rail__foot .btn {
+    flex: 1 1 0;
+    min-height: 2.75rem;
+    justify-content: center;
+    padding: var(--sp-1) var(--sp-2);
+    font-size: var(--fs-xs);
+  }
+  .app__main { padding-block-end: calc(11rem + env(safe-area-inset-bottom)); }
 }
 
 /* Switch buttons show their state, not just their label. */

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Section 9 design system — usage</title>
 <meta name="description" content="Tokens, components and rules for Section 9 documents, decks and dashboards.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20role%3D%22img%22%20aria-label%3D%22Section%209%22%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%2258%22%20height%3D%2258%22%20rx%3D%2212%22%20fill%3D%22%230b1410%22%20stroke%3D%22%238bffbe%22%20stroke-opacity%3D%220.4%22%20stroke-width%3D%223%22%2F%3E%3Ccircle%20cx%3D%2229%22%20cy%3D%2225%22%20r%3D%2212%22%20fill%3D%22none%22%20stroke%3D%22%238bffbe%22%20stroke-width%3D%227%22%2F%3E%3Cpath%20d%3D%22M41%2025v13a9%209%200%200%201-9%209h-3%22%20fill%3D%22none%22%20stroke%3D%22%238bffbe%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap">
@@ -62,6 +63,7 @@
         <div class="code">
           <div class="code__bar"><span class="code__lang">html</span><span>head</span></div>
           <pre><code><span class="c-tag">&lt;html</span> <span class="c-key">data-theme</span>=<span class="c-str">"professional"</span> <span class="c-key">data-mode</span>=<span class="c-str">"dark"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"icon"</span> <span class="c-key">href</span>=<span class="c-str">"data:image/svg+xml,…"</span><span class="c-tag">&gt;</span>
   <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"crew/design/tokens/base.css"</span><span class="c-tag">&gt;</span>
   <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"crew/design/tokens/professional.css"</span><span class="c-tag">&gt;</span>
   <span class="c-tag">&lt;link</span> <span class="c-key">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-key">href</span>=<span class="c-str">"crew/design/components.css"</span><span class="c-tag">&gt;</span>
@@ -77,6 +79,7 @@
 <span class="c-tag">&lt;/html&gt;</span></code></pre>
         </div>
         <p class="small muted">Pages in this folder also load <code>theme.js</code> for the header switch. Consumers do not need it.</p>
+        <p>Every page carries a favicon so a static server never 404s on <code>/favicon.ico</code>: the mark in <code>favicon.svg</code>, inlined as a data URI so it adds no request. Keep the two in step — <code>tools/check.py</code> fails if the inline copy drifts from the file. A night folder does the same in its <code>dist/index.html</code>.</p>
 
         <h2 class="h2" id="themes">Themes and modes</h2>
         <div class="table-wrap">
@@ -197,22 +200,42 @@
         </div>
 
         <h3 class="h3">Phone navigation</h3>
-        <p>At 390px the demo dashboard folds its rail into a wrapped top strip so the theme and mode controls stay next to the page they change and never cover the charts. A product dashboard should dock the same controls to the bottom instead, inside thumb reach: fix the rail to the bottom edge, keep one row of 44px targets, and reserve matching space at the end of the scrolling content.</p>
+        <p>At 480px and below the demo dashboard docks its rail to the bottom edge: one row of 44px nav targets, the theme and mode controls beneath them, and matching bottom padding on the scroll area so the last row never sits under the dock. Between 481 and 860px the rail stays a wrapped top strip. The dock stays inside one thumb's reach, keeps its safe-area inset, and never scrolls sideways.</p>
         <div class="code">
           <div class="code__bar"><span class="code__lang">css</span><span>bottom dock</span></div>
-          <pre><code>@media (max-width: 860px) {
+          <pre><code>@media (max-width: 480px) {
   .app__rail {
     position: fixed;
     inset-inline: 0;
+    top: auto;
     bottom: 0;
     z-index: 20;
+    height: auto;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--gutter) calc(var(--sp-2) + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--bg-soft) 94%, transparent);
+    border-inline-end: 0;
     border-block-start: 1px solid var(--line);
     border-block-end: 0;
-    padding-block: var(--sp-2) calc(var(--sp-2) + env(safe-area-inset-bottom));
+    overflow-y: visible;
+    backdrop-filter: blur(10px);
   }
-  .app__body { padding-block-end: calc(7rem + env(safe-area-inset-bottom)); }
+  .app__rail .shell__brand,
+  .app__rail .card__kicker,
+  .app__rail .rail__version { display: none; }
   .app__nav { display: flex; gap: var(--sp-1); }
-  .app__nav a { flex: 1 1 0; justify-content: center; min-height: 2.75rem; }
+  .app__nav a {
+    flex: 1 1 0;
+    justify-content: center;
+    min-height: 2.75rem;
+    border-inline-start: 0;
+    border-block-end: 0;
+  }
+  .rail__foot { display: flex; flex-direction: column; gap: var(--sp-2); }
+  .rail__foot .row { display: flex; gap: var(--sp-2); }
+  .rail__foot .btn { flex: 1 1 0; min-height: 2.75rem; justify-content: center; }
+  .app__main { padding-block-end: calc(11rem + env(safe-area-inset-bottom)); }
 }</code></pre>
         </div>
 
@@ -330,7 +353,8 @@ python3 crew/design/tools/check.py crew/design</code></pre>
           <li>Focus is always visible: <code>2px solid var(--focus)</code> with a 3px offset. Section 9 uses amber, Professional the accent.</li>
           <li><code>prefers-reduced-motion</code> kills the scanline, all transitions and the deck transitions; nothing communicates state by motion alone.</li>
           <li>Do not use colour alone: badges carry a word ("passing", "74%"), calls carry their own icon and title.</li>
-          <li>Targets are at least 44px high (<code>.btn</code> is 2.75rem), including the dashboard rail links and the skip link; aim for one-handed reach on a phone. The dashboard rail folds at 860px and never scrolls sideways.</li>
+          <li>Targets are at least 44px high (<code>.btn</code> is 2.75rem), including the dashboard rail links, the bottom dock and the skip link; aim for one-handed reach on a phone. The dashboard rail folds at 860px and docks at 480px, and neither scrolls sideways.</li>
+          <li>Text is 16px. Labels — eyebrow, badge, tag, table header, kicker and small copy — are the exception: 12px is the floor. The eyebrow is a label, not decoration, so it stays at 12px (see the README).</li>
           <li>Use real elements: <code>table</code> with <code>caption</code> and <code>th scope</code>, <code>nav</code> with a label, <code>aria-current</code> for the active page, <code>role="img"</code> plus a sentence for charts.</li>
         </ul>
 
@@ -350,7 +374,8 @@ python3 crew/design/tools/check.py crew/design</code></pre>
         <div class="code">
           <div class="code__bar"><span class="code__lang">bash</span><span>no dependencies</span></div>
           <pre><code>python3 crew/design/tools/check.py crew/design
-<span class="c-com"># ok 151 checks: 127 token values in sync, 24 contrast pairs pass AA</span></code></pre>
+<span class="c-com"># ok 151 checks: 127 token values in sync, 24 contrast pairs pass AA</span>
+<span class="c-com">#    favicon: 4 page(s) carry favicon.svg inline</span></code></pre>
         </div>
         <p class="small muted">Visual checks: the contact sheet, the dashboard and the deck template are all served from this folder and screenshotted at 1440px and 390px in both themes, then run through Impeccable (detect).</p>
       </div>

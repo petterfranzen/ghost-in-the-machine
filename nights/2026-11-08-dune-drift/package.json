@@ -1,0 +1,13 @@
+{
+  "name": "dune-drift",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Dune Drift — a quiet moonlit dune field (AssemblyScript -> WebAssembly)",
+  "scripts": {
+    "build": "bash build.sh",
+    "smoke": "node tools/smoke.mjs"
+  },
+  "devDependencies": {
+    "assemblyscript": "0.28.8"
+  }
+}
