@@ -143,18 +143,22 @@ h1 {
 
 #sound .glyph { font-size: 18px; line-height: 1; }
 
-@media (min-width: 900px) {
-  main { max-width: 470px; }
-  #stage { width: min(100%, 380px); }
+@media (pointer: fine) {
+  /* The desktop card is sized against the window height, not a fixed
+     breakpoint, so the page never scrolls and the sound control never falls
+     below the fold at any window height. The stage shares the window with
+     184 px of header, caption and controls; 176/312 is the art's own aspect. */
+  #stage { width: min(100%, 340px, calc((100dvh - 184px) * 176 / 312)); }
 }
 
-@media (max-height: 820px) and (pointer: fine) {
-  #stage { width: min(100%, 300px); }
+@media (min-width: 900px) and (pointer: fine) {
+  main { max-width: 470px; }
+  #stage { width: min(100%, 380px, calc((100dvh - 184px) * 176 / 312)); }
 }
 
 @media (max-height: 700px) and (pointer: fine) {
   .sub { display: none; }
-  #stage { width: min(100%, 280px); }
+  #stage { width: min(100%, 380px, calc((100dvh - 154px) * 176 / 312)); }
 }
 
 /* --- phones: the scene is the whole screen ------------------------------- */
