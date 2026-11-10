@@ -74,7 +74,10 @@
     sim = mod.instance.exports;      // the async form returns { instance }
     mem = sim.memory;
 
-    sim.seed(20261110);             // the same garden every visit
+    // the same garden every visit, unless ?seed= asks for another one — the
+    // walker, the snowmen and which way the fox crosses all follow from it
+    const qseed = parseInt(new URLSearchParams(location.search).get('seed'), 10);
+    sim.seed(Number.isFinite(qseed) ? qseed : 20261110);
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     const apply = m => sim.set_reduce(m.matches ? 1 : 0);
     apply(mq);
@@ -403,6 +406,7 @@
       walker: sim.probe(3), target: sim.probe(4), walking: sim.probe(5),
       lantern: sim.probe(6), fox: sim.probe(7), foxX: sim.probe(8),
       idle: sim.probe(9), footprints: sim.probe(10), settle: sim.probe(11),
+      foxSide: sim.probe(19),
       puffs: sim.probe(12), reduce: sim.probe(14), horizon: sim.probe(15),
       lamp: [sim.probe(16), sim.probe(17)], ground: sim.probe(18),
       flurry: sim.probe(21), bird: sim.probe(22),

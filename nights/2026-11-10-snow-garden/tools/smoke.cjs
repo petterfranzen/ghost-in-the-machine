@@ -135,6 +135,39 @@ function colourOk(e) {
   ok(m.probe(7) === 0, 'the fox goes on his way again');
   ok(m.poll() === 2, 'the fox announced himself once');
 
+  // ---- the fox faces the way he walks --------------------------------------
+  // The sprite is drawn nose-to-the-right, so a right-to-left crossing has to
+  // be mirrored or the fox walks backwards. Force one of each with the seed
+  // and read his own pixels: the tail tip is a single palette-29 pixel, and
+  // the ear is the topmost pixel of his coat — one trails, the other leads.
+  function foxPixels(e) {
+    const w = e.probe(1) | 0, h = e.probe(2) | 0;
+    const b = buf(e, w * h);
+    let tip = -1, tips = 0, ear = -1, minY = 1e9;
+    for (let i = 0; i < b.length; i++) {
+      const v = b[i], y = (i / w) | 0, x = i - y * w;
+      if (v === 29) { tip = x; tips++; }
+      if ((v === 27 || v === 28) && y < minY) { minY = y; ear = x; }
+    }
+    return { tip, tips, ear };
+  }
+  for (const [s, toTheLeft] of [[20261110, true], [222, false]]) {
+    m.seed(s);
+    m.resize(98, 211);
+    stepFor(m, 20);                        // patience alone brings him out
+    const side = m.probe(19), fx = m.probe(8), st = m.probe(7);
+    ok(st !== 0, `seed ${s}: the fox is crossing the garden`);
+    ok(toTheLeft ? side < 0 : side > 0,
+      `seed ${s}: he walks ${toTheLeft ? 'right to left' : 'left to right'} (side ${side})`);
+    m.render();
+    const { tip, tips, ear } = foxPixels(m);
+    ok(tips === 1, `seed ${s}: the tail tip is the one palette-29 pixel (${tips})`);
+    ok(toTheLeft ? tip > fx : tip < fx,
+      `seed ${s}: the tail trails behind him (tail ${tip} vs body ${fx.toFixed(1)})`);
+    ok(toTheLeft ? ear < fx : ear > fx,
+      `seed ${s}: his nose leads the way (ear ${ear} vs body ${fx.toFixed(1)})`);
+  }
+
   // ---- reduced motion ------------------------------------------------------
   m.seed(20261110);
   m.resize(98, 211);
