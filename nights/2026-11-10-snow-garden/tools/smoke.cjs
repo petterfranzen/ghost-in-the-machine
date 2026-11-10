@@ -11,7 +11,7 @@ const fs = require('node:fs');
 
 const file = process.argv[2] || 'build/snow_garden.wasm';
 const bytes = fs.readFileSync(file);
-const PAL_LEN = 33;
+const PAL_LEN = 35;
 const MAGIC = 6220001;
 
 const fails = [];
@@ -56,7 +56,8 @@ function colourOk(e) {
 
   // ---- the exported surface ------------------------------------------------
   const need = ['memory', 'magic', 'seed', 'resize', 'set_reduce', 'tap', 'step',
-    'render', 'poll', 'amount', 'frame', 'stride', 'probe', 'pixel'];
+    'render', 'poll', 'amount', 'frame', 'stride', 'probe', 'pixel',
+    'stroke', 'stroke_end', 'press', 'press_move', 'release', 'snowman', 'trail_n'];
   for (const f of need) ok(typeof m[f] === 'function' || (f === 'memory' && m.memory), `exports.${f}`);
   ok(m.magic() === MAGIC, `magic number survives f32 (${m.magic()})`);
 
@@ -169,6 +170,115 @@ function colourOk(e) {
   m.resize(98, 211);
   m.render();
   ok(fnv(m) !== a, 'a different seed draws a different sky');
+
+  // ---- a drag draws a trail that the snow fills back in ---------------------
+  m.seed(20261110);
+  m.resize(98, 211);
+  const hz = m.probe(15);
+  m.stroke(20.0, 160.0);
+  ok(m.trail_n() === 1, `the first point of a drag draws one mark (${m.trail_n()})`);
+  m.stroke(40.5, 160.25);
+  const marks = m.trail_n();
+  ok(marks >= 6, `a dragged groove is filled in between the points (${marks} marks)`);
+  m.stroke_end();
+  m.render();
+  // the middle of the groove (no bloom was lifted there, so only ink can be)
+  const drawn = m.pixel(31, 160);
+  ok(drawn === 26, `the drawn groove draws as a footprint (index ${drawn})`);
+  ok(m.pixel(31, 168) !== 26, 'the snow beside the groove is untouched');
+  ok(colourOk(m) < 0, 'the drawn trail draws in palette colours');
+  stepFor(m, 20);
+  ok(m.trail_n() === 0, `the snow fills the drawing back in (${m.trail_n()} marks left)`);
+
+  // ---- a swipe across the sky raises a flurry -------------------------------
+  m.seed(20261110);
+  m.resize(98, 211);
+  ok(m.probe(21) === 0, 'the snow falls quietly to start');
+  m.stroke(10.0, 20.0);
+  ok(m.probe(21) > 0.9, `a swipe across the sky raises a flurry (${m.probe(21).toFixed(2)})`);
+  ok(m.poll() === 5, 'the flurry is announced as event 5');
+  ok(m.trail_n() === 0, 'a swipe in the sky draws nothing in the snow');
+  m.render();
+  ok(colourOk(m) < 0, 'the heavier fall still draws palette colours');
+  m.stroke(60.0, 30.0);
+  ok(m.probe(21) > 0.9, 'a second swipe keeps it going');
+  stepFor(m, 5);
+  ok(m.probe(21) === 0, `the flurry calms down by itself (${m.probe(21)})`);
+  ok(hz > 0 && m.probe(15) === hz, 'the horizon is where it was (the flurry does not move the scene)');
+
+  // ---- a long press rolls a snowball into a snowman -------------------------
+  m.seed(20261110);
+  m.resize(98, 211);
+  m.press(50.0, 170.0);
+  ok(m.probe(26) === 1, 'a long press starts a ball under the thumb');
+  stepFor(m, 0.5);
+  ok(m.probe(27) > 0.3 && m.probe(27) < 0.6, `the ball grows while it is held (${m.probe(27).toFixed(2)})`);
+  ok(m.probe(12) > 0, `the ball gathers puffs of snow (${m.probe(12)})`);
+  stepFor(m, 0.9);
+  ok(m.probe(27) > 0.99, `held to the end, the ball is full size (${m.probe(27).toFixed(2)})`);
+  m.render();
+  ok(colourOk(m) < 0, 'the ball draws in palette colours');
+  m.release();
+  ok(m.poll() === 8, 'leaving the snowman is announced as event 8');
+  ok(m.probe(28) === 1, `letting go leaves one snowman (${m.probe(28)})`);
+  let sm = m.snowman(0, 0);
+  ok(Math.abs(sm - 50.0) < 0.6, `the snowman stands where the ball was (${sm.toFixed(1)})`);
+  ok(m.snowman(0, 2) === 1 && m.snowman(0, 3) > 0.9, 'he stands, and at full size');
+  m.render();
+  ok(colourOk(m) < 0, 'the snowman draws in palette colours');
+
+  // the garden keeps three, and the oldest settles back in for a new one
+  for (const x of [20.0, 32.0, 64.0]) { m.press(x, 172.0); stepFor(m, 1.3); m.release(); }
+  ok(m.probe(28) === 3, `the garden keeps three snowmen (${m.probe(28)})`);
+  m.press(80.0, 174.0);
+  stepFor(m, 1.3);
+  m.release();
+  ok(m.probe(28) === 3, `a fourth is still three — one settled back in (${m.probe(28)})`);
+  let slot80 = 0;
+  for (let i = 0; i < 3; i++) if (Math.abs(m.snowman(i, 0) - 80.0) < 1.0) slot80 = i;
+  ok(Math.abs(m.snowman(slot80, 0) - 80.0) < 0.6, `the new snowman stands where the fourth ball was (slot ${slot80})`);
+
+  // a tap knocks one over, and he settles back into the snow
+  while (m.poll() !== 0) { /* drain the placement announcements */ }
+  const victim = slot80 === 1 ? 0 : 1;
+  const kx = m.snowman(victim, 0), ky = m.snowman(victim, 1);
+  m.tap(kx, ky - 4.0);
+  ok(m.snowman(victim, 2) === 2, `tapping a snowman knocks him over (state ${m.snowman(victim, 2)})`);
+  ok(m.poll() === 10, 'the topple is announced as event 10');
+  m.render();
+  ok(colourOk(m) < 0, 'a toppled snowman draws in palette colours');
+  stepFor(m, 10);
+  ok(m.snowman(victim, 2) === 0, `a toppled snowman settles back into the snow (state ${m.snowman(victim, 2)})`);
+
+  // a tap that misses every prop still sends the walker
+  m.seed(20261110);
+  m.resize(98, 211);
+  m.tap(60.0, 190.0);
+  ok(Math.abs(m.probe(4) - 60.0) < 0.01, 'a tap on bare snow still sends the walker');
+
+  // ---- the tree shakes, and the bird flutters to the other perch ------------
+  m.seed(20261110);
+  m.resize(98, 211);
+  ok(m.probe(22) === 0, 'the bird starts on the tree');
+  const bx0 = m.probe(23), by0 = m.probe(24);
+  ok(bx0 > 4 && bx0 < 34 && by0 > 60 && by0 < 150, `the bird perches on the tree (${bx0.toFixed(1)}, ${by0.toFixed(1)})`);
+  const puff0 = m.probe(12);
+  m.tap(98 * 0.17, by0 + 4.0);
+  ok(m.probe(12) > puff0 + 12, `tapping the branches shakes off a puff of snow (${m.probe(12)} puffs)`);
+  ok(m.probe(22) === 1, 'the bird sets off');
+  ok(m.poll() === 7, 'the bird leaving is announced as event 7');
+  m.tap(98 * 0.17, by0 + 4.0);   // a second tap mid-flight only shakes the snow
+  ok(m.probe(22) === 1 && m.poll() === 6, 'a tap while he is flying only shakes the snow (event 6)');
+  stepFor(m, 1.7);
+  ok(m.probe(22) === 2, `the bird reaches the gate (state ${m.probe(22)})`);
+  const bx1 = m.probe(23), by1 = m.probe(24);
+  ok(bx1 > 60 && Math.abs(by1 - (m.probe(15) - 13)) < 3.0, `he settles by the gate (${bx1.toFixed(1)}, ${by1.toFixed(1)})`);
+  m.render();
+  ok(colourOk(m) < 0, 'the bird draws in palette colours');
+  m.tap(98 * 0.17, by0 + 4.0);
+  stepFor(m, 1.7);
+  ok(m.probe(22) === 0, 'a second tap brings him home to the tree');
+  ok(Math.abs(m.probe(23) - bx0) < 0.7, `he is back on his branch (${m.probe(23).toFixed(1)})`);
 
   // ---- the frame budget ----------------------------------------------------
   m.seed(20261110);

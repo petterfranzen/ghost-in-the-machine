@@ -184,6 +184,72 @@ const parse = s => s.match(/\d+(\.\d+)?/g).slice(0, 3).map(Number);
   ok(px.sky[3] === 255 && lum(px.sky) < 0.06, `the top of the canvas is dark sky (${px.sky.slice(0, 3)})`);
   ok(lum(px.snow) > 0.5, `the foot of the canvas is bright snow (${px.snow.slice(0, 3)})`);
 
+  // ---- the new gestures, driven for real ------------------------------------
+  const preDrag = await page.evaluate(() => window.SnowGarden.read());
+  await page.mouse.move(canvasBox.x + 60, canvasBox.y + 560);
+  await page.mouse.down();
+  await page.mouse.move(canvasBox.x + 90, canvasBox.y + 580);
+  await page.mouse.move(canvasBox.x + 120, canvasBox.y + 600);
+  await page.mouse.up();
+  await page.waitForTimeout(250);
+  const drew = await page.evaluate(() => window.SnowGarden.read());
+  ok(drew.trail > preDrag.trail + 5, `a drag draws a trail in the snow (${preDrag.trail} -> ${drew.trail})`);
+  ok(Math.abs(drew.target - preDrag.target) < 0.5, 'a drag leaves the walker where he was');
+
+  // a swipe across the sky raises a flurry, which then calms down
+  await page.mouse.move(canvasBox.x + 40, canvasBox.y + 70);
+  await page.mouse.down();
+  await page.mouse.move(canvasBox.x + 110, canvasBox.y + 60);
+  await page.mouse.move(canvasBox.x + 180, canvasBox.y + 66);
+  await page.mouse.up();
+  await page.waitForTimeout(140);
+  const fl = await page.evaluate(() => window.SnowGarden.read());
+  ok(fl.flurry > 0.5, `a swipe across the sky raises a flurry (${fl.flurry.toFixed(2)})`);
+  ok(/heavier/i.test(await page.locator('#hint').innerText()), 'the flurry is announced politely');
+  await page.waitForTimeout(3600);
+  ok((await page.evaluate(() => window.SnowGarden.read())).flurry === 0, 'the flurry calms down again');
+
+  // a long press rolls a ball, and letting go leaves a snowman
+  const held = await page.evaluate(() => window.SnowGarden.read().snowmen);
+  await page.mouse.move(canvasBox.x + 250, canvasBox.y + 620);
+  await page.mouse.down();
+  await page.waitForTimeout(900);
+  const rolling = await page.evaluate(() => window.SnowGarden.read());
+  ok(rolling.rolling && rolling.ball > 0.4, `a held press rolls a snowball (${rolling.ball.toFixed(2)})`);
+  await page.mouse.up();
+  await page.waitForTimeout(250);
+  const built = await page.evaluate(() => window.SnowGarden.read());
+  ok(built.snowmen === held + 1, `letting go leaves a snowman (${held} -> ${built.snowmen})`);
+  ok(/snowman/i.test(await page.locator('#hint').innerText()), 'the snowman is announced');
+  const smOld = await page.evaluate(() => window.SnowGarden.snowman(1));
+  await page.mouse.click(
+    canvasBox.x + (smOld.x / built.w) * canvasBox.width,
+    canvasBox.y + ((smOld.y - 4) / built.h) * canvasBox.height);
+  await page.waitForTimeout(250);
+  ok((await page.evaluate(() => window.SnowGarden.snowman(1))).state === 2, 'tapping a snowman knocks him over');
+
+  // the tree: a puff of snow, and the bird flutters to the other perch
+  let bird0 = await page.evaluate(() => window.SnowGarden.read());
+  if (bird0.bird === 1) {            // an earlier tap may have caught him mid-flight
+    await page.waitForTimeout(2000);
+    bird0 = await page.evaluate(() => window.SnowGarden.read());
+  }
+  const wasOnTree = bird0.bird === 0;
+  await page.mouse.click(
+    canvasBox.x + 0.17 * canvasBox.width,
+    canvasBox.y + ((bird0.birdPos[1] + 4) / bird0.h) * canvasBox.height);
+  await page.waitForTimeout(250);
+  const shook = await page.evaluate(() => window.SnowGarden.read());
+  ok(shook.puffs > 12, `tapping the tree shakes off a puff of snow (${shook.puffs} puffs)`);
+  ok(shook.bird === 1, 'and the bird sets off');
+  ok(/bird|tree/i.test(await page.locator('#hint').innerText()), 'the bird is announced');
+  await page.waitForTimeout(2000);
+  const landed = await page.evaluate(() => window.SnowGarden.read());
+  ok(landed.bird === (wasOnTree ? 2 : 0), `he settles on the other perch (state ${landed.bird})`);
+  ok(Math.abs(landed.birdPos[0] - bird0.birdPos[0]) > landed.w * 0.3,
+    `which is across the garden (${bird0.birdPos[0].toFixed(0)} -> ${landed.birdPos[0].toFixed(0)})`);
+  ok(errors.length === 0, 'no console errors after the new gestures' + (errors.length ? ': ' + errors.join(' | ') : ''));
+
   // ---- reduced motion ------------------------------------------------------
   const rm = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', deviceScaleFactor: 2, isMobile: true, hasTouch: true });
   const page2 = await rm.newPage();
