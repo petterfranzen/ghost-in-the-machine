@@ -41,7 +41,9 @@ that moves is simulation, not animation:
   rise, and fall back.
 - **The fox.** If the garden is untouched for fifteen seconds — or at once, if
   you tap the bench — a fox walks in from one edge, pauses in the middle for
-  three seconds, and leaves. He is announced politely, never scored.
+  three seconds, and leaves. Whichever edge he comes from he walks nose-first,
+  mirrored when he crosses right to left. He is announced politely, never
+  scored.
 - **The lantern.** A small target with a generous box: tap the post and it
   lights, throws a warm pool on the snow and warms the flakes passing through
   it; tap again and it dims.
@@ -98,7 +100,7 @@ as a `data:` URI.
 
 Two checks live beside it:
 
-- `tools/smoke.cjs` drives the compiled module in plain Node — **108 invariants**:
+- `tools/smoke.cjs` drives the compiled module in plain Node — **118 invariants**:
   the exported surface, the frame only ever holding known palette indices, sky
   above and snow below at three viewports, a fractional tap landing exactly, the
   walker arriving and leaving footprints, footprints filling in, the give coming
@@ -106,8 +108,8 @@ Two checks live beside it:
   patience bringing him too, the drawn groove appearing interpolated and filling
   in, the ball growing and stopping at three snowmen, a topple and the melt,
   the bird's two perches, the flurry rising and calming, reduced motion moving
-  less and settling not at all, the same seed redrawing the same garden, and the
-  frame budget.
+  less and settling not at all, the same seed redrawing the same garden, the fox
+  leading with his nose whichever way he crosses, and the frame budget.
 - `tools/browser-check.cjs` (needs Playwright, `NODE_PATH=/usr/local/lib/node_modules`)
   checks the page itself — **60 assertions**: no console errors, no external
   requests, no favicon 404, a 44 px sound control that starts off, no
@@ -121,6 +123,11 @@ Two checks live beside it:
 
 `tools/frame-png.cjs` renders one frame to a PNG from Node (`SCALE=3` to zoom),
 which is how the art was iterated without opening a browser each time.
+
+The page reads `?seed=<n>` when it is given one and otherwise always opens the
+same garden (seed 20261110), so a plain visit is unchanged — `?seed=` is only
+there if you want to meet a different walker, a different snowfall, or a fox
+crossing the other way.
 
 ## Accessibility and the house rules
 

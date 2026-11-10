@@ -260,12 +260,15 @@ unsafe fn line(x0: f32, y0: f32, x1: f32, y1: f32, c: u8) {
     }
 }
 
-unsafe fn sprite(x0: i32, y0: i32, w: i32, h: i32, data: &[u8]) {
+/// Blit a sprite at (x0, y0). `flip` mirrors it left-to-right — for a sprite
+/// drawn facing right, so a creature walking left still leads with its nose.
+unsafe fn sprite(x0: i32, y0: i32, w: i32, h: i32, data: &[u8], flip: bool) {
     let mut j = 0;
     while j < h {
         let mut i = 0;
         while i < w {
-            let c = data[(j * w + i) as usize];
+            let si = if flip { w - 1 - i } else { i };
+            let c = data[(j * w + si) as usize];
             if c != 0 {
                 put(x0 + i, y0 + j, c);
             }
@@ -1489,12 +1492,24 @@ pub extern "C" fn render() {
             } else {
                 0
             };
+            // The fox is drawn nose-to-the-right, so mirror him when he walks
+            // left and he leads with his nose both ways. The sprite carries two
+            // clear columns on its right, so the flipped box shifts them to the
+            // left: the offset moves 2 px the other way to keep him centred on
+            // FOX_X whichever way he is going.
             let fx = if FOX_SIDE > 0.0 {
-                FOX_X - 8.0
-            } else {
                 FOX_X - 6.0
+            } else {
+                FOX_X - 8.0
             };
-            sprite(fx.round() as i32, fy.round() as i32 - 6 + bob, 14, 7, &FOX);
+            sprite(
+                fx.round() as i32,
+                fy.round() as i32 - 6 + bob,
+                14,
+                7,
+                &FOX,
+                FOX_SIDE < 0.0,
+            );
         }
 
         // 9b. the bird
@@ -1509,7 +1524,7 @@ pub extern "C" fn render() {
         } else {
             0
         };
-        sprite(WALK_X.round() as i32 - 3, wy - 9 + bob, 6, 10, &WALKER);
+        sprite(WALK_X.round() as i32 - 3, wy - 9 + bob, 6, 10, &WALKER, false);
 
         // 11. snowfall: the quiet count, and the extra a flurry raises
         let extra = (NFLAKE_EXTRA as f32 * (FLURRY * 1.6).min(1.0)).round() as usize;
