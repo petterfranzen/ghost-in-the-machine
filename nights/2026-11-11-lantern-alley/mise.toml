@@ -1,0 +1,3 @@
+[tools]
+java = "21.0.6"
+scala-cli = "1.17.1"

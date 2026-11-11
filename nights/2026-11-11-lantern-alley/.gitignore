@@ -1,0 +1,3 @@
+# scala-cli's own build state; dist/ is what we ship
+src/.scala-build/
+src/.bsp/
