@@ -29,6 +29,9 @@ slight settle of the scene.
 | **stand still** | the cat pads in from the far end and sits under a warm lantern. Tap it and it purrs and follows you for a while; if the alley is warm enough and you are quiet long enough, a fox crosses |
 | **walk over a coin** | it is picked up with a bell — but only if a lantern is lighting that corner, or your own lamp is close |
 | **tap the well** | a ripple, and the water answers |
+| **tap the barred window** | a warm room lights up behind the bars for half a minute, and a little of it spills onto the setts |
+| **knock on the plank door** | a low thud; the third knock is answered — a bell, and a line of light under the door |
+| **warm a lantern while it rains** | it steams, and hisses softly, and dims faster than it would dry |
 | **walk through the puddle** | a splash, and rings spread across the water; in the rain it holds a small moon |
 | **the sound button** | bottom right, always at least 44 px. The ambient bed is up within a third of a second and a chime confirms it, so nobody wonders whether it worked |
 
@@ -58,6 +61,10 @@ clips when several play at once.
   underneath.
 - **the cat** — a low purr: a sawtooth through a lowpass with a fast tremolo.
 - **the well and the puddle** — two quick bells and a watery tick.
+- **rain on a warm lantern** — a short high hiss, and a pale drift of steam.
+- **knuckles on the door** — a low triangle thud with a soft knock on top.
+- **the room behind the window** — two small bells and a muffled shuffle.
+- **the door answering** — two quiet bells, a fifth apart, the second late.
 - **three coins / all lanterns tended** — a rising swell with bells above it.
 - **distant bells** — every minute or so, a quiet bell from somewhere else in
   the town, if you are listening for it.
@@ -87,9 +94,10 @@ does in reply: the canvas size, the sound button's size and label, that tapping
 it starts a running AudioContext and remembers the choice, that a tap warms a
 lantern, that a long press tends it, that a drag walks the walker, that standing
 still brings the cat, that two flicks raise the rain, that a coin in a dark
-corner is invisible until its lantern is warm and is then picked up, that the
-camera follows to the courtyard, that the page never scrolls, and that the
-console stays clean. `--shots <dir>` also writes the screenshots.
+corner is invisible until its lantern is warm and is then picked up, that tapping
+the barred window lights a room behind it, that three knocks on the door are
+answered, that the camera follows to the courtyard, that the page never scrolls,
+and that the console stays clean. `--shots <dir>` also writes the screenshots.
 
 `window.alley` is a small read/write handle on the living world (see
 `src/jsapi.scala`) — the checks read state through it and place the walker with

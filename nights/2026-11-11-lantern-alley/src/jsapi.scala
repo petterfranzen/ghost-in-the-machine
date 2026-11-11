@@ -18,6 +18,8 @@ class AlleyHandle(val world: World) {
     fox = world.foxMode,
     sound = world.sound.on,
     walking = world.walking,
+    window = world.windowLit,
+    door = world.doorLight,
     warm = js.Array(world.lanterns.map(_.warm): _*),
     steady = js.Array(world.lanterns.map(_.steady): _*),
     hue = js.Array(world.lanterns.map(_.hue): _*),
@@ -51,6 +53,10 @@ class AlleyHandle(val world: World) {
   }
   @JSExport
   def whoosh(dir: Double): Unit = world.gust(dir)
+  @JSExport
+  def windowAt(): js.Array[Double] = js.Array(world.windowX, world.windowY)
+  @JSExport
+  def doorAt(): js.Array[Double] = js.Array(world.doorX, world.doorY)
   @JSExport
   def lightAt(x: Double, y: Double): Double = world.lightAt(x, y)
 }

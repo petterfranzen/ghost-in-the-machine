@@ -164,6 +164,23 @@ const lanternPos = async (page, i) => {
   s = await state(page);
   check('the camera follows the walker up to the courtyard', s.camY < 80, `camY=${s.camY}`);
 
+  // --- the barred window, and three knocks on the door
+  await page.evaluate(() => alley.place(56, 300));
+  await page.waitForTimeout(700);
+  const win = await page.evaluate(() => alley.windowAt());
+  const [wpx, wpy] = await at(page, win[0], win[1]);
+  await page.mouse.click(wpx, wpy);
+  await page.waitForTimeout(900);
+  s = await state(page);
+  check('tapping the barred window lights a room behind it', s.window > 0.5, `window=${s.window.toFixed(2)}`);
+
+  const door = await page.evaluate(() => alley.doorAt());
+  const [dpx, dpy] = await at(page, door[0], door[1]);
+  for (let k = 0; k < 3; k++) { await page.mouse.click(dpx, dpy); await page.waitForTimeout(220); }
+  await page.waitForTimeout(1400);
+  s = await state(page);
+  check('three knocks and something answers from behind the door', s.door > 0.5, `door=${s.door.toFixed(2)}`);
+
   // --- the page never scrolls under a thumb
   await page.mouse.move(195, 500);
   await page.mouse.down();

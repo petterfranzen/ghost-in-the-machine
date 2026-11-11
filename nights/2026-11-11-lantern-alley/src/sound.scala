@@ -247,6 +247,18 @@ class Sound {
 
   def drop(): Unit = burst(2400.0, 1.2, 0.10, 0.03, "bandpass")
 
+  /** rain landing on a warm lantern */
+  def hiss(): Unit = { burst(3400.0, 0.7, 0.55, 0.028, "highpass"); burst(1800.0, 1.0, 0.3, 0.02, "bandpass") }
+
+  /** knuckles on an old door */
+  def knock(): Unit = { tone(150.0, 74.0, 0.16, 0.10, "triangle"); burst(420.0, 1.2, 0.13, 0.05, "lowpass") }
+
+  /** someone moves about behind the barred window */
+  def insideRoom(): Unit = { bell(659.25, 0.055, 0.0, 2.2); bell(880.0, 0.04, 0.13, 2.6); burst(320.0, 0.8, 0.35, 0.03, "lowpass") }
+
+  /** and something answers from behind the door */
+  def answered(): Unit = { bell(523.25, 0.07, 0.0, 2.4); bell(392.0, 0.05, 0.36, 3.0) }
+
   def sync(warm: Double, rain: Double, dt: Double): Unit = {
     warmth = warm
     rainWant = rain

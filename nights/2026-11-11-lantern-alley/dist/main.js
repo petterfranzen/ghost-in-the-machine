@@ -1196,6 +1196,8 @@ $c_LAlleyHandle.prototype.state__sjs_js_Dynamic = (function() {
   var value$8 = $n(this.LAlleyHandle__f_world).LWorld__f_foxMode;
   var value$9 = $n($n(this.LAlleyHandle__f_world).LWorld__f_sound).LSound__f_on;
   var value$10 = $n(this.LAlleyHandle__f_world).LWorld__f_walking;
+  var value$11 = $n(this.LAlleyHandle__f_world).LWorld__f_windowLit;
+  var value$12 = $n(this.LAlleyHandle__f_world).LWorld__f_doorLight;
   var $x_12 = $m_sr_ScalaRunTime$();
   var xs = $n(this.LAlleyHandle__f_world).LWorld__f_lanterns;
   var f = ((_$1$2) => {
@@ -1530,6 +1532,8 @@ $c_LAlleyHandle.prototype.state__sjs_js_Dynamic = (function() {
     "fox": value$8,
     "sound": value$9,
     "walking": value$10,
+    "window": value$11,
+    "door": value$12,
     "warm": _2,
     "steady": _2$1,
     "hue": _2$2,
@@ -1564,6 +1568,12 @@ $c_LAlleyHandle.prototype.setRain__D__V = (function(v) {
     $n(this.LAlleyHandle__f_world).LWorld__f_rainHold = 0.0;
   }
 });
+$c_LAlleyHandle.prototype.windowAt__sjs_js_Array = (function() {
+  return [$n(this.LAlleyHandle__f_world).LWorld__f_windowX, $n(this.LAlleyHandle__f_world).LWorld__f_windowY];
+});
+$c_LAlleyHandle.prototype.doorAt__sjs_js_Array = (function() {
+  return [$n(this.LAlleyHandle__f_world).LWorld__f_doorX, $n(this.LAlleyHandle__f_world).LWorld__f_doorY];
+});
 $c_LAlleyHandle.prototype.whoosh = (function(arg) {
   var prep0 = $uD(arg);
   $n(this.LAlleyHandle__f_world).gust__D__V(prep0);
@@ -1575,6 +1585,9 @@ $c_LAlleyHandle.prototype.tendLantern = (function(arg) {
 $c_LAlleyHandle.prototype.setRain = (function(arg) {
   var prep0 = $uD(arg);
   this.setRain__D__V(prep0);
+});
+$c_LAlleyHandle.prototype.windowAt = (function() {
+  return this.windowAt__sjs_js_Array();
 });
 $c_LAlleyHandle.prototype.warmLantern = (function(arg) {
   var prep0 = $uI(arg);
@@ -1596,6 +1609,9 @@ $c_LAlleyHandle.prototype.state = (function() {
 });
 $c_LAlleyHandle.prototype.standStill = (function() {
   this.standStill__V();
+});
+$c_LAlleyHandle.prototype.doorAt = (function() {
+  return this.doorAt__sjs_js_Array();
 });
 $c_LAlleyHandle.prototype.lightAt = (function(arg, arg$2) {
   var prep0 = $uD(arg);
@@ -2779,6 +2795,12 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
   if (($n(this.LRender__f_world).LWorld__f_ghostA > 0.0)) {
     $n(this.LRender__f_light).add__D__D__D__D__D__D__D__V($n(this.LRender__f_world).LWorld__f_wellX, ($n(this.LRender__f_world).LWorld__f_ghostY - cam), 42.0, 255.0, 228.0, 172.0, (0.55 * $n(this.LRender__f_world).LWorld__f_ghostA));
   }
+  if (($n(this.LRender__f_world).LWorld__f_windowLit > 0.01)) {
+    $n(this.LRender__f_light).add__D__D__D__D__D__D__D__V($n(this.LRender__f_world).LWorld__f_windowX, ($n(this.LRender__f_world).LWorld__f_windowY - cam), 30.0, 255.0, 196.0, 132.0, (0.5 * $n(this.LRender__f_world).LWorld__f_windowLit));
+  }
+  if (($n(this.LRender__f_world).LWorld__f_doorLight > 0.01)) {
+    $n(this.LRender__f_light).add__D__D__D__D__D__D__D__V($n(this.LRender__f_world).LWorld__f_doorX, (526.0 - cam), 20.0, 255.0, 208.0, 150.0, (0.42 * $n(this.LRender__f_world).LWorld__f_doorLight));
+  }
   if (($n(this.LRender__f_world).LWorld__f_revealT >= 0.0)) {
     var y$1 = (1.0 - ($n(this.LRender__f_world).LWorld__f_revealT / 14.0));
     var g = $uD(Math.max(0.0, y$1));
@@ -2788,19 +2810,50 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
   var value = ((-cam) + settle);
   ctx.translate(0.0, value);
   ctx.drawImage(this.LRender__f_stat, 0.0, 0.0);
+  if (($n(this.LRender__f_world).LWorld__f_windowLit > 0.01)) {
+    var value$1 = (0.9 * $n(this.LRender__f_world).LWorld__f_windowLit);
+    ctx.globalAlpha = value$1;
+    ctx.fillStyle = "#ffce8c";
+    ctx.fillRect(23.0, 263.0, 10.0, 14.0);
+    ctx.globalAlpha = 1.0;
+    ctx.fillStyle = "#4a4e5c";
+    ctx.fillRect(23.0, 269.0, 10.0, 1.0);
+    ctx.fillRect(27.0, 263.0, 1.0, 14.0);
+    ctx.fillRect(30.0, 263.0, 1.0, 14.0);
+    ctx.globalCompositeOperation = "lighter";
+    var value$2 = (0.14 * $n(this.LRender__f_world).LWorld__f_windowLit);
+    ctx.globalAlpha = value$2;
+    ctx.fillStyle = "#8a5c2a";
+    ctx.beginPath();
+    var value$3 = ($n(this.LRender__f_world).LWorld__f_windowY + 18.0);
+    ctx.ellipse(36.0, value$3, 12.0, 6.0, 0.0, 0.0, 6.283185307);
+    ctx.fill();
+    ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = 1.0;
+  }
+  if (($n(this.LRender__f_world).LWorld__f_doorLight > 0.01)) {
+    var value$4 = (0.85 * $n(this.LRender__f_world).LWorld__f_doorLight);
+    ctx.globalAlpha = value$4;
+    ctx.fillStyle = "#ffd79a";
+    ctx.fillRect(80.0, 524.0, 10.0, 1.0);
+    var value$5 = (0.35 * $n(this.LRender__f_world).LWorld__f_doorLight);
+    ctx.globalAlpha = value$5;
+    ctx.fillRect(80.0, 525.0, 10.0, 1.0);
+    ctx.globalAlpha = 1.0;
+  }
   i = 0;
   while (true) {
     var $x_6 = i;
-    var this$11 = $n($n(this.LRender__f_world).LWorld__f_particles);
-    if (($x_6 < this$11.scm_ArrayBuffer__f_size0)) {
+    var this$55 = $n($n(this.LRender__f_world).LWorld__f_particles);
+    if (($x_6 < this$55.scm_ArrayBuffer__f_size0)) {
       var p = $as_LP($n($n(this.LRender__f_world).LWorld__f_particles).apply__I__O(i));
       if (($n(p).LP__f_kind === 4)) {
-        var value$1 = (0.3 * ($n(p).LP__f_life / $n(p).LP__f_max));
-        ctx.globalAlpha = value$1;
+        var value$6 = (0.3 * ($n(p).LP__f_life / $n(p).LP__f_max));
+        ctx.globalAlpha = value$6;
         ctx.fillStyle = "#3d4052";
-        var value$2 = ($n(p).LP__f_x - 1.0);
-        var value$3 = ($n(p).LP__f_y - 1.0);
-        ctx.fillRect(value$2, value$3, 3.0, 2.0);
+        var value$7 = ($n(p).LP__f_x - 1.0);
+        var value$8 = ($n(p).LP__f_y - 1.0);
+        ctx.fillRect(value$7, value$8, 3.0, 2.0);
       }
       i = ((1 + i) | 0);
     } else {
@@ -2809,32 +2862,32 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
   }
   ctx.globalAlpha = 1.0;
   var wet = $n(this.LRender__f_world).LWorld__f_rain;
-  var value$4 = (0.42 + (0.3 * wet));
-  ctx.globalAlpha = value$4;
+  var value$9 = (0.42 + (0.3 * wet));
+  ctx.globalAlpha = value$9;
   ctx.fillStyle = "#232c46";
   ctx.beginPath();
-  var value$5 = $n(this.LRender__f_world).LWorld__f_puddleX;
-  var value$6 = $n(this.LRender__f_world).LWorld__f_puddleY;
-  ctx.ellipse(value$5, value$6, 18.0, 5.5, 0.0, 0.0, 6.283185307);
+  var value$10 = $n(this.LRender__f_world).LWorld__f_puddleX;
+  var value$11 = $n(this.LRender__f_world).LWorld__f_puddleY;
+  ctx.ellipse(value$10, value$11, 18.0, 5.5, 0.0, 0.0, 6.283185307);
   ctx.fill();
-  var value$7 = (0.5 + (0.3 * wet));
-  ctx.globalAlpha = value$7;
+  var value$12 = (0.5 + (0.3 * wet));
+  ctx.globalAlpha = value$12;
   ctx.strokeStyle = "#8f9ab8";
   ctx.lineWidth = 1.0;
   ctx.beginPath();
-  var value$8 = $n(this.LRender__f_world).LWorld__f_puddleX;
-  var value$9 = $n(this.LRender__f_world).LWorld__f_puddleY;
-  ctx.ellipse(value$8, value$9, 18.0, 5.5, 0.0, 0.0, 6.283185307);
+  var value$13 = $n(this.LRender__f_world).LWorld__f_puddleX;
+  var value$14 = $n(this.LRender__f_world).LWorld__f_puddleY;
+  ctx.ellipse(value$13, value$14, 18.0, 5.5, 0.0, 0.0, 6.283185307);
   ctx.stroke();
   ctx.globalAlpha = 1.0;
   if ((wet > 0.15)) {
-    var value$10 = (0.5 * wet);
-    ctx.globalAlpha = value$10;
+    var value$15 = (0.5 * wet);
+    ctx.globalAlpha = value$15;
     ctx.fillStyle = "#e2e4cd";
     ctx.beginPath();
-    var value$11 = ($n(this.LRender__f_world).LWorld__f_puddleX - 2.0);
-    var value$12 = $n(this.LRender__f_world).LWorld__f_puddleY;
-    ctx.ellipse(value$11, value$12, 3.0, 1.2, 0.0, 0.0, 6.283185307);
+    var value$16 = ($n(this.LRender__f_world).LWorld__f_puddleX - 2.0);
+    var value$17 = $n(this.LRender__f_world).LWorld__f_puddleY;
+    ctx.ellipse(value$16, value$17, 3.0, 1.2, 0.0, 0.0, 6.283185307);
     ctx.fill();
     ctx.globalAlpha = 1.0;
   }
@@ -2858,22 +2911,22 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
     var l$2 = $n($n(this.LRender__f_world).LWorld__f_lanterns).get(i);
     if (($n(l$2).LLantern__f_warm > 0.05)) {
       ctx.globalCompositeOperation = "lighter";
-      var value$13 = ($n(l$2).LLantern__f_x + $n(l$2).LLantern__f_sway);
-      var value$14 = ($n(l$2).LLantern__f_y - cam);
-      var value$15 = ($n(l$2).LLantern__f_x + $n(l$2).LLantern__f_sway);
-      var value$16 = ($n(l$2).LLantern__f_y - cam);
-      var value$17 = (9.0 + (9.0 * $n(l$2).LLantern__f_warm));
-      var bloom = ctx.createRadialGradient(value$13, value$14, 0.0, value$15, value$16, value$17);
-      var this$61 = (0.3 * $n(l$2).LLantern__f_warm);
-      var s = (("rgba(255,206,140," + ("" + this$61)) + ")");
+      var value$18 = ($n(l$2).LLantern__f_x + $n(l$2).LLantern__f_sway);
+      var value$19 = ($n(l$2).LLantern__f_y - cam);
+      var value$20 = ($n(l$2).LLantern__f_x + $n(l$2).LLantern__f_sway);
+      var value$21 = ($n(l$2).LLantern__f_y - cam);
+      var value$22 = (9.0 + (9.0 * $n(l$2).LLantern__f_warm));
+      var bloom = ctx.createRadialGradient(value$18, value$19, 0.0, value$20, value$21, value$22);
+      var this$105 = (0.3 * $n(l$2).LLantern__f_warm);
+      var s = (("rgba(255,206,140," + ("" + this$105)) + ")");
       bloom.addColorStop(0.0, s);
       bloom.addColorStop(1.0, "rgba(255,180,90,0)");
       ctx.fillStyle = bloom;
       ctx.beginPath();
-      var value$18 = ($n(l$2).LLantern__f_x + $n(l$2).LLantern__f_sway);
-      var value$19 = ($n(l$2).LLantern__f_y - cam);
-      var value$20 = (9.0 + (9.0 * $n(l$2).LLantern__f_warm));
-      ctx.arc(value$18, value$19, value$20, 0.0, 6.283185307);
+      var value$23 = ($n(l$2).LLantern__f_x + $n(l$2).LLantern__f_sway);
+      var value$24 = ($n(l$2).LLantern__f_y - cam);
+      var value$25 = (9.0 + (9.0 * $n(l$2).LLantern__f_warm));
+      ctx.arc(value$23, value$24, value$25, 0.0, 6.283185307);
       ctx.fill();
       ctx.globalCompositeOperation = "source-over";
     }
@@ -2906,15 +2959,15 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
     i = ((1 + i) | 0);
   }
   if (($n(this.LRender__f_world).LWorld__f_ghostA > 0.0)) {
-    var value$21 = (0.55 * $n(this.LRender__f_world).LWorld__f_ghostA);
-    ctx.globalAlpha = value$21;
+    var value$26 = (0.55 * $n(this.LRender__f_world).LWorld__f_ghostA);
+    ctx.globalAlpha = value$26;
     ctx.fillStyle = "#ffe6b4";
     ctx.beginPath();
-    var value$22 = $n(this.LRender__f_world).LWorld__f_wellX;
-    var value$23 = $n(this.LRender__f_world).LWorld__f_ghostY;
+    var value$27 = $n(this.LRender__f_world).LWorld__f_wellX;
+    var value$28 = $n(this.LRender__f_world).LWorld__f_ghostY;
     var x$4 = (2.0 * t);
-    var value$24 = (3.5 + (2.0 * $uD(Math.sin(x$4))));
-    ctx.arc(value$22, value$23, value$24, 0.0, 6.283185307);
+    var value$29 = (3.5 + (2.0 * $uD(Math.sin(x$4))));
+    ctx.arc(value$27, value$28, value$29, 0.0, 6.283185307);
     ctx.fill();
     ctx.globalAlpha = 1.0;
   }
@@ -2941,9 +2994,9 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
   ctx.globalAlpha = 0.3;
   ctx.fillStyle = "#7a5426";
   ctx.beginPath();
-  var value$25 = ($n(this.LRender__f_world).LWorld__f_wx + (($n(this.LRender__f_world).LWorld__f_facing === 2) ? (-8.0) : 6.0));
-  var value$26 = ($n(this.LRender__f_world).LWorld__f_wy - 12.0);
-  ctx.arc(value$25, value$26, 16.0, 0.0, 6.283185307);
+  var value$30 = ($n(this.LRender__f_world).LWorld__f_wx + (($n(this.LRender__f_world).LWorld__f_facing === 2) ? (-8.0) : 6.0));
+  var value$31 = ($n(this.LRender__f_world).LWorld__f_wy - 12.0);
+  ctx.arc(value$30, value$31, 16.0, 0.0, 6.283185307);
   ctx.fill();
   ctx.globalCompositeOperation = "source-over";
   ctx.globalAlpha = 1.0;
@@ -2997,8 +3050,8 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
   i = 0;
   while (true) {
     var $x_21 = i;
-    var this$108 = $n($n(this.LRender__f_world).LWorld__f_particles);
-    if (($x_21 < this$108.scm_ArrayBuffer__f_size0)) {
+    var this$152 = $n($n(this.LRender__f_world).LWorld__f_particles);
+    if (($x_21 < this$152.scm_ArrayBuffer__f_size0)) {
       var p$2 = $as_LP($n($n(this.LRender__f_world).LWorld__f_particles).apply__I__O(i));
       var y$4 = ($n(p$2).LP__f_life / $n(p$2).LP__f_max);
       var lifeQ = $uD(Math.max(0.0, y$4));
@@ -3007,38 +3060,38 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
         case 0: {
           ctx.globalAlpha = lifeQ;
           ctx.fillStyle = (($n(p$2).LP__f_vy > 0.0) ? "#fff6d8" : "#fffbe8");
-          var value$27 = $n(p$2).LP__f_x;
-          var value$28 = $n(p$2).LP__f_y;
-          ctx.fillRect(value$27, value$28, 1.0, 1.0);
+          var value$32 = $n(p$2).LP__f_x;
+          var value$33 = $n(p$2).LP__f_y;
+          ctx.fillRect(value$32, value$33, 1.0, 1.0);
           break;
         }
         case 1: {
-          var value$29 = (0.9 * lifeQ);
-          ctx.globalAlpha = value$29;
+          var value$34 = (0.9 * lifeQ);
+          ctx.globalAlpha = value$34;
           $m_LSprites$().blit__sjs_js_Dynamic__AT__sci_Map__D__D__Z__D__V(ctx, $m_LSprites$().LSprites$__f_leaf, $m_LSprites$().LSprites$__f_leafPal, $n(p$2).LP__f_x, $n(p$2).LP__f_y, false, 1.0);
           break;
         }
         case 3: {
-          var value$30 = (0.35 * lifeQ);
-          ctx.globalAlpha = value$30;
+          var value$35 = (0.35 * lifeQ);
+          ctx.globalAlpha = value$35;
           ctx.strokeStyle = "#cfd8ee";
           ctx.lineWidth = 1.0;
           ctx.beginPath();
-          var value$31 = $n(p$2).LP__f_x;
-          var value$32 = $n(p$2).LP__f_y;
-          var value$33 = (9.0 * $n(p$2).LP__f_size);
-          var value$34 = (3.0 * $n(p$2).LP__f_size);
-          ctx.ellipse(value$31, value$32, value$33, value$34, 0.0, 0.0, 6.283185307);
+          var value$36 = $n(p$2).LP__f_x;
+          var value$37 = $n(p$2).LP__f_y;
+          var value$38 = (9.0 * $n(p$2).LP__f_size);
+          var value$39 = (3.0 * $n(p$2).LP__f_size);
+          ctx.ellipse(value$36, value$37, value$38, value$39, 0.0, 0.0, 6.283185307);
           ctx.stroke();
           break;
         }
         case 5: {
-          var value$35 = (0.55 * lifeQ);
-          ctx.globalAlpha = value$35;
+          var value$40 = (0.55 * lifeQ);
+          ctx.globalAlpha = value$40;
           ctx.fillStyle = "#ffeec4";
-          var value$36 = $n(p$2).LP__f_x;
-          var value$37 = $n(p$2).LP__f_y;
-          ctx.fillRect(value$36, value$37, 1.0, 1.0);
+          var value$41 = $n(p$2).LP__f_x;
+          var value$42 = $n(p$2).LP__f_y;
+          ctx.fillRect(value$41, value$42, 1.0, 1.0);
           break;
         }
       }
@@ -3050,17 +3103,17 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
   ctx.globalAlpha = 1.0;
   ctx.restore();
   if (($n(this.LRender__f_world).LWorld__f_rain > 0.02)) {
-    var value$38 = (0.1 * $n(this.LRender__f_world).LWorld__f_rain);
-    ctx.globalAlpha = value$38;
+    var value$43 = (0.1 * $n(this.LRender__f_world).LWorld__f_rain);
+    ctx.globalAlpha = value$43;
     ctx.fillStyle = "#2a3350";
-    var value$39 = $n(this.LRender__f_world).LWorld__f_VIEW_W;
-    var value$40 = $n(this.LRender__f_world).LWorld__f_VIEW_H;
-    ctx.fillRect(0.0, 0.0, value$39, value$40);
+    var value$44 = $n(this.LRender__f_world).LWorld__f_VIEW_W;
+    var value$45 = $n(this.LRender__f_world).LWorld__f_VIEW_H;
+    ctx.fillRect(0.0, 0.0, value$44, value$45);
     ctx.globalAlpha = 1.0;
   }
   if (($n(this.LRender__f_world).LWorld__f_rain > 0.02)) {
-    var value$41 = (0.24 + (0.28 * $n(this.LRender__f_world).LWorld__f_rain));
-    ctx.globalAlpha = value$41;
+    var value$46 = (0.24 + (0.28 * $n(this.LRender__f_world).LWorld__f_rain));
+    ctx.globalAlpha = value$46;
     ctx.fillStyle = "#c9d4ef";
     i = 0;
     while ((i < 46)) {
@@ -3078,28 +3131,28 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
     var x$6 = ((0.7 * a) + mi2);
     var mx = (56.0 + (22.0 * $uD(Math.sin(x$6))));
     var my = ((((53.0 * mi2) + (6.0 * t)) % 320.0) + cam);
-    var value$42 = (0.12 + (0.22 * $n(this.LRender__f_world).lightAt__D__D__D(mx, my)));
-    ctx.globalAlpha = value$42;
+    var value$47 = (0.12 + (0.22 * $n(this.LRender__f_world).lightAt__D__D__D(mx, my)));
+    ctx.globalAlpha = value$47;
     ctx.fillStyle = "#fff6d8";
-    var value$43 = (my - cam);
-    ctx.fillRect(mx, value$43, 1.0, 1.0);
+    var value$48 = (my - cam);
+    ctx.fillRect(mx, value$48, 1.0, 1.0);
     mi2 = ((1 + mi2) | 0);
   }
   ctx.globalAlpha = 1.0;
   $n(this.LRender__f_light).finish__sjs_js_Dynamic__V(ctx);
-  var value$44 = (0.5 * $n(this.LRender__f_world).LWorld__f_VIEW_W);
-  var value$45 = (0.55 * $n(this.LRender__f_world).LWorld__f_VIEW_H);
-  var value$46 = (0.28 * $n(this.LRender__f_world).LWorld__f_VIEW_H);
-  var value$47 = (0.5 * $n(this.LRender__f_world).LWorld__f_VIEW_W);
-  var value$48 = (0.55 * $n(this.LRender__f_world).LWorld__f_VIEW_H);
-  var value$49 = (0.78 * $n(this.LRender__f_world).LWorld__f_VIEW_H);
-  var vg = ctx.createRadialGradient(value$44, value$45, value$46, value$47, value$48, value$49);
+  var value$49 = (0.5 * $n(this.LRender__f_world).LWorld__f_VIEW_W);
+  var value$50 = (0.55 * $n(this.LRender__f_world).LWorld__f_VIEW_H);
+  var value$51 = (0.28 * $n(this.LRender__f_world).LWorld__f_VIEW_H);
+  var value$52 = (0.5 * $n(this.LRender__f_world).LWorld__f_VIEW_W);
+  var value$53 = (0.55 * $n(this.LRender__f_world).LWorld__f_VIEW_H);
+  var value$54 = (0.78 * $n(this.LRender__f_world).LWorld__f_VIEW_H);
+  var vg = ctx.createRadialGradient(value$49, value$50, value$51, value$52, value$53, value$54);
   vg.addColorStop(0.0, "rgba(0,0,0,0)");
   vg.addColorStop(1.0, "rgba(0,0,0,0.38)");
   ctx.fillStyle = vg;
-  var value$50 = $n(this.LRender__f_world).LWorld__f_VIEW_W;
-  var value$51 = $n(this.LRender__f_world).LWorld__f_VIEW_H;
-  ctx.fillRect(0.0, 0.0, value$50, value$51);
+  var value$55 = $n(this.LRender__f_world).LWorld__f_VIEW_W;
+  var value$56 = $n(this.LRender__f_world).LWorld__f_VIEW_H;
+  ctx.fillRect(0.0, 0.0, value$55, value$56);
   if (((($n(this.LRender__f_world).LWorld__f_idleT > 5.0) && (!$n(this.LRender__f_world).LWorld__f_walking)) && ($n(this.LRender__f_world).LWorld__f_rain < 0.5))) {
     var coldest = (-1);
     var bestW = 1.1;
@@ -3116,15 +3169,15 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
       var l$4 = $n($n(this.LRender__f_world).LWorld__f_lanterns).get(coldest);
       var x$7 = (1.8 * t);
       var ph = ((0.5 * $uD(Math.sin(x$7))) + 0.5);
-      var value$52 = (0.1 + (0.14 * ph));
-      ctx.globalAlpha = value$52;
+      var value$57 = (0.1 + (0.14 * ph));
+      ctx.globalAlpha = value$57;
       ctx.strokeStyle = "#ffdca0";
       ctx.lineWidth = 1.0;
       ctx.beginPath();
-      var value$53 = $n(l$4).LLantern__f_x;
-      var value$54 = ($n(l$4).LLantern__f_y - cam);
-      var value$55 = (8.0 + (5.0 * ph));
-      ctx.arc(value$53, value$54, value$55, 0.0, 6.283185307);
+      var value$58 = $n(l$4).LLantern__f_x;
+      var value$59 = ($n(l$4).LLantern__f_y - cam);
+      var value$60 = (8.0 + (5.0 * ph));
+      ctx.arc(value$58, value$59, value$60, 0.0, 6.283185307);
       ctx.stroke();
       ctx.globalAlpha = 1.0;
     }
@@ -3481,6 +3534,23 @@ $c_LSound.prototype.reveal__V = (function() {
   $p_LSound__tone__D__D__D__D__T__V(this, 330.0, 660.0, 2.4, 0.055, "sine");
   $p_LSound__bell__D__D__D__D__V(this, 659.25, 0.09, 0.15, 3.0);
   $p_LSound__bell__D__D__D__D__V(this, 987.77, 0.06, 0.65, 3.4);
+});
+$c_LSound.prototype.hiss__V = (function() {
+  $p_LSound__burst__D__D__D__D__T__V(this, 3400.0, 0.7, 0.55, 0.028, "highpass");
+  $p_LSound__burst__D__D__D__D__T__V(this, 1800.0, 1.0, 0.3, 0.02, "bandpass");
+});
+$c_LSound.prototype.knock__V = (function() {
+  $p_LSound__tone__D__D__D__D__T__V(this, 150.0, 74.0, 0.16, 0.1, "triangle");
+  $p_LSound__burst__D__D__D__D__T__V(this, 420.0, 1.2, 0.13, 0.05, "lowpass");
+});
+$c_LSound.prototype.insideRoom__V = (function() {
+  $p_LSound__bell__D__D__D__D__V(this, 659.25, 0.055, 0.0, 2.2);
+  $p_LSound__bell__D__D__D__D__V(this, 880.0, 0.04, 0.13, 2.6);
+  $p_LSound__burst__D__D__D__D__T__V(this, 320.0, 0.8, 0.35, 0.03, "lowpass");
+});
+$c_LSound.prototype.answered__V = (function() {
+  $p_LSound__bell__D__D__D__D__V(this, 523.25, 0.07, 0.0, 2.4);
+  $p_LSound__bell__D__D__D__D__V(this, 392.0, 0.05, 0.36, 3.0);
 });
 $c_LSound.prototype.sync__D__D__D__V = (function(warm, rain, dt) {
   this.LSound__f_warmth = warm;
@@ -3866,6 +3936,35 @@ function $m_LSprites$() {
   }
   return $n_LSprites$;
 }
+function $p_LWorld__lightTheWindow__V($thiz) {
+  $thiz.LWorld__f_windowT = (26.0 + (10.0 * $n($thiz.LWorld__f_rng).nextDouble__D()));
+  $n($thiz.LWorld__f_sound).insideRoom__V();
+  var y = ($thiz.LWorld__f_pulse + 0.35);
+  $thiz.LWorld__f_pulse = $uD(Math.min(1.0, y));
+  var k = 0;
+  while ((k < 6)) {
+    var this$3 = $n($thiz.LWorld__f_particles);
+    var elem = new $c_LP(($thiz.LWorld__f_windowX + (3.0 * ((2.0 * $n($thiz.LWorld__f_rng).nextDouble__D()) - 1.0))), ($thiz.LWorld__f_windowY + 2.0), (2.0 * ((2.0 * $n($thiz.LWorld__f_rng).nextDouble__D()) - 1.0)), ((-2.0) - (3.0 * $n($thiz.LWorld__f_rng).nextDouble__D())), 2.0, 2.0, 6, 1.0);
+    this$3.addOne__O__scm_ArrayBuffer(elem);
+    k = ((1 + k) | 0);
+  }
+}
+function $p_LWorld__knockOnTheDoor__V($thiz) {
+  $n($thiz.LWorld__f_sound).knock__V();
+  $thiz.LWorld__f_knocks = ((1 + $thiz.LWorld__f_knocks) | 0);
+  if (($thiz.LWorld__f_knocks >= 3)) {
+    $thiz.LWorld__f_knocks = 0;
+    $thiz.LWorld__f_doorT = 60.0;
+    $n($thiz.LWorld__f_sound).answered__V();
+    var k = 0;
+    while ((k < 10)) {
+      var this$1 = $n($thiz.LWorld__f_particles);
+      var elem = new $c_LP(($thiz.LWorld__f_doorX + (8.0 * ((2.0 * $n($thiz.LWorld__f_rng).nextDouble__D()) - 1.0))), 528.0, (3.0 * ((2.0 * $n($thiz.LWorld__f_rng).nextDouble__D()) - 1.0)), ((-1.5) - (2.0 * $n($thiz.LWorld__f_rng).nextDouble__D())), 3.0, 3.0, 6, 1.0);
+      this$1.addOne__O__scm_ArrayBuffer(elem);
+      k = ((1 + k) | 0);
+    }
+  }
+}
 function $p_LWorld__coinAt__D__D__D__I($thiz, x, y, r) {
   var best = (-1);
   var bd = (r * r);
@@ -4079,6 +4178,44 @@ function $p_LWorld__coinsStep__D__V($thiz, dt) {
     i = ((1 + i) | 0);
   }
 }
+function $p_LWorld__windowStep__D__V($thiz, dt) {
+  if (($thiz.LWorld__f_windowT > 0.0)) {
+    $thiz.LWorld__f_windowT = ($thiz.LWorld__f_windowT - dt);
+    var y = ($thiz.LWorld__f_windowLit + (0.8 * dt));
+    $thiz.LWorld__f_windowLit = $uD(Math.min(1.0, y));
+  } else {
+    var y$1 = ($thiz.LWorld__f_windowLit - (0.12 * dt));
+    $thiz.LWorld__f_windowLit = $uD(Math.max(0.0, y$1));
+  }
+  if (($thiz.LWorld__f_doorT > 0.0)) {
+    $thiz.LWorld__f_doorT = ($thiz.LWorld__f_doorT - dt);
+    var y$2 = ($thiz.LWorld__f_doorLight + (0.5 * dt));
+    $thiz.LWorld__f_doorLight = $uD(Math.min(1.0, y$2));
+  } else {
+    var y$3 = ($thiz.LWorld__f_doorLight - (0.08 * dt));
+    $thiz.LWorld__f_doorLight = $uD(Math.max(0.0, y$3));
+  }
+  var y$4 = ($thiz.LWorld__f_hissCool - dt);
+  $thiz.LWorld__f_hissCool = $uD(Math.max(0.0, y$4));
+  if ((($thiz.LWorld__f_rain > 0.25) && ($thiz.LWorld__f_hissCool <= 0.0))) {
+    var i = 0;
+    while ((i < $n($thiz.LWorld__f_lanterns).u.length)) {
+      var l = $n($thiz.LWorld__f_lanterns).get(i);
+      if ((($n(l).LLantern__f_warm > 0.35) && ($n($thiz.LWorld__f_rng).nextDouble__D() < 0.35))) {
+        $thiz.LWorld__f_hissCool = (3.5 + (3.0 * $n($thiz.LWorld__f_rng).nextDouble__D()));
+        $n($thiz.LWorld__f_sound).hiss__V();
+        var k = 0;
+        while ((k < 3)) {
+          var this$11 = $n($thiz.LWorld__f_particles);
+          var elem = new $c_LP(($n(l).LLantern__f_x + (4.0 * ((2.0 * $n($thiz.LWorld__f_rng).nextDouble__D()) - 1.0))), ($n(l).LLantern__f_y + 2.0), (1.6 * ((2.0 * $n($thiz.LWorld__f_rng).nextDouble__D()) - 1.0)), ((-3.0) - (3.0 * $n($thiz.LWorld__f_rng).nextDouble__D())), 2.6, 2.6, 6, 1.0);
+          this$11.addOne__O__scm_ArrayBuffer(elem);
+          k = ((1 + k) | 0);
+        }
+      }
+      i = ((1 + i) | 0);
+    }
+  }
+}
 function $p_LWorld__catStep__D__V($thiz, dt) {
   if (($thiz.LWorld__f_catMode === 0)) {
     var y = (0.6 * $thiz.LWorld__f_pets);
@@ -4179,9 +4316,9 @@ function $p_LWorld__revealStep__D__V($thiz, dt) {
 function $p_LWorld__particlesStep__D__V($thiz, dt) {
   var i = 0;
   while (true) {
-    var $x_4 = i;
+    var $x_7 = i;
     var this$1 = $n($thiz.LWorld__f_particles);
-    if (($x_4 < this$1.scm_ArrayBuffer__f_size0)) {
+    if (($x_7 < this$1.scm_ArrayBuffer__f_size0)) {
       var p = $as_LP($n($thiz.LWorld__f_particles).apply__I__O(i));
       $n(p).LP__f_life = ($n(p).LP__f_life - dt);
       var x1 = $n(p).LP__f_kind;
@@ -4213,6 +4350,17 @@ function $p_LWorld__particlesStep__D__V($thiz, dt) {
           $n(p).LP__f_y = ($n(p).LP__f_y + ($n(p).LP__f_vy * dt));
           break;
         }
+        case 6: {
+          $n(p).LP__f_vy = ($n(p).LP__f_vy + (0.6 * dt));
+          $n(p).LP__f_vx = ($n(p).LP__f_vx * (1.0 - (0.7 * dt)));
+          var $x_6 = $n(p);
+          var $x_5 = $n(p).LP__f_x;
+          var $x_4 = $n(p).LP__f_vx;
+          var x$1 = ((1.7 * $thiz.LWorld__f_time) + $n(p).LP__f_y);
+          $x_6.LP__f_x = ($x_5 + (($x_4 * dt) + (2.0 * ($uD(Math.sin(x$1)) * dt))));
+          $n(p).LP__f_y = ($n(p).LP__f_y + ($n(p).LP__f_vy * dt));
+          break;
+        }
       }
       if (($n(p).LP__f_life <= 0.0)) {
         $n($thiz.LWorld__f_particles).remove__I__O(i);
@@ -4234,6 +4382,10 @@ function $c_LWorld(sound) {
   this.LWorld__f_rng = null;
   this.LWorld__f_lanterns = null;
   this.LWorld__f_coins = null;
+  this.LWorld__f_windowX = 0.0;
+  this.LWorld__f_windowY = 0.0;
+  this.LWorld__f_doorX = 0.0;
+  this.LWorld__f_doorY = 0.0;
   this.LWorld__f_wellX = 0.0;
   this.LWorld__f_wellY = 0.0;
   this.LWorld__f_puddleX = 0.0;
@@ -4263,6 +4415,12 @@ function $c_LWorld(sound) {
   this.LWorld__f_inputT = 0.0;
   this.LWorld__f_coinsFound = 0;
   this.LWorld__f_revealT = 0.0;
+  this.LWorld__f_windowLit = 0.0;
+  this.LWorld__f_windowT = 0.0;
+  this.LWorld__f_knocks = 0;
+  this.LWorld__f_doorLight = 0.0;
+  this.LWorld__f_doorT = 0.0;
+  this.LWorld__f_hissCool = 0.0;
   this.LWorld__f_chordPlayed = false;
   this.LWorld__f_particles = null;
   this.LWorld__f_catMode = 0;
@@ -4290,6 +4448,10 @@ function $c_LWorld(sound) {
   this.LWorld__f_rng = new $c_ju_Random(11, 0);
   this.LWorld__f_lanterns = new ($d_LLantern.getArrayOf().constr)([new $c_LLantern(36.0, 220.0), new $c_LLantern(76.0, 300.0), new $c_LLantern(36.0, 400.0), new $c_LLantern(76.0, 490.0), new $c_LLantern(36.0, 590.0), new $c_LLantern(76.0, 680.0), new $c_LLantern(28.0, 104.0)]);
   this.LWorld__f_coins = new ($d_LCoin.getArrayOf().constr)([new $c_LCoin(44.0, 380.0), new $c_LCoin(70.0, 660.0), new $c_LCoin(40.0, 110.0)]);
+  this.LWorld__f_windowX = 28.0;
+  this.LWorld__f_windowY = 270.0;
+  this.LWorld__f_doorX = 85.0;
+  this.LWorld__f_doorY = 513.0;
   this.LWorld__f_wellX = 62.0;
   this.LWorld__f_wellY = 130.0;
   this.LWorld__f_puddleX = 60.0;
@@ -4319,6 +4481,12 @@ function $c_LWorld(sound) {
   this.LWorld__f_inputT = 0.0;
   this.LWorld__f_coinsFound = 0;
   this.LWorld__f_revealT = (-1.0);
+  this.LWorld__f_windowLit = 0.0;
+  this.LWorld__f_windowT = 0.0;
+  this.LWorld__f_knocks = 0;
+  this.LWorld__f_doorLight = 0.0;
+  this.LWorld__f_doorT = 0.0;
+  this.LWorld__f_hissCool = 0.0;
   this.LWorld__f_chordPlayed = false;
   this.LWorld__f_particles = $ct_scm_ArrayBuffer__(new $c_scm_ArrayBuffer());
   this.LWorld__f_catMode = 0;
@@ -4392,9 +4560,21 @@ $c_LWorld.prototype.tapAt__D__D__V = (function(x, y) {
     $p_LWorld__ring__D__D__D__V(this, this.LWorld__f_wellX, (this.LWorld__f_wellY - 4.0), 0.9);
     return (void 0);
   }
+  var x$4 = (x - this.LWorld__f_windowX);
+  var y$2 = (y - this.LWorld__f_windowY);
+  if (($m_jl_Math$().hypot__D__D__D(x$4, y$2) < 15.0)) {
+    $p_LWorld__lightTheWindow__V(this);
+    return (void 0);
+  }
+  var x$5 = (x - this.LWorld__f_doorX);
+  var y$3 = (y - this.LWorld__f_doorY);
+  if (($m_jl_Math$().hypot__D__D__D(x$5, y$3) < 16.0)) {
+    $p_LWorld__knockOnTheDoor__V(this);
+    return (void 0);
+  }
   this.LWorld__f_tx = $p_LWorld__clampX__D__D__D(this, x, y);
-  var y$2 = $uD(Math.min(846.0, y));
-  this.LWorld__f_ty = $uD(Math.max(58.0, y$2));
+  var y$4 = $uD(Math.min(846.0, y));
+  this.LWorld__f_ty = $uD(Math.max(58.0, y$4));
   this.LWorld__f_lastDir = ((this.LWorld__f_ty < (this.LWorld__f_wy - 2.0)) ? 0 : ((this.LWorld__f_ty > (this.LWorld__f_wy + 2.0)) ? 1 : this.LWorld__f_lastDir));
 });
 $c_LWorld.prototype.longPressAt__D__D__V = (function(x, y) {
@@ -4552,6 +4732,7 @@ $c_LWorld.prototype.update__D__V = (function(dt) {
   $p_LWorld__weather__D__V(this, dt);
   $p_LWorld__lanternStep__D__V(this, dt);
   $p_LWorld__coinsStep__D__V(this, dt);
+  $p_LWorld__windowStep__D__V(this, dt);
   $p_LWorld__catStep__D__V(this, dt);
   $p_LWorld__foxStep__D__V(this, dt);
   $p_LWorld__revealStep__D__V(this, dt);

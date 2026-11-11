@@ -38,6 +38,10 @@ class World(val sound: Sound) {
     new Lantern(28.0, 104.0))
   val coins = Array(
     new Coin(44.0, 380.0), new Coin(70.0, 660.0), new Coin(40.0, 110.0))
+  val windowX = 28.0
+  val windowY = 270.0
+  val doorX = 85.0
+  val doorY = 513.0
   val wellX = 62.0
   val wellY = 130.0
   val puddleX = 60.0
@@ -72,6 +76,12 @@ class World(val sound: Sound) {
   var inputT = 0.0
   var coinsFound = 0
   var revealT = -1.0
+  var windowLit = 0.0
+  var windowT = 0.0
+  var knocks = 0
+  var doorLight = 0.0
+  var doorT = 0.0
+  var hissCool = 0.0
   var chordPlayed = false
   var particles = new scala.collection.mutable.ArrayBuffer[P]()
 
@@ -123,10 +133,42 @@ class World(val sound: Sound) {
     if (li >= 0) { warmLantern(li); return }
     if (catMode == 2 && math.abs(cx - x) < 9 && math.abs(cy - y) < 8) { petCat(); return }
     if (math.hypot(x - wellX, y - wellY) < 15) { sound.ripple(); ring(wellX, wellY - 4, 0.9); return }
+    if (math.hypot(x - windowX, y - windowY) < 15) { lightTheWindow(); return }
+    if (math.hypot(x - doorX, y - doorY) < 16) { knockOnTheDoor(); return }
     // otherwise: walk there
     tx = clampX(x, y)
     ty = math.max(58.0, math.min(846.0, y))
     lastDir = if (ty < wy - 2) 0 else if (ty > wy + 2) 1 else lastDir
+  }
+
+  /** behind the barred window someone is home, for a little while */
+  private def lightTheWindow(): Unit = {
+    windowT = 26.0 + rng.nextDouble() * 10.0
+    sound.insideRoom()
+    pulse = math.min(1.0, pulse + 0.35)
+    var k = 0
+    while (k < 6) {
+      particles += new P(windowX + (rng.nextDouble() * 2 - 1) * 3, windowY + 2,
+        (rng.nextDouble() * 2 - 1) * 2, -2 - rng.nextDouble() * 3, 2.0, 2.0, 6, 1.0)
+      k += 1
+    }
+  }
+
+  /** three knocks, and something answers */
+  private def knockOnTheDoor(): Unit = {
+    sound.knock()
+    knocks += 1
+    if (knocks >= 3) {
+      knocks = 0
+      doorT = 60.0
+      sound.answered()
+      var k = 0
+      while (k < 10) {
+        particles += new P(doorX + (rng.nextDouble() * 2 - 1) * 8, 528.0,
+          (rng.nextDouble() * 2 - 1) * 3, -1.5 - rng.nextDouble() * 2.0, 3.0, 3.0, 6, 1.0)
+        k += 1
+      }
+    }
   }
 
   def longPressAt(x: Double, y: Double): Unit = {
@@ -270,6 +312,7 @@ class World(val sound: Sound) {
     weather(dt)
     lanternStep(dt)
     coinsStep(dt)
+    windowStep(dt)
     catStep(dt)
     foxStep(dt)
     revealStep(dt)
@@ -381,6 +424,32 @@ class World(val sound: Sound) {
     }
   }
 
+  private def windowStep(dt: Double): Unit = {
+    if (windowT > 0.0) { windowT -= dt; windowLit = math.min(1.0, windowLit + dt * 0.8) }
+    else windowLit = math.max(0.0, windowLit - dt * 0.12)
+    if (doorT > 0.0) { doorT -= dt; doorLight = math.min(1.0, doorLight + dt * 0.5) }
+    else doorLight = math.max(0.0, doorLight - dt * 0.08)
+    // rain on a warm lantern: steam, and a quiet hiss now and then
+    hissCool = math.max(0.0, hissCool - dt)
+    if (rain > 0.25 && hissCool <= 0.0) {
+      var i = 0
+      while (i < lanterns.length) {
+        val l = lanterns(i)
+        if (l.warm > 0.35 && rng.nextDouble() < 0.35) {
+          hissCool = 3.5 + rng.nextDouble() * 3.0
+          sound.hiss()
+          var k = 0
+          while (k < 3) {
+            particles += new P(l.x + (rng.nextDouble() * 2 - 1) * 4, l.y + 2,
+              (rng.nextDouble() * 2 - 1) * 1.6, -3.0 - rng.nextDouble() * 3.0, 2.6, 2.6, 6, 1.0)
+            k += 1
+          }
+        }
+        i += 1
+      }
+    }
+  }
+
   private def catStep(dt: Double): Unit = {
     if (catMode == 0) {
       val patience = 6.5 - math.min(3.5, pets * 0.6)
@@ -454,6 +523,7 @@ class World(val sound: Sound) {
         case 1 => p.vy += 16.0 * dt; p.vx *= (1.0 - dt * 1.2); p.x += p.vx * dt; p.y += p.vy * dt
         case 3 => p.size += dt * 1.4
         case 5 => p.vy += 1.6 * dt; p.x += p.vx * dt + math.sin(time * 2.0 + p.y) * dt * 3.0; p.y += p.vy * dt
+        case 6 => p.vy += 0.6 * dt; p.vx *= (1.0 - dt * 0.7); p.x += p.vx * dt + math.sin(time * 1.7 + p.y) * dt * 2.0; p.y += p.vy * dt
         case _ =>
       }
       if (p.life <= 0.0) particles.remove(i) else i += 1

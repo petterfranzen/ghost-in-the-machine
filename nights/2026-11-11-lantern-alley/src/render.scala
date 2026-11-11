@@ -291,6 +291,8 @@ class Render(world: World) {
     }
     light.add(world.wx, world.wy - 10.0 - cam, 30.0, 255.0, 200.0, 150.0, 0.42)
     if (world.ghostA > 0.0) light.add(world.wellX, world.ghostY - cam, 42.0, 255.0, 228.0, 172.0, 0.55 * world.ghostA)
+    if (world.windowLit > 0.01) light.add(world.windowX, world.windowY - cam, 30.0, 255.0, 196.0, 132.0, 0.5 * world.windowLit)
+    if (world.doorLight > 0.01) light.add(world.doorX, 526.0 - cam, 20.0, 255.0, 208.0, 150.0, 0.42 * world.doorLight)
     if (world.revealT >= 0.0) {
       val g = math.max(0.0, 1.0 - world.revealT / 14.0)
       light.add(56.0, 46.0 - cam, 30.0, 255.0, 220.0, 170.0, 0.45 * g)
@@ -300,6 +302,37 @@ class Render(world: World) {
     ctx.save()
     ctx.translate(0.0, -cam + settle)
     ctx.drawImage(stat, 0.0, 0.0)
+
+    // a warm room behind the barred window, when someone is up
+    if (world.windowLit > 0.01) {
+      ctx.globalAlpha = 0.9 * world.windowLit
+      ctx.fillStyle = "#ffce8c"
+      ctx.fillRect(23.0, 263.0, 10.0, 14.0)
+      ctx.globalAlpha = 1.0
+      ctx.fillStyle = "#4a4e5c"
+      ctx.fillRect(23.0, 269.0, 10.0, 1.0)
+      ctx.fillRect(27.0, 263.0, 1.0, 14.0)
+      ctx.fillRect(30.0, 263.0, 1.0, 14.0)
+      // and a little of it spills onto the setts
+      ctx.globalCompositeOperation = "lighter"
+      ctx.globalAlpha = 0.14 * world.windowLit
+      ctx.fillStyle = "#8a5c2a"
+      ctx.beginPath()
+      ctx.ellipse(36.0, world.windowY + 18.0, 12.0, 6.0, 0.0, 0.0, 6.283185307)
+      ctx.fill()
+      ctx.globalCompositeOperation = "source-over"
+      ctx.globalAlpha = 1.0
+    }
+
+    // a line of light under the plank door, when it answers
+    if (world.doorLight > 0.01) {
+      ctx.globalAlpha = 0.85 * world.doorLight
+      ctx.fillStyle = "#ffd79a"
+      ctx.fillRect(80.0, 524.0, 10.0, 1.0)
+      ctx.globalAlpha = 0.35 * world.doorLight
+      ctx.fillRect(80.0, 525.0, 10.0, 1.0)
+      ctx.globalAlpha = 1.0
+    }
 
     // footprints, faintly
     i = 0
