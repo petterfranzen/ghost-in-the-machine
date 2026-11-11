@@ -1,3 +1,4 @@
-# scala-cli's own build state; dist/ is what we ship
+# scala-cli build state, and the smoke check's screenshots
 src/.scala-build/
 src/.bsp/
+shots/
