@@ -566,11 +566,11 @@ class Render(world: World) {
       if (coldest >= 0) {
         val l = world.lanterns(coldest)
         val ph = (math.sin(t * 1.8) * 0.5 + 0.5)
-        ctx.globalAlpha = 0.10 + 0.14 * ph
+        ctx.globalAlpha = 0.06 + 0.10 * ph
         ctx.strokeStyle = "#ffdca0"
         ctx.lineWidth = 1.0
         ctx.beginPath()
-        ctx.arc(l.x, l.y - cam, 8.0 + 5.0 * ph, 0.0, 6.283185307)
+        ctx.arc(l.x, l.y - cam, 7.0 + 4.0 * ph, 0.0, 6.283185307)
         ctx.stroke()
         ctx.globalAlpha = 1.0
       }

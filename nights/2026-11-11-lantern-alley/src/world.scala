@@ -378,7 +378,7 @@ class World(val sound: Sound) {
     var i = 0
     while (i < lanterns.length) {
       val l = lanterns(i)
-      val decay = (if (l.steady) 0.0026 else 0.0065) * (1.0 + rain * 1.6)
+      val decay = (if (l.steady) 0.0020 else 0.0045) * (1.0 + rain * 1.6)
       l.warm = math.max(0.0, l.warm - dt * decay)
       if (l.warm < 0.03) { l.steady = false; l.hue = 0.0 }
       l.swayV += (-l.sway * 9.0 - l.swayV * 1.6) * dt
@@ -486,7 +486,7 @@ class World(val sound: Sound) {
 
   private def foxStep(dt: Double): Unit = {
     if (foxMode == 0) {
-      if (idleT > 38.0 && warmth > 0.35 && foxCooldown <= 0.0) {
+      if (idleT > 38.0 && warmth > 0.25 && foxCooldown <= 0.0) {
         foxMode = 1
         fy = math.max(200.0, math.min(780.0, wy - 40.0))
         fx = 30.0

@@ -3169,14 +3169,14 @@ $c_LRender.prototype.draw__sjs_js_Dynamic__V = (function(ctx) {
       var l$4 = $n($n(this.LRender__f_world).LWorld__f_lanterns).get(coldest);
       var x$7 = (1.8 * t);
       var ph = ((0.5 * $uD(Math.sin(x$7))) + 0.5);
-      var value$57 = (0.1 + (0.14 * ph));
+      var value$57 = (0.06 + (0.1 * ph));
       ctx.globalAlpha = value$57;
       ctx.strokeStyle = "#ffdca0";
       ctx.lineWidth = 1.0;
       ctx.beginPath();
       var value$58 = $n(l$4).LLantern__f_x;
       var value$59 = ($n(l$4).LLantern__f_y - cam);
-      var value$60 = (8.0 + (5.0 * ph));
+      var value$60 = (7.0 + (4.0 * ph));
       ctx.arc(value$58, value$59, value$60, 0.0, 6.283185307);
       ctx.stroke();
       ctx.globalAlpha = 1.0;
@@ -3655,9 +3655,9 @@ function $c_LSprites$() {
   var elems$2 = new $c_sjsr_WrappedVarArgs(array$2);
   this.LSprites$__f_coinPal = this$63.from__sc_IterableOnce__sci_Map(elems$2);
   var this$79 = $m_sci_Map$();
-  var x0$3 = new $c_T2($bC(109), "#43435a");
-  var x1$3 = new $c_T2($bC(77), "#55556e");
-  var x2$3 = new $c_T2($bC(103), "#7ad9a0");
+  var x0$3 = new $c_T2($bC(109), "#5c5c76");
+  var x1$3 = new $c_T2($bC(77), "#72728e");
+  var x2$3 = new $c_T2($bC(103), "#8ce8b0");
   var x3$2 = new $c_T2($bC(112), "#c98f6a");
   var array$3 = [x0$3, x1$3, x2$3, x3$2];
   var elems$3 = new $c_sjsr_WrappedVarArgs(array$3);
@@ -4114,7 +4114,7 @@ function $p_LWorld__lanternStep__D__V($thiz, dt) {
   var i = 0;
   while ((i < $n($thiz.LWorld__f_lanterns).u.length)) {
     var l = $n($thiz.LWorld__f_lanterns).get(i);
-    var decay = (($n(l).LLantern__f_steady ? 0.0026 : 0.0065) * (1.0 + (1.6 * $thiz.LWorld__f_rain)));
+    var decay = (($n(l).LLantern__f_steady ? 0.002 : 0.0045) * (1.0 + (1.6 * $thiz.LWorld__f_rain)));
     var $x_1 = $n(l);
     var y = ($n(l).LLantern__f_warm - (dt * decay));
     $x_1.LLantern__f_warm = $uD(Math.max(0.0, y));
@@ -4271,7 +4271,7 @@ function $p_LWorld__catStep__D__V($thiz, dt) {
 }
 function $p_LWorld__foxStep__D__V($thiz, dt) {
   if (($thiz.LWorld__f_foxMode === 0)) {
-    if (((($thiz.LWorld__f_idleT > 38.0) && ($thiz.LWorld__f_warmth > 0.35)) && ($thiz.LWorld__f_foxCooldown <= 0.0))) {
+    if (((($thiz.LWorld__f_idleT > 38.0) && ($thiz.LWorld__f_warmth > 0.25)) && ($thiz.LWorld__f_foxCooldown <= 0.0))) {
       $thiz.LWorld__f_foxMode = 1;
       var y = ($thiz.LWorld__f_wy - 40.0);
       var y$1 = $uD(Math.min(780.0, y));

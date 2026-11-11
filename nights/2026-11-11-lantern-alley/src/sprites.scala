@@ -18,7 +18,7 @@ object Sprites {
 
   val lanternPal: Pal = Map('c' -> "#7d6a48", 'k' -> "#332e24", 'y' -> "#ffb454", 'F' -> "#ffe9a8")
   val coinPal: Pal = Map('o' -> "#8a6a2a", 'O' -> "#e8c05a", 'B' -> "#fff2c0")
-  val catPal: Pal = Map('m' -> "#43435a", 'M' -> "#55556e", 'g' -> "#7ad9a0", 'p' -> "#c98f6a")
+  val catPal: Pal = Map('m' -> "#5c5c76", 'M' -> "#72728e", 'g' -> "#8ce8b0", 'p' -> "#c98f6a")
   val foxPal: Pal = Map('f' -> "#b5643c", 'F' -> "#d8834f", 'w' -> "#efe6d8", 'k' -> "#221a18")
   val mothPal: Pal = Map('w' -> "#e8e2d0", 'M' -> "#c9c0a6")
   val leafPal: Pal = Map('l' -> "#a8743c", 'L' -> "#c9985a")
