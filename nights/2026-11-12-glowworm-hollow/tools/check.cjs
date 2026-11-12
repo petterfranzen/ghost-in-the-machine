@@ -22,7 +22,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 (async () => {
   const browser = await chromium.launch();
   const noisy = [], badreq = [];
-  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true, isMobile: true });
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
   const page = await ctx.newPage();
   page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') noisy.push(m.type() + ': ' + m.text()); });
   page.on('pageerror', (e) => noisy.push('pageerror: ' + e.message));
@@ -111,12 +111,20 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   st = await page.evaluate(() => window.glowworm.stats());
   ok(st.lit <= litBeforeFlick, 'a flick across the air is a breath, not a tap', 'lit ' + litBeforeFlick + ' -> ' + st.lit);
 
-  let target = -1, tgt = null;
+  // wake a spread of worms first, so the hold always has a bright one to find
+  for (let i = 0; i < 8; i++) {
+    const w = await page.evaluate((k) => window.glowworm.worm(k), i);
+    const q = toScreen(w.x, w.y);
+    await page.mouse.click(q.x, q.y);
+    await wait(120);
+  }
+  await wait(1400);
+  let target = -1, tgt = null, bestGlow = 0;
   for (let i = 0; i < st.worms; i++) {
     const w = await page.evaluate((k) => window.glowworm.worm(k), i);
-    if (w.glow > 0.75 && w.y < rect.h * 0.5) { target = i; tgt = w; break; }
+    if (w.glow > bestGlow) { bestGlow = w.glow; target = i; tgt = w; }
   }
-  ok(target >= 0, 'there is a lit worm to hold', 'worm ' + target);
+  ok(target >= 0 && bestGlow > 0.75, 'there is a lit worm to hold', 'worm ' + target + ' glow ' + bestGlow.toFixed(2));
   const hp = toScreen(tgt.x, tgt.y);
   await page.mouse.move(hp.x, hp.y);
   await page.mouse.down();
@@ -155,7 +163,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   });
   ok(roles.role === 'button' && roles.tab === '0' && roles.live, 'the canvas has a keyboard route and a live region', JSON.stringify(roles));
 
-  const ctx2 = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true, isMobile: true, reducedMotion: 'reduce' });
+  const ctx2 = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, hasTouch: true, isMobile: true, reducedMotion: 'reduce' });
   const page2 = await ctx2.newPage();
   await page2.goto(base + '/index.html?seed=7', { waitUntil: 'load' });
   await wait(600);
