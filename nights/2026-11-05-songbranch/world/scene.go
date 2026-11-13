@@ -7,17 +7,51 @@ package world
 import "math"
 
 const (
-	W = 176 // framebuffer, in pixels
+	W = 176 // the art's own size, in pixels
 	H = 312
 )
 
+// view is the frame the art is drawn into. On a phone the frame is taller
+// than the art (portrait) or wider (landscape), so the sky and the ground
+// keep going past the tree instead of leaving a letterbox. The art itself
+// never stretches: it sits at (ox, oy), 1:1 with the frame's pixels.
+type view struct {
+	w, h   int
+	ox, oy int
+}
+
+// FitView picks a frame matching a viewport's aspect, with the art at its own
+// size and sky/ground beyond it. vw and vh are the viewport in CSS pixels.
+func FitView(vw, vh float64) view {
+	if vw <= 0 || vh <= 0 {
+		return view{w: W, h: H}
+	}
+	if vh >= vw {
+		h := int(math.Round(float64(W) * vh / vw))
+		if h < H {
+			h = H
+		}
+		return view{w: W, h: h, oy: (h - H) / 2}
+	}
+	w := int(math.Round(float64(H) * vw / vh))
+	if w < W {
+		w = W
+	}
+	return view{w: w, h: H, ox: (w - W) / 2}
+}
+
 // Event kinds the host may want to make a sound about.
 const (
-	EventNone  = 0
-	EventNote  = 1 // a bird sang
-	EventKnock = 2 // the trunk was tapped
-	EventWind  = 3 // a tap in the sky: only leaves move
-	EventGrass = 4 // a tap on the ground: only grass moves
+	EventNone     = 0
+	EventNote     = 1 // a bird sang
+	EventKnock    = 2 // the trunk was tapped
+	EventWind     = 3 // a tap in the sky: only leaves move
+	EventGrass    = 4 // a tap on the ground: only grass moves
+	EventMoon     = 5 // the moon was tapped: an old light answers
+	EventNest     = 6 // the nest was held, and a chick peeped
+	EventSwipe    = 7 // a stroke through the leaves lifted the fireflies
+	EventChime    = 8 // the hidden melody was found
+	EventPair     = 9 // a second bird answered the first
 )
 
 // Notes is the scale the birds sing in — A minor pentatonic, A3 to A5. Eleven
@@ -71,9 +105,9 @@ var (
 	birdWing  = rgb(84, 94, 126)
 	birdEye   = rgb(14, 14, 20)
 
-	featherInk = rgb(196, 178, 148)
 	noteInk    = rgb(242, 216, 162)
 	answerInk  = rgb(255, 204, 138)
+	fireflyInk = rgb(206, 236, 168)
 )
 
 /* ------------------------------------------------------------------ shapes */
@@ -129,6 +163,13 @@ func (r *rng) next() float64 {
 }
 
 func (r *rng) rangeF(lo, hi float64) float64 { return lo + (hi-lo)*r.next() }
+
+func (r *rng) intn(n int) int {
+	if n <= 1 {
+		return 0
+	}
+	return int(r.next() * float64(n))
+}
 
 /* ------------------------------------------------------------------ spring */
 
@@ -194,32 +235,75 @@ type tuft struct {
 	h      float64
 }
 
+// A bird is nudged, never killed. A tap gives it a small hop in place, a
+// flutter of wings and one soft note; then it settles back onto the same
+// branch. Nothing leaves the tree.
 type bird struct {
-	br     int
-	t      float64
-	face   int
-	flying bool
-	hopT   float64
-	hopDur float64
+	br      int
+	t       float64
+	face    int
+	chick   bool
+	nudge   spring  // the little hop, up and back down
+	flutter float64 // wingbeats left in this nudge
+	answerT float64 // a pair answers a beat after the first bird
 
-	fromX, fromY float64
-	toX, toY     float64
-	fromT, toT   float64
-	fromBr, toBr int
-
-	glow  float64
-	sing  float64
-	note  int
-	blink float64
-	shuf  float64
-	shufT float64
-	rng   rng
+	glow   float64
+	sing   float64
+	note   int
+	blink  float64
+	shuf   float64
+	shufT  float64
+	rng    rng
 }
 
-type feather struct {
+// A firefly drifts low over the grass. Tap near one and the whole little
+// swarm lifts and settles again.
+type firefly struct {
+	x, y   float64
+	vx, vy float64
+	phase  float64
+	speed  float64
+	glow   float64
+	drift  float64
+}
+
+// A leaf that came loose and is making its unhurried way down. It is the one
+// thing in Songbranch that falls, and it falls slowly and lands.
+type leaf struct {
+	x, y   float64
+	vx, vy float64
+	spin   float64
+	life   float64
+	max    float64
+	tone   uint8
+}
+
+// moon is the secret in the sky: tap it and its halo answers.
+type moon struct {
+	glow  float64
+	tapT  float64
+	spark float64
+}
+
+// nest is the secret in the canopy: hold it and a chick peeps out.
+type nest struct {
+	x, y    float64
+	hold    float64
+	peek    float64
+	peeped  bool
+	blink   float64
+}
+
+// shooting is the rare visitor: a star that crosses the sky now and then.
+type shooting struct {
 	x, y, vx, vy float64
 	life, max    float64
-	spin         float64
+}
+
+// message is one line for the caption, raised by a discovery.
+type message struct {
+	text  string
+	until float64
 }
 
 type glyph struct {

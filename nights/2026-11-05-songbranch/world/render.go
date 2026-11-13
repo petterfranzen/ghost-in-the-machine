@@ -17,38 +17,41 @@ func clamp01(a float64) float64 {
 // plot blends one pixel over an RGBA buffer. Every alpha here is small and
 // every layer is soft on purpose: nothing in Songbranch should flash.
 func (w *World) plot(dst []byte, x, y int, c RGB, a float64) {
-	if x < 0 || y < 0 || x >= W || y >= H {
+	if x < 0 || y < 0 || x >= w.view.w || y >= w.view.h {
 		return
 	}
 	a = clamp01(a)
 	if a <= 0 {
 		return
 	}
-	d := (y*W + x) * 4
+	d := (y*w.view.w + x) * 4
 	if d+3 >= len(dst) {
 		return
 	}
-	dst[d] = uint8(float64(dst[d])*(1-a) + c.R*255*a + 0.5)
-	dst[d+1] = uint8(float64(dst[d+1])*(1-a) + c.G*255*a + 0.5)
-	dst[d+2] = uint8(float64(dst[d+2])*(1-a) + c.B*255*a + 0.5)
+	r := clamp01(c.R) * 255
+	g := clamp01(c.G) * 255
+	b := clamp01(c.B) * 255
+	dst[d] = uint8(float64(dst[d])*(1-a) + r*a + 0.5)
+	dst[d+1] = uint8(float64(dst[d+1])*(1-a) + g*a + 0.5)
+	dst[d+2] = uint8(float64(dst[d+2])*(1-a) + b*a + 0.5)
 	dst[d+3] = 255
 }
 
 // addLight adds warmth instead of covering: a bird that has just sung, and
 // the note leaving its beak, glow rather than paint over the branches.
 func (w *World) addLight(dst []byte, x, y int, c RGB, a float64) {
-	if x < 0 || y < 0 || x >= W || y >= H {
+	if x < 0 || y < 0 || x >= w.view.w || y >= w.view.h {
 		return
 	}
 	a = clamp01(a)
 	if a <= 0 {
 		return
 	}
-	d := (y*W + x) * 4
+	d := (y*w.view.w + x) * 4
 	if d+3 >= len(dst) {
 		return
 	}
-	for i, v := range [3]float64{c.R, c.G, c.B} {
+	for i, v := range [3]float64{clamp01(c.R), clamp01(c.G), clamp01(c.B)} {
 		f := float64(dst[d+i]) + v*255*a
 		if f > 255 {
 			f = 255
@@ -107,25 +110,16 @@ func (w *World) renderStars(dst []byte) {
 func (w *World) renderBranches(dst []byte) {
 	for i := range w.branches {
 		b := &w.branches[i]
-		x0, y0 := b.point(0, w.give.pos)
-		x1, y1 := b.point(1, w.give.pos)
-		// sample the branch the same way the hit test does, so what you see
-		// is what your thumb can hit
 		steps := 10
-		px, py := x0, y0
+		px, py := b.point(0, w.give.pos)
 		for s := 1; s <= steps; s++ {
 			t := float64(s) / float64(steps)
 			cx, cy := b.point(t, w.give.pos)
 			w.limb(dst, px, py, cx, cy, b.w0+(b.w1-b.w0)*(t-1/float64(steps)), b.w0+(b.w1-b.w0)*t, barkMid)
 			px, py = cx, cy
 		}
-		// a twig or two, so the ends do not read as a fork
 		twx, twy := b.point(0.62, w.give.pos)
-		w.limb(dst, twx, twy, twx-7*(1)-2, twy-9, 1.4, 0.7, barkMid)
-		_ = x0
-		_ = y0
-		_ = x1
-		_ = y1
+		w.limb(dst, twx, twy, twx-9, twy-9, 1.4, 0.7, barkMid)
 	}
 	for ci := range w.clusters {
 		c := &w.clusters[ci]
@@ -135,7 +129,6 @@ func (w *World) renderBranches(dst []byte) {
 		for _, p := range c.px {
 			col := leaves[p.tone]
 			a := 1.0
-			// the western sky catches the crown of each cluster
 			if p.tone == 3 {
 				a = 0.92
 				w.plot(dst, int(c.cx)+p.dx+dx, int(c.cy)+p.dy+dy, leafRim, 0.20)
@@ -163,6 +156,23 @@ var birdFlap = []string{
 	"..ff....",
 }
 
+// a chick is smaller and rounder, and never leaves the nest branch
+var chickPerched = []string{
+	"..dd..",
+	".bbbe.",
+	"bbbykk",
+	".bbby.",
+	"..ff..",
+}
+
+var chickFlap = []string{
+	"..ww..",
+	".bwwb.",
+	"bbbykk",
+	".bbby.",
+	"..ff..",
+}
+
 func birdTone(ch byte) (RGB, bool) {
 	switch ch {
 	case 'd':
@@ -188,13 +198,19 @@ func (w *World) renderBirds(dst []byte) {
 		b := &w.birds[i]
 		x, y := w.birdPos(b)
 		frame := birdPerched
-		if b.flying {
-			if int(b.hopT/b.hopDur*10)%2 == 0 {
+		if b.chick {
+			frame = chickPerched
+		}
+		if b.flutter > 0 {
+			if b.chick {
+				frame = chickFlap
+			} else {
 				frame = birdFlap
 			}
 		} else if b.shuf > 0.45 {
 			frame = birdFlap
 		}
+		y += b.nudge.pos
 		if b.glow > 0.05 {
 			w.blob(dst, x, y-3, 9*b.glow+3, answerInk, 0.10*b.glow)
 		}
@@ -213,11 +229,10 @@ func (w *World) renderBirds(dst []byte) {
 				}
 				px := int(math.Round(x)) + ox
 				py := int(math.Round(y)) - 4 + row
-				a := 1.0
 				if b.sing > 0.2 && line[col] == 'k' {
-					c = c.toward(moonInk, 0.4) // the beak opens mid-note
+					c = c.toward(moonInk, 0.4)
 				}
-				w.plot(dst, px, py, c, a)
+				w.plot(dst, px, py, c, 1)
 				if b.glow > 0.2 {
 					w.addLight(dst, px, py, answerInk, 0.12*b.glow)
 				}
@@ -226,18 +241,91 @@ func (w *World) renderBirds(dst []byte) {
 	}
 }
 
-func (w *World) renderFeathers(dst []byte) {
-	for i := range w.feathers {
-		f := &w.feathers[i]
-		a := clamp01(f.life / f.max)
-		c := featherInk
-		x, y := int(math.Round(f.x)), int(math.Round(f.y))
-		w.plot(dst, x, y, c, a*0.9)
-		w.plot(dst, x+1, y, c, a*0.55)
-		if math.Mod(f.spin+f.life*2, 2) < 1 {
-			w.plot(dst, x, y+1, c, a*0.4)
+func (w *World) renderFireflies(dst []byte) {
+	for i := range w.fireflies {
+		f := &w.fireflies[i]
+		a := clamp01(f.glow)
+		w.addLight(dst, int(math.Round(f.x)), int(math.Round(f.y)), fireflyInk, 0.5*a)
+		w.blob(dst, f.x, f.y, 1.4, fireflyInk, 0.9*a)
+		if f.glow > 0.7 {
+			w.addLight(dst, int(math.Round(f.x)), int(math.Round(f.y)), answerInk, 0.18*(f.glow-0.7)/0.3)
 		}
 	}
+}
+
+func (w *World) renderLeaves(dst []byte) {
+	for i := range w.leaves {
+		l := &w.leaves[i]
+		a := clamp01(l.life / l.max)
+		c := leaves[l.tone]
+		x, y := int(math.Round(l.x)), int(math.Round(l.y))
+		w.plot(dst, x, y, c, a)
+		w.plot(dst, x+1, y, c, a*0.7)
+		if math.Mod(l.spin+l.life*2, 2) < 1 {
+			w.plot(dst, x, y+1, c, a*0.55)
+		}
+	}
+}
+
+func (w *World) renderMoon(dst []byte) {
+	m := &w.moon
+	if m.glow <= 0.02 {
+		return
+	}
+	// a warm ring grows and fades over the baked moon
+	r := 10 + 14*m.glow
+	w.blob(dst, w.moonX(), w.moonY(), r, moonHalo, 0.10*m.glow)
+	w.blob(dst, w.moonX(), w.moonY(), 9+6*m.glow, answerInk, 0.16*m.glow)
+	if m.spark > 0.02 {
+		for k := 0; k < 6; k++ {
+			ang := float64(k)*math.Pi/3 + m.tapT*0.6
+			rr := 13 + 9*m.spark
+			x := w.moonX() + math.Cos(ang)*rr
+			y := w.moonY() + math.Sin(ang)*rr
+			w.addLight(dst, int(math.Round(x)), int(math.Round(y)), moonInk, 0.35*m.spark)
+		}
+	}
+}
+
+func (w *World) renderNest(dst []byte) {
+	n := &w.nest
+	// a small woven bowl under the chicks
+	c := barkDark
+	x, y := n.x, n.y
+	w.plot(dst, int(x)-3, int(y), c, 0.9)
+	w.plot(dst, int(x)-2, int(y)+1, c, 0.9)
+	w.plot(dst, int(x)-1, int(y)+1, c, 0.9)
+	w.plot(dst, int(x), int(y)+2, c, 0.9)
+	w.plot(dst, int(x)+1, int(y)+1, c, 0.9)
+	w.plot(dst, int(x)+2, int(y)+1, c, 0.9)
+	w.plot(dst, int(x)+3, int(y), c, 0.9)
+	w.plot(dst, int(x)-2, int(y), barkLit, 0.4)
+	w.plot(dst, int(x)+2, int(y), barkLit, 0.4)
+	// the chick's head, when the nest has been held
+	if n.peek > 0.05 {
+		a := clamp01(n.peek)
+		w.blob(dst, x, y-2, 2.6, birdBelly, a)
+		w.plot(dst, int(x)-1, int(y)-3, birdEye, a)
+		w.plot(dst, int(x)+2, int(y)-2, birdBeak, a)
+	}
+	if n.blink > 0 && n.blink < 0.2 {
+		// a small blink: the nest is alive
+		w.plot(dst, int(x)+2, int(y)-2, birdDark, 0.7)
+	}
+}
+
+func (w *World) renderShooting(dst []byte) {
+	s := &w.shooting
+	if s.life <= 0 {
+		return
+	}
+	a := clamp01(s.life / s.max)
+	for k := 0; k < 7; k++ {
+		x := s.x - s.vx*0.006*float64(k)
+		y := s.y - s.vy*0.006*float64(k)
+		w.plot(dst, int(math.Round(x)), int(math.Round(y)), starInk, a*(1-0.12*float64(k)))
+	}
+	w.addLight(dst, int(math.Round(s.x)), int(math.Round(s.y)), answerInk, 0.4*a)
 }
 
 func (w *World) renderGlyphs(dst []byte) {
@@ -246,7 +334,6 @@ func (w *World) renderGlyphs(dst []byte) {
 		a := clamp01(g.life / g.max)
 		a = a * a
 		x, y := int(math.Round(g.x)), int(math.Round(g.y))
-		// a little quaver: a stem, a flag, a head
 		for k := 0; k < 4; k++ {
 			w.plot(dst, x, y+k, noteInk, a*0.85)
 		}
@@ -259,7 +346,7 @@ func (w *World) renderGlyphs(dst []byte) {
 
 /* --------------------------------------------------------------------- draw */
 
-// Render paints the whole scene into an RGBA buffer of at least W*H*4 bytes.
+// Render paints the whole scene into an RGBA buffer of at least w*h*4 bytes.
 func (w *World) Render(fb []byte) {
 	if len(fb) < len(w.fb) {
 		return
@@ -267,9 +354,13 @@ func (w *World) Render(fb []byte) {
 	copy(fb, w.still)
 	w.renderStars(fb)
 	w.renderBranches(fb)
+	w.renderFireflies(fb)
+	w.renderLeaves(fb)
+	w.renderNest(fb)
 	w.renderBirds(fb)
-	w.renderFeathers(fb)
+	w.renderShooting(fb)
 	w.renderGlyphs(fb)
+	w.renderMoon(fb)
 }
 
 // Frame is the internal buffer, so the wasm layer can hand it to the browser
