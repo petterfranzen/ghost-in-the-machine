@@ -41,15 +41,29 @@
 
   let sim = null, mem = null, imgData = null, curW = 0, curH = 0;
   let offs = 0, last = 0;
-  let dragging = false, lastDrag = 0;
+  let pressing = false, pressX = 0, pressY = 0, lastPour = 0;
+  let moonDown = false, moonHold = 0, moonFired = false, moonGlowVal = 0;
+  let reduced = false;
   let idleTimer = 0, noted = false, noteTimer = 0;
   let actx = null, soundOn = false, lastSound = 0, noiseBuf = null;
+  let currentSeed = 0;
+
+  const MOON_HOLD = 1300;   // ms a still press rests on the moon before it answers
+  const POUR_MS = 150;      // a held finger keeps pouring sand (no text selection)
 
   function fromB64(b64) {
     const bin = atob(b64);
     const out = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
     return out;
+  }
+
+  // The landscape is seeded per visit. A numeric ?seed= wins; otherwise draw a
+  // fresh 32-bit value so no two visits share a field.
+  function readSeed() {
+    const want = new URLSearchParams(location.search).get('seed');
+    if (want !== null && /^\d{1,10}$/.test(want)) return Number(want) >>> 0;
+    return (Math.floor(Math.random() * 0xffffffff) >>> 0);
   }
 
   async function boot() {
@@ -59,9 +73,12 @@
     sim = instance.exports;
     mem = sim.memory;
 
-    sim.seed(20261108);            // a fixed field, so it looks the same tomorrow
+    // A fresh field every visit; ?seed=<n> pins one so a particular landscape
+    // can be revisited or shared. Seed 0 is remapped inside the simulation.
+    currentSeed = readSeed();
+    sim.seed(currentSeed);
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const apply = m => sim.setReduce(m.matches ? 1 : 0);
+    const apply = m => { reduced = m.matches; sim.setReduce(m.matches ? 1 : 0); };
     apply(mq);
     if (mq.addEventListener) mq.addEventListener('change', apply);
 
@@ -70,6 +87,14 @@
     window.addEventListener('orientationchange', () => setTimeout(layout, 250));
     bindInput();
     canvas.focus({ preventScroll: true });
+
+    // A tiny read-only handle so the headless check can watch the slow press.
+    window.DuneDrift = {
+      reduce: () => reduced,
+      seed: () => currentSeed,
+      moon: () => ({ pressing: moonDown, progress: moonHold / MOON_HOLD, fired: moonFired }),
+    };
+
     requestAnimationFrame(loop);
   }
 
@@ -88,7 +113,7 @@
     const d = imgData.data;
     for (let i = 3; i < d.length; i += 4) d[i] = 255;
     curW = w; curH = h;
-    offs = Math.max(2, Math.round(h * px * 0.012));
+    offs = Math.max(2, Math.round(h * px * 0.010));
   }
 
   function blit() {
@@ -105,6 +130,30 @@
   function loop(now) {
     const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
     last = now;
+
+    // A held finger keeps pouring sand — a long press is a gentle stream, not
+    // a text selection.
+    if (pressing && !moonDown && now - lastPour > POUR_MS) {
+      lastPour = now;
+      sim.tap(pressX, pressY);
+      quiet();
+    }
+
+    // A slow, still press on the moon: nothing shows until it is nearly there.
+    if (moonDown && !moonFired) {
+      moonHold += dt * 1000;
+      const p = Math.min(1, moonHold / MOON_HOLD);
+      moonGlowVal = p > 0.45 ? (p - 0.45) / 0.55 : 0;
+      sim.setMoonGlow(moonGlowVal * 0.85);
+      if (moonHold >= MOON_HOLD) {
+        moonFired = true;
+        moonGlowVal = 0;
+        sim.setMoonGlow(0);
+        sim.ripple();
+        note('the moon answers — the whole field breathes once');
+      }
+    }
+
     sim.step(dt);
     sim.render();
     blit();
@@ -128,43 +177,68 @@
   }
 
   function isMoon(x, y) {
-    const mx = 0.78 * curW, my = 0.17 * curH, mr = Math.max(4, curW * 0.045) + 4;
+    // The secret's target is the drawn disc plus a small margin — no longer a
+    // generous box, so it is found by pressing, not by accident.
+    const mx = 0.78 * curW, my = 0.17 * curH, mr = Math.max(4, curW * 0.045) + 2;
     const dx = x - mx, dy = y - my;
     return dx * dx + dy * dy <= mr * mr;
   }
 
   function tapAt(x, y) {
-    if (isMoon(x, y)) {
-      sim.ripple();
-      note('the moon answers — the whole field breathes once');
-    } else {
-      sim.tap(x, y);
-    }
+    sim.tap(x, y);
     quiet();
+  }
+
+  // Leaving or releasing the moon: a quick press is just a handful of sand,
+  // like anywhere else in the sky, so the secret stays unguessed.
+  function endMoon() {
+    if (moonDown && !moonFired) {
+      sim.tap(pressX, pressY);
+      quiet();
+    }
+    moonDown = false;
+    moonHold = 0;
+    moonGlowVal = 0;
+    if (sim) sim.setMoonGlow(0);
   }
 
   function bindInput() {
     canvas.addEventListener('pointerdown', e => {
       e.preventDefault();
-      dragging = true;
-      lastDrag = 0;
       try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
       const p = toCell(e);
-      tapAt(p.x, p.y);
+      pressX = p.x; pressY = p.y;
+      lastPour = performance.now();
+      if (isMoon(p.x, p.y)) {
+        moonDown = true; moonHold = 0; moonFired = false; moonGlowVal = 0;
+      } else {
+        pressing = true;
+        sim.tap(p.x, p.y);        // one handful at once; the loop keeps pouring
+        quiet();
+      }
     });
     canvas.addEventListener('pointermove', e => {
-      if (!dragging) return;
-      const now = performance.now();
-      if (now - lastDrag < 90) return;      // sift, don't smear
-      lastDrag = now;
       const p = toCell(e);
-      sim.tap(p.x, p.y);
-      quiet();
+      if (moonDown) {
+        if (!isMoon(p.x, p.y)) endMoon();   // drifted off the moon: let it go
+        return;
+      }
+      if (!pressing) return;
+      pressX = p.x; pressY = p.y;           // the pour timer reads this
     });
-    const end = () => { dragging = false; };
+    const end = () => { pressing = false; endMoon(); };
     canvas.addEventListener('pointerup', end);
     canvas.addEventListener('pointercancel', end);
     canvas.addEventListener('pointerleave', end);
+
+    // iOS: a long press on the play area must pour sand, never select text,
+    // show the magnifier or zoom. touch-action/user-select live in the CSS;
+    // these non-passive handlers stop the default gestures outright.
+    canvas.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
+    canvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+    canvas.addEventListener('contextmenu', e => e.preventDefault());
+    canvas.addEventListener('selectstart', e => e.preventDefault());
+    canvas.addEventListener('dragstart', e => e.preventDefault());
 
     canvas.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
