@@ -33,19 +33,7 @@ when it fits a wish, and say in the PR which you followed.
 - A quiet beehive: plant flowers with a tap, and the bees only return when the scene is left calm - Swift - nudge not kill.
 - A night-train window: stars pass, tap the glass to fog it and a faint drawing shows underneath; fills the phone screen - V - full screen on mobile.
 
-| Date | Folder | Language | Idea | Verdict / feedback |
-|---|---|---|---|---|
-| 2026-10-28 | 2026-10-28-ripple-pool | Nim | A calm, one-handed tap-to-ripple pond with soft audio. | Great start. Wanted more ripples per stone, moving slower, and each impact dissipating gradually. Petter's idea for a next night: a zen garden raking experience. |
-| 2026-10-29 | 2026-10-29-zen-rake | Haxe | A zen sand garden you rake with one thumb; grooves settle behind the rake and slowly fade. | Underwhelming: the raking feels harsh, not relaxing. It needs more satisfying physics (sand that gives, settles and smooths softly). |
-| 2026-10-30 | 2026-10-30-fireflies | Elm | A dusk meadow you fill with fireflies: one tap lifts a small hush of them, and they drift, blink and slowly fade. | Liked a lot, very nice. More like this. |
-| 2026-10-31 | 2026-10-31-koi-drift | Gleam | A still pond you feed with one thumb: tap and food drifts down, the koi glide over and the ripples spread and fade. | Liked a lot, together with Lantern Moss. Keep the pond and the koi. |
-| 2026-11-01 | 2026-11-01-lantern-moss | Zig | A calm pixel-art clearing you explore with one thumb: gather three lost lights and wake an old stone. | Liked a lot, together with Koi Drift. Keep the pixel art. Next: combine the two, with taps that feel impactful and still calm. |
-| 2026-11-05 | 2026-11-05-songbranch | Go | A pixel-art dusk tree you nudge: tap a bird and it flutters in place and answers, the scene fills the phone, and small secrets hide in the moon, the nest and the leaves. | revised 7 Nov (gentler birds, full screen mobile, secrets); pending review |
-| 2026-11-08 | 2026-11-08-dune-drift | AssemblyScript | A quiet moonlit dune field: tap and a handful of sand drifts down and settles softly into the dunes. | pending review (revision: landscape seeded per visit with ?seed= override, terrain now seed-driven) |
-| 2026-11-10 | 2026-11-10-snow-garden | Rust | A quiet snowy garden: a tap sends a small walker trudging through the snow, footprints fill in slowly, and a fox crosses if you stand still. | 10 Nov: liked it, and asked for more interaction. Added a drag that draws a groove in the snow, a tap on the tree that shakes snow off and moves the bird to the gate, a long press that rolls a snowball into a snowman (three at most, tap one to topple it), and a swipe across the sky that thickens the fall for a few seconds. Pending re-review. |
-| 2026-11-11 | 2026-11-11-lantern-alley | Scala | A lantern-lit pixel alley you walk with one thumb, warming lanterns and finding three lost coins. | pending review |
-| 2026-11-12 | 2026-11-12-glowworm-hollow | C | A dark cave of glow-worms you wake with a thumb: tap, drag, hold and swipe the rock, and their light reveals what it hides. | pending review |
-| 2026-11-13 | 2026-11-13-mosslight-pond | F# (Fable) | A pixel-art pond at night you wake with a thumb: ripples call the koi, mossy stones light lanterns, and something pale surfaces when you go still. | pending review |
+Night rows moved: one file per night at `nights/<folder>/night.json` (keys `date`, `language`, `idea`, `verdict`); print the table with `python3 scripts/night-log.py`.
 
 ## Lessons (newest first)
 
