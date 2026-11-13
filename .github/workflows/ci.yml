@@ -78,7 +78,7 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: |
           set -euo pipefail
-          nights=$(git diff --name-only "origin/$BASE_REF...HEAD" | awk -F/ '$1=="nights" && NF>2 {print $2}' | sort -u)
+          nights=$(git diff --name-only "origin/$BASE_REF...HEAD" | awk -F/ '$1=="nights" && NF>2 && $2 !~ /^_/ {print $2}' | sort -u)
           [ -n "$nights" ] || { echo "No night folders changed."; exit 0; }
           for n in $nights; do
             d="nights/$n"
@@ -123,7 +123,7 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: |
           set -euo pipefail
-          nights=$(git diff --name-only "origin/$BASE_REF...HEAD" | awk -F/ '$1=="nights" && NF>2 {print $2}' | sort -u)
+          nights=$(git diff --name-only "origin/$BASE_REF...HEAD" | awk -F/ '$1=="nights" && NF>2 && $2 !~ /^_/ {print $2}' | sort -u)
           [ -n "$nights" ] || { echo "No night folders changed."; exit 0; }
           status=0
           for n in $nights; do
