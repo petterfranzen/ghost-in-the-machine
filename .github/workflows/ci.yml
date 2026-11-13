@@ -78,7 +78,7 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: |
           set -euo pipefail
-          nights=$(git diff --name-only "origin/$BASE_REF...HEAD" | awk -F/ '$1=="nights" && NF>2 {print $2}' | sort -u)
+          nights=$(git diff --name-only "origin/$BASE_REF...HEAD" | awk -F/ '$1=="nights" && NF>2 && $2 !~ /^_/ {print $2}' | sort -u)
           [ -n "$nights" ] || { echo "No night folders changed."; exit 0; }
           for n in $nights; do
             d="nights/$n"
@@ -93,6 +93,49 @@ jobs:
             [ -s "$d/dist/index.html" ] || { echo "build.sh did not produce dist/index.html"; exit 1; }
             echo "::endgroup::"
           done
+
+  loads:
+    # "One build a night" is a public promise: a night only counts once Pages
+    # serves it. Pages publishes each night's committed dist/ as it is, so this
+    # serves exactly that (no rebuild, which could hide a file that was built
+    # but never committed, as on 13 Nov) and fails on any 404, console error,
+    # page error or blank page.
+    name: Committed night loads
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Install Playwright Chromium (pinned)
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null
+          npm install --no-audit --no-fund playwright@1.65.0
+          npx playwright install chromium
+          # System packages come from the runner's Ubuntu mirror; a dead mirror must
+          # not fail the check (flight-tracker #214).
+          timeout 6m npx playwright install-deps chromium || echo "install-deps failed; trying without"
+          cp "$GITHUB_WORKSPACE/scripts/check-night-loads.mjs" /tmp/pw/
+      - name: Serve each changed night's committed dist/ and load it
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          nights=$(git diff --name-only "origin/$BASE_REF...HEAD" | awk -F/ '$1=="nights" && NF>2 && $2 !~ /^_/ {print $2}' | sort -u)
+          [ -n "$nights" ] || { echo "No night folders changed."; exit 0; }
+          status=0
+          for n in $nights; do
+            d="nights/$n/dist"
+            [ -f "$d/index.html" ] || { echo "$n: no committed dist/index.html; the Build job reports it"; continue; }
+            python3 -m http.server 8765 --bind 127.0.0.1 -d "$d" >/dev/null 2>&1 &
+            srv=$!
+            for _ in $(seq 1 20); do curl -fs http://127.0.0.1:8765/ >/dev/null && break; sleep 0.5; done
+            node /tmp/pw/check-night-loads.mjs http://127.0.0.1:8765/ "$n" || status=1
+            kill "$srv"; wait "$srv" 2>/dev/null || true
+          done
+          exit $status
 
   index:
     name: Landing page renders
