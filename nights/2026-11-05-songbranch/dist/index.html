@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#14121c">
-<meta name="description" content="Songbranch — a pixel-art tree at dusk. Tap a bird and it hops to the next branch and sings one soft note.">
+<meta name="description" content="Songbranch — a pixel-art tree at dusk. Tap a bird and it hops in place and sings one soft note; it never leaves its branch. There are a few small things to find.">
 <title>Songbranch</title>
 <link rel="stylesheet" href="./style.css">
 </head>
@@ -12,24 +12,22 @@
 <main>
   <header>
     <h1>Songbranch</h1>
-    <p class="sub">a tree at dusk, and four small birds</p>
+    <p class="sub">a tree at dusk, and six small birds</p>
   </header>
 
-  <div class="stage-wrap">
-    <canvas id="stage" width="176" height="312" tabindex="0" role="application"
-            aria-label="A pixel-art tree at dusk with four birds on its branches. Tap a bird and it hops to another branch and sings one soft note. Tap the trunk and the whole tree settles."
-            aria-describedby="hint"></canvas>
-  </div>
-
-  <p id="caption" aria-live="polite">four birds are settling in for the night</p>
+  <canvas id="stage" width="176" height="312" tabindex="0" role="button"
+          aria-label="A pixel-art tree at dusk with six birds and two chicks on its branches. Tap a bird: it hops in place and sings one soft note, then settles back. Tap the trunk: the whole tree gives and settles. The moon and the nest keep small secrets; swipe the leaves to lift the fireflies."
+          aria-describedby="hint"></canvas>
 
   <div class="foot">
-    <p id="hint">tap a bird &middot; tap the trunk &middot; tap the sky</p>
-    <button id="sound" type="button" aria-pressed="false">
-      <span class="glyph" aria-hidden="true">&#9834;</span><span class="label">sound off</span>
-    </button>
+    <p id="caption" aria-live="polite">the birds are settling in for the night</p>
+    <div class="row">
+      <p id="hint">tap a bird &middot; tap the trunk &middot; swipe the leaves</p>
+      <button id="sound" type="button" aria-pressed="false">
+        <span class="glyph" aria-hidden="true">&#9834;</span><span class="label">sound off</span>
+      </button>
+    </div>
   </div>
-
 </main>
 <script src="./wasm.js"></script>
 <script src="./app.js"></script>

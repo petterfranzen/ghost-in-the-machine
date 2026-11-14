@@ -1,0 +1,14 @@
+{
+  "name": "threadloom",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Night 2026-11-14 — a quiet wooden loom you work with one thumb, in ReScript.",
+  "scripts": {
+    "build": "bash build.sh",
+    "check": "node test/art-check.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "rescript": "11.1.4"
+  }
+}

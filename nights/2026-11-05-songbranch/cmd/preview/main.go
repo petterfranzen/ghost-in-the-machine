@@ -25,11 +25,16 @@ func main() {
 	frames := flag.Int("frames", 1, "how many 1/60 s frames to run first")
 	motion := flag.Float64("motion", 1, "motion scale, 1 normally")
 	scale := flag.Int("scale", 3, "pixel scale in the PNG")
+	width := flag.Int("w", 0, "frame width (default: the art's 176)")
+	height := flag.Int("h", 0, "frame height (default: the art's 312)")
 	var taps stringList
 	flag.Var(&taps, "tap", "x,y to tap on frame 2 (repeatable)")
 	flag.Parse()
 
 	tree := world.New()
+	if *width > 0 && *height > 0 {
+		tree = world.NewView(*width, *height)
+	}
 	tree.SetMotion(*motion)
 	for _, t := range taps {
 		p, err := parsePoint(t)
@@ -52,7 +57,7 @@ func main() {
 	fb := tree.Frame()
 	tree.Render(fb)
 
-	w, h := world.W, world.H
+	w, h := tree.ViewW(), tree.ViewH()
 	img := image.NewRGBA(image.Rect(0, 0, w**scale, h**scale))
 	for y := 0; y < h**scale; y++ {
 		for x := 0; x < w**scale; x++ {

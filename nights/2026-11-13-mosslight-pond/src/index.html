@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<title>Mosslight Pond</title>
+<meta name="theme-color" content="#070b18" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<canvas id="scene" aria-label="A quiet pixel-art pond at night"></canvas>
+<button id="sound" type="button" aria-pressed="false" aria-label="Toggle sound">
+  <svg viewBox="0 0 20 20" aria-hidden="true" width="20" height="20">
+    <path d="M4 8h3l4-3v10l-4-3H4z" fill="currentColor"/>
+    <path class="wave" d="M13.5 7.2a3.6 3.6 0 0 1 0 5.6M15.7 5a6.5 6.5 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+  </svg>
+  <span id="sound-label">sound off</span>
+</button>
+<script src="shell.js"></script>
+<script src="audio.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
