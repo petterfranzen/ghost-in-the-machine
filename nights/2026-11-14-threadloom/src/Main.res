@@ -279,7 +279,7 @@ let layoutOf = (cw, ch) => {
   let clothW = s *. Belt.Int.toFloat(warp)
   let clothX = Js.Math.floor_float((cw -. clothW) /. 2.0)
   let clothTop = beamH +. 44.0
-  let wellBottom = ch -. spoolH -. 8.0
+  let wellBottom = Js.Math.min_float(ch -. spoolH -. 8.0, clothTop +. s *. Belt.Int.toFloat(rows) +. 170.0)
   let n = Belt.Int.toFloat(loom.unlocked)
   let spoolW = Js.Math.min_float(58.0, (cw -. 30.0) /. n -. 14.0)
   let spoolGap = (cw -. n *. spoolW) /. (n +. 1.0)
