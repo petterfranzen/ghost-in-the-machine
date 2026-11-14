@@ -3,7 +3,7 @@ name: Pages
 on:
   push:
     branches: [main]
-    paths: ["nights/**", "crew/**", "LOG.md", "scripts/build-index.py", ".github/workflows/pages.yml"]
+    paths: ["nights/**", "crew/**", "LOG.md", "scripts/build-index.py", "scripts/night-log.py", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:

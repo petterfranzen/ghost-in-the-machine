@@ -4,7 +4,8 @@ A small app every night, in a language and idea that haven't been done here
 before, built by an AI agent while Petter sleeps. Most are calm, relaxing toys.
 
 - **Try them:** https://petterfranzen.github.io/ghost-in-the-machine/
-- **History:** [LOG.md](LOG.md), one line per night with Petter's verdict.
+- **History:** [LOG.md](LOG.md) for the wishes, backlog and lessons, and one
+  `nights/<folder>/night.json` per night with Petter's verdict.
 - **Layout:** `nights/YYYY-MM-DD-<slug>/` each hold a self-contained app with a
   `README.md`, a `build.sh`, and the built static site in `dist/`.
 

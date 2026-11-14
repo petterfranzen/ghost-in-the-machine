@@ -86,7 +86,8 @@ jobs:
             [ -d "$d" ] || { echo "$d removed; skipping"; echo "::endgroup::"; continue; }
             [[ "$n" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+$ ]] || { echo "Folder name must be YYYY-MM-DD-slug: $n"; exit 1; }
             for f in README.md build.sh dist/index.html; do [ -e "$d/$f" ] || { echo "$d is missing $f"; exit 1; }; done
-            grep -qF "| $n |" LOG.md || { echo "LOG.md has no line for $n"; exit 1; }
+            [ -f "$d/night.json" ] || { echo "$d is missing night.json"; exit 1; }
+            python3 scripts/night-log.py >/dev/null
             ( cd "$d"
               if [ -f mise.toml ] || [ -f .mise.toml ] || [ -f .tool-versions ]; then mise trust -a && mise install; fi
               timeout 25m mise exec -- bash build.sh )
