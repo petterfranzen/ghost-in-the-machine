@@ -54,4 +54,6 @@ Hard-won rules for the next night. Keep them short and general.
 | Date | Lesson | Source |
 |---|---|---|
 | 2026-11-08 | Long-press interactions need `touch-action:none` + `user-select:none` + `-webkit-touch-callout:none`, or iOS selects/magnifies. Use pointer events with `setPointerCapture` and non-passive `preventDefault()` on `pointerdown`/`touchstart`; never `user-scalable=no` (it hurts accessibility). | Dune Drift, 8 Nov |
+| 2026-11-14 | Canvas *silently ignores* an invalid `fillStyle` and keeps the last one, so a broken colour helper paints the previous colour over everything with no error anywhere. Format each channel as two hex digits, and print one shaded colour into a debug line before trusting the palette. | Threadloom |
 | 2026-11-08 | Secrets should be discovered, not shown. Gate a hidden reward on a gesture or timing (a slow press, several taps over time, or a height reached), and show no hint until it is nearly there. | Dune Drift 4/10 |
+| 2026-11-14 | 2026-11-14-threadloom | ReScript | A quiet wooden loom you work with one thumb: drag the shuttle across the warp, tap to beat the weft, and a hidden motif appears when the cloth is finished. | pending review |
