@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Low Tide</title>
+    <meta name="theme-color" content="#131a2c" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23131a2c'/%3E%3Ccircle cx='11' cy='4' r='2.4' fill='%23f8f3df'/%3E%3Cellipse cx='8' cy='11' rx='6' ry='2.6' fill='%231b4257'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main id="shore">
+      <canvas
+        id="sea"
+        role="button"
+        tabindex="0"
+        aria-label="A quiet low-tide rock shore at dusk. Press Enter, or tap a pool on the water, to bloom a soft wave and wake whatever lives there."
+      ></canvas>
+      <div id="dock">
+        <button id="sound" type="button" aria-pressed="false">sound off</button>
+      </div>
+      <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

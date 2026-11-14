@@ -1,0 +1,100 @@
+/* Low Tide — the whole styling. Nothing is fetched; the palette matches the
+   pixels the canvas draws. */
+:root {
+  --ink: #eaf1f6;
+  --deep: #0d1220;
+  --edge: rgba(207, 227, 240, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #131a2c;
+}
+
+body {
+  color: var(--ink);
+  font: 16px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  overscroll-behavior: none;
+}
+
+#shore {
+  position: fixed;
+  inset: 0;
+}
+
+#sea {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+#sea:focus-visible {
+  outline: 2px solid #cfe3f0;
+  outline-offset: -4px;
+}
+
+#dock {
+  position: absolute;
+  right: max(12px, env(safe-area-inset-right));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  display: flex;
+  gap: 8px;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#sound {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--ink);
+  background: rgba(13, 18, 32, 0.72);
+  border: 1px solid var(--edge);
+  border-radius: 22px;
+  cursor: pointer;
+}
+
+#sound[aria-pressed='true'] {
+  border-color: #9fe3d4;
+  color: #eafff9;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #sound {
+    transition: none;
+  }
+}
