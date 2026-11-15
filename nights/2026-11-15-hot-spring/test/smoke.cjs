@@ -69,6 +69,33 @@ const check = (ok, what) => {
   await page.waitForTimeout(400);
   check(before !== (await shot()), 'a long press changes the picture');
 
+  // a real swipe up or down the sky must move the snow (drag down, moves, up)
+  const snow = () => page.evaluate(() =>
+    (typeof window.steamSpringSnow === 'function' ? window.steamSpringSnow() : null));
+  const s0 = await snow();
+  await page.mouse.move(195, 150);
+  await page.mouse.down();
+  await page.mouse.move(195, 330, { steps: 6 });
+  await page.mouse.move(195, 520, { steps: 6 });
+  await page.mouse.up();
+  await page.waitForTimeout(600);
+  const s1 = await snow();
+  check(s0 !== null && s1 !== null && s1 > s0 + 0.02,
+    'a swipe down the sky thickens the snow (' + s0 + ' -> ' + s1 + ')');
+
+  for (let i = 0; i < 2; i++) {
+    await page.mouse.move(195, 520);
+    await page.mouse.down();
+    await page.mouse.move(195, 320, { steps: 6 });
+    await page.mouse.move(195, 150, { steps: 6 });
+    await page.mouse.up();
+    await page.waitForTimeout(500);
+  }
+  const s2 = await snow();
+  check(s2 !== null && s2 < s1 - 0.02,
+    'a swipe up the sky thins the snow (' + s1 + ' -> ' + s2 + ')');
+  check(errs.length === 0, 'no console errors while sweeping the sky');
+
   await page.click('#sound');
   await page.waitForTimeout(600);
   const sound = await page.evaluate(() => ({
@@ -78,6 +105,30 @@ const check = (ok, what) => {
   }));
   check(sound.on && sound.stored === 'on' && /on/i.test(sound.label), 'sound turns on and is remembered (' + sound.label + ')');
   check(errs.length === 0, 'no console errors during a short play');
+
+  // a user who asked for less motion: the page must still load clean
+  const rmCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const rmPage = await rmCtx.newPage();
+  const rmErrs = [];
+  rmPage.on('console', (m) => { if (m.type() === 'error') rmErrs.push(m.text()); });
+  rmPage.on('pageerror', (e) => rmErrs.push(e.message));
+  await rmPage.goto('http://127.0.0.1:8210/index.html', { waitUntil: 'load' });
+  await rmPage.waitForTimeout(900);
+  const rmMoving = await rmPage.evaluate(() => (
+    typeof window.steamSpringSnow === 'function' ? window.steamSpringSnow() : null));
+  check(rmErrs.length === 0 && rmMoving !== null, 'prefers-reduced-motion still loads and runs');
+  await rmCtx.close();
+
+  // and a desktop viewport
+  const dCtx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+  const dPage = await dCtx.newPage();
+  const dErrs = [];
+  dPage.on('console', (m) => { if (m.type() === 'error') dErrs.push(m.text()); });
+  dPage.on('pageerror', (e) => dErrs.push(e.message));
+  await dPage.goto('http://127.0.0.1:8210/index.html', { waitUntil: 'load' });
+  await dPage.waitForTimeout(900);
+  check(dErrs.length === 0, 'a 1280x800 desktop loads without console errors');
+  await dCtx.close();
 
   await browser.close();
   server.close();

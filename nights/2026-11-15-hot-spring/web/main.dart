@@ -5,6 +5,10 @@ import 'dart:html';
 import 'dart:js_interop';
 import 'dart:math' as math;
 
+// A read-only probe the smoke check can call to watch the snow respond.
+@JS('steamSpringSnow')
+external set _snowProbe(JSFunction f);
+
 // ---------------------------------------------------------------- web audio --
 extension type AudioParam._(JSObject _) implements JSObject {
   external void setValueAtTime(double v, double t);
@@ -490,6 +494,8 @@ class Scene {
   List<double> tapTimes = [];
 
   bool dragging = false;
+  // a user who asked for less motion still gets the world, just a stiller one
+  bool reduceMotion = false;
   double dragX = 0, dragY = 0;
   double _pressX = 0, _pressY = 0;
   double _pressT = 0;
@@ -503,6 +509,11 @@ class Scene {
   void start() {
     layout();
     _seedAmbient();
+    try {
+      final mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+      reduceMotion = mq.matches;
+      mq.onChange.listen((_) => reduceMotion = mq.matches);
+    } catch (_) {}
     window.requestAnimationFrame(_frame);
   }
 
@@ -869,14 +880,17 @@ class Scene {
 
   void pointerUp(double vx, double vy) {
     dragging = false;
-    if (_longFired) return;
     final dx = vx - _pressX, dy = vy - _pressY;
     final dist = math.sqrt(dx * dx + dy * dy);
     final dur = t - _pressT;
+    // A vertical swipe sweeps the sky. It moves the pointer, so pointerMove has
+    // already set _longFired by the time we get here — the swipe must be tested
+    // before that guard or it is never reached.
     if (dur < 0.9 && dy.abs() > 18 && dy.abs() > dx.abs() * 1.3) {
       gustSky(dy > 0 ? 1.0 : -1.0);
       return;
     }
+    if (_longFired) return;
     if (dist < 8) tap(vx, vy);
   }
 
@@ -1092,6 +1106,9 @@ class Scene {
   void update(double dt) {
     dt = clamp(dt, 0.0, 0.05);
     t += dt;
+    // reduced motion: snow, steam, splashes, fireflies and ripples drift far
+    // more slowly (their lifetimes still run on the real clock)
+    final md = reduceMotion ? dt * 0.22 : dt;
     _monkeyAnchor();
     still = t - lastInput;
     if (dragging) {
@@ -1166,15 +1183,15 @@ class Scene {
       final p = parts[i];
       p.age += dt;
       if (p.kind == 0) {
-        p.x += (p.vx + windX * 0.35) * dt;
-        p.y += p.vy * dt;
+        p.x += (p.vx + windX * 0.35) * md;
+        p.y += p.vy * md;
         p.vx *= math.pow(0.9, dt);
         p.vy -= dt * 0.5;
         p.size += dt * 0.9;
         if (p.age > p.life) parts.removeAt(i);
       } else if (p.kind == 1) {
-        p.x += (p.vx + windX * 3.2) * dt;
-        p.y += p.vy * dt;
+        p.x += (p.vx + windX * 3.2) * md;
+        p.y += p.vy * md;
         final gx = p.x, gy = p.y;
         final onMonkey = (gx - _monkeyX).abs() < 7 && (gy - (_monkeyY - 11)).abs() < 7;
         if (gy > snowGroundY && !_inPool(gx, gy)) {
@@ -1190,9 +1207,9 @@ class Scene {
           parts.removeAt(i);
         }
       } else if (p.kind == 2) {
-        p.vy += 42 * dt;
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
+        p.vy += 42 * md;
+        p.x += p.vx * md;
+        p.y += p.vy * md;
         if (p.age > p.life || p.y > poolCy + poolRy) {
           if (p.y <= poolCy + poolRy && !_inPool(p.x, p.y)) {
             parts.removeAt(i);
@@ -1202,8 +1219,8 @@ class Scene {
           }
         }
       } else {
-        p.x += (p.vx + math.sin(t * 0.8 + p.y) * 0.6) * dt;
-        p.y += p.vy * dt;
+        p.x += (p.vx + math.sin(t * 0.8 + p.y) * 0.6) * md;
+        p.y += p.vy * md;
         if (p.age > p.life) parts.removeAt(i);
       }
     }
@@ -1211,7 +1228,7 @@ class Scene {
     // ripples
     for (var i = ripples.length - 1; i >= 0; i--) {
       final r = ripples[i];
-      r.age += dt;
+      r.age += md;
       if (r.age > r.life) ripples.removeAt(i);
     }
     // a ripple nudges the steam above it
@@ -1798,6 +1815,9 @@ void main() {
     try { window.localStorage['steam-spring-sound'] = prefOn ? 'on' : 'off'; } catch (_) {}
     paint();
   });
+
+  // expose the live snow amount so a test can prove a sky swipe changes it
+  try { _snowProbe = (() => scene.snowAmt).toJS; } catch (_) {}
 
   document.on['visibilitychange'].listen((_) {
     scene.synth.resumeIfOn();
