@@ -33,7 +33,7 @@
       (dotimes [i n]
         (let [sy (* h 0.50 (hash1 i))
               sx (* w (hash1 (+ i 91)))
-              tw (* 0.6 0.5 (+ 1.0 (js/Math.sin (+ (* (:t st) (pal/lerp 0.4 1.1 (hash1 (+ i 7))))
+              tw (* 0.6 0.5 (+ 1.0 (js/Math.sin (+ (* (:amb st) (pal/lerp 0.4 1.1 (hash1 (+ i 7))))
                                                       (* 6.0 (hash1 (+ i 13)))))))
               r (if (> (hash1 (+ i 41)) 0.88) 1.4 0.8)]
           (pal/disc ctx sx sy r pal/star (pal/clamp (* fade tw) 0 1))
@@ -72,10 +72,12 @@
     (dotimes [row 2]
       (dotimes [i n]
         (let [k (+ i (* row 100))
-              x (+ (* w (/ (+ i (if (odd? row) 0.5 0.0)) n)) (pal/rnd* -4 4))
+              ;; deterministic per tree: the rough edge stays put instead of
+              ;; shimmering on every frame (and it is still under reduced motion)
+              x (+ (* w (/ (+ i (if (odd? row) 0.5 0.0)) n)) (* 8 (- (hash1 (+ k 29)) 0.5)))
               hgt (+ 8 (* 16 (hash1 (+ k 3))) (* (- 1 row) 6))
               tone (if (zero? row) front back)
-              jitter (pal/rnd* -3 3)]
+              jitter (* 6 (- (hash1 (+ k 57)) 0.5))]
           (pine ctx (+ x jitter) (+ horizon (- (if (zero? row) 0 4)) (* (hash1 (+ k 17)) 3)) hgt tone (if (zero? row) 0.95 0.72))
           (when (and (zero? row) (> d 0.25))
             (pine ctx (+ x jitter -0.6) (+ horizon (* (hash1 (+ k 17)) 3)) (* hgt 0.6) rim (* 0.5 d))))))))
@@ -131,7 +133,7 @@
 
 (defn draw-mushroom [ctx st m]
   (let [{:keys [x y cap-r stalk-h cap glow-c glow bloom door tilt elder?]} m
-        t (:t st)
+        t (:amb st)
         d (da (:dawn st))
         sway (* 0.6 (js/Math.sin (+ (:ph m) (* t 0.9))) (:wind st))
         x (+ x sway)
@@ -200,7 +202,7 @@
 
 (defn draw-gnome [ctx st]
   (let [{:keys [x y s state hop breath snore-t face]} (:gnome st)
-        t (:t st)
+        t (:amb st)
         asleep? (= state :asleep)
         tucked? (= state :tucked)
         hat? (= state :hat)
@@ -263,7 +265,7 @@
 
 (defn draw-blade [ctx st b]
   (let [{:keys [x y h lean ph hue part part-x]} b
-        t (:t st)
+        t (:amb st)
         d (da (:dawn st))
         sway (* (:wind st) (js/Math.sin (+ (* t 1.15) ph)) 2.2)
         base (pal/mix pal/moss-n pal/moss-d (pal/clamp (* hue (+ 0.35 (* 0.65 d))) 0 1))

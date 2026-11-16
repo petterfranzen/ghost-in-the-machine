@@ -77,6 +77,10 @@
 (defn new-world [lay]
   (-> {:lay lay
        :t 0.0
+       ;; ambient clock: real time scaled by the motion factor, so grass
+       ;; sway, twinkle and breath slow under prefers-reduced-motion while
+       ;; the gesture clock (:t) stays real.
+       :amb 0.0
        :dawn 0.04
        :wind 0.5
        :dip 0.0
@@ -314,7 +318,10 @@
 (defn- step-spores [st dt]
   (let [w (get-in st [:lay :w])
         h (get-in st [:lay :h])
-        wind (:wind st)]
+        wind (:wind st)
+        ;; md is the motion clock (0.16x under prefers-reduced-motion); a slowed
+        ;; spore keeps its real lifetime, so the field never piles up.
+        md (get st :md dt)]
     (update st :spores
             (fn [spores]
               (->> spores
@@ -323,10 +330,10 @@
                                 wob (* 3.0 (js/Math.sin (+ (:ph s) (* (- (:max s) (:life s)) 1.4))))]
                             (-> s
                                 (update :life - dt)
-                                (update :vx #(+ (* % dr) (* wob dt)))
-                                (update :vy #(+ (* % dr) (* -1.6 dt)))
-                                (update :x #(+ % (* (:vx s) dt) (* wind 1.2 dt)))
-                                (update :y #(+ % (* (:vy s) dt)))))))
+                                (update :vx #(+ (* % dr) (* wob md)))
+                                (update :vy #(+ (* % dr) (* -1.6 md)))
+                                (update :x #(+ % (* (:vx s) md) (* wind 1.2 md)))
+                                (update :y #(+ % (* (:vy s) md)))))))
                    (filter (fn [s] (and (> (:life s) 0)
                                         (> (:x s) -12) (< (:x s) (+ w 12))
                                         (< (:y s) (+ h 6)))))
@@ -352,6 +359,7 @@
         held-i (when (= (:kind held-t) :mushroom) (:i held-t))
         dur (get-in st [:gesture :dur] 0.0)
         dawn (:dawn st)
+        m (get st :motion 1.0)
         st (update st :mushrooms
                    (fn [ms]
                      (mapv (fn [m]
@@ -372,10 +380,10 @@
         blooming (some #(> (:bloom %) 0.5) (:mushrooms st))
         m0 (get-in st [:mushrooms 0])]
     (-> st
-        (cond-> (and (> (:door m0) 0.5) (< (pal/rnd) (* dt 9)))
+        (cond-> (and (> (:door m0) 0.5) (< (pal/rnd) (* dt 9 m)))
           (spawn-spore (:x m0) (- (:y m0) (* 1.05 (:stalk-h m0)))
                        (pal/rnd* -7 7) (- (pal/rnd* 8 24)) (pal/rnd* 4 8) 1 pal/spore))
-        (cond-> (and blooming (< (pal/rnd) (* dt 3.2)))
+        (cond-> (and blooming (< (pal/rnd) (* dt 3.2 m)))
           (spawn-spore (+ (:x (rand-nth (:mushrooms st))) (pal/rnd* -6 6))
                        (- (:y (rand-nth (:mushrooms st))) (:stalk-h (rand-nth (:mushrooms st))))
                        (pal/rnd* -4 4) (- (pal/rnd* 3 9)) (pal/rnd* 3 6) 1 pal/spore)))))
@@ -406,7 +414,8 @@
       (assoc-in st [:gnome :snore-t] 0.0))))
 
 (defn- step-moth [st dt]
-  (let [m (:moth st)
+  (let [md (get st :md dt)          ; ambient clock: slowed under reduced motion
+        m (:moth st)
         m0 (get-in st [:mushrooms 0])
         lx (:x m0)
         ly (- (:y m0) (* 1.7 (:stalk-h m0)))
@@ -422,10 +431,10 @@
 
       :descending
       (let [m (-> m
-                  (update :wing + (* dt 6.0))
-                  (update :x + (* (:vx m) dt))
-                  (update :y + (* (:vy m) dt))
-                  (assoc :vx (pal/lerp (:vx m) (* 7.0 (js/Math.sin (* (:y m) 0.14))) (* dt 1.2))))
+                  (update :wing + (* md 6.0))
+                  (update :x + (* (:vx m) md))
+                  (update :y + (* (:vy m) md))
+                  (assoc :vx (pal/lerp (:vx m) (* 7.0 (js/Math.sin (* (:y m) 0.14))) (* md 1.2))))
             m (if (> (:y m) ly) (assoc m :y ly :state :landed :land-t 0.0) m)]
         (if (= (:state m) :landed)
           (-> st (assoc :moth m) (update :sfx conj {:kind :moth-land}))
@@ -433,9 +442,9 @@
 
       ;; landed or fluttering
       (let [m (-> m
-                  (update :wing + (* dt (if (= (:state m) :fluttering) 15.0 2.2)))
+                  (update :wing + (* md (if (= (:state m) :fluttering) 15.0 2.2)))
                   (update :land-t + dt)
-                  (update :y #(pal/lerp % ly (* dt (if (= (:state m) :fluttering) 6.0 2.0)))))]
+                  (update :y #(pal/lerp % ly (* md (if (= (:state m) :fluttering) 6.0 2.0)))))]
         (cond
           (> (:land-t m) 26.0) (assoc st :moth (assoc m :state :away))
           (and (= (:state m) :fluttering) (< (:land-t m) 1.6) (> (:y m) (- ly 26)))
@@ -457,15 +466,16 @@
 
 (defn- step-ambient [st dt]
   (let [{:keys [w h horizon]} (:lay st)
-        wind (:wind st)]
+        wind (:wind st)
+        md (get st :md dt)]
     (-> st
         (update :fireflies
                 (fn [fs]
                   (mapv (fn [f]
                           (let [f (-> f
-                                      (update :ph + (* dt 0.8))
-                                      (update :x #(+ % (* (:vx f) dt) (* wind 1.6 dt)))
-                                      (update :y #(+ % (* (:vy f) dt)))
+                                      (update :ph + (* md 0.8))
+                                      (update :x #(+ % (* (:vx f) md) (* wind 1.6 md)))
+                                      (update :y #(+ % (* (:vy f) md)))
                                       (update :vx #(pal/clamp (+ % (pal/rnd* -0.6 0.6)) -4 4))
                                       (update :vy #(pal/clamp (+ % (pal/rnd* -0.4 0.4)) -2.2 2.2)))]
                             (cond
@@ -478,7 +488,7 @@
         (update :mist
                 (fn [ms]
                   (mapv (fn [m]
-                          (let [m (update m :x #(+ % (* (:vx m) dt (* 0.4 wind))))]
+                          (let [m (update m :x #(+ % (* (:vx m) md (* 0.4 wind))))]
                             (cond-> m
                               (> (:x m) (+ w 40))
                               (assoc :x -40 :y (+ horizon (pal/rnd* -6 9))))))
@@ -490,20 +500,27 @@
 (defn- step-dawn [st dt]
   (let [idle (- (:t st) (:last-touch st))
         rate (if (> idle 14.0) (/ 1.0 210.0) (/ 1.0 1500.0))
-        dawn (pal/clamp (+ (:dawn st) (* dt rate)) 0 1)
+        dawn (pal/clamp (+ (:dawn st) (* (get st :md dt) rate)) 0 1)
         peal? (and (not (:peal? st)) (>= dawn 0.84))]
     (-> st
         (assoc :dawn dawn)
         (assoc :peal? (or (:peal? st) peal?))
         (cond-> peal? (update :sfx conj {:kind :peal})))))
 
-(defn update-world [st dt]
-  (let [dt (min dt 0.05)
-        st (assoc st :t (+ (:t st) dt))
+(defn update-world
+  "Advance the world. `dt` is real seconds (interactions, lifetimes and the
+  gesture clock read it); `motion` scales only the ambient drift, so under
+  prefers-reduced-motion the clearing holds nearly still while taps, holds and
+  swipes still answer."
+  [st dt motion]
+  (let [motion (or motion 1.0)
+        dt (min dt 0.05)
+        md (* dt motion)
+        st (assoc st :t (+ (:t st) dt) :amb (+ (:amb st) md) :motion motion :md md)
         st (-> st
                (update :dip #(max 0.0 (- % (* dt 3.4))))
                (update :gesture #(when % (update % :dur + dt)))
-               (cond-> (< (pal/rnd) (* dt 0.12))
+               (cond-> (< (pal/rnd) (* dt 0.12 motion))
                  (spawn-spore (pal/rnd* 0 (get-in st [:lay :w]))
                               (+ (get-in st [:lay :horizon]) (pal/rnd* 20 60))
                               (pal/rnd* -3 3) (- (pal/rnd* 2 6)) (pal/rnd* 5 9) 1

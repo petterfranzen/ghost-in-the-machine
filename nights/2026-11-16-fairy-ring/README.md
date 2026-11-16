@@ -105,6 +105,18 @@ never clips. Sound starts muted; the button is in the top-right corner and is
   blocked-storage browser still works. A session always starts muted; if you
   left sound on last time, the first tap on the scene turns it back on with the
   same chime, so nothing is ever audible before you touch the page.
+- **Parameters are set, not assigned.** AudioParams are accessors, so every
+  frequency, gain, Q, pan and compressor setting goes through `.value` (or
+  `setValueAtTime`); assigning to the property itself is silently ignored by
+  the browser and leaves oscillators at their 440 Hz default. The smoke check
+  `node tools/audio-check.mjs` unmutes, taps a mushroom and asserts the chime
+  lands on 659.25 / 987.77 Hz, that the master gain reads 0.6 and that the
+  limiter is -14 / 3.5 / 24.
+
+If the system asks for reduced motion (`prefers-reduced-motion: reduce`), the
+ambient clock that drives wind, spore drift and the grass sway is scaled to a
+tenth, so the clearing holds nearly still; taps, holds and swipes still answer
+with their full sound and colour, so nothing becomes unplayable.
 
 ## How it was built
 

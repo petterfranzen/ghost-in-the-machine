@@ -11,6 +11,23 @@
 
 (def ^:private scale-var "fairy-ring-sound")
 
+;; ---- reduced motion ------------------------------------------------------
+;; The clearing animates on its own (wind, spores, the dawn creeping in). A
+;; user who asked for less motion gets a clock that barely moves: the drifting
+;; systems are scaled by `motion`, while taps, holds and swipes keep working on
+;; the real clock, so every interaction still answers.
+
+(defonce ^:private reduce-mq
+  (.matchMedia js/window "(prefers-reduced-motion: reduce)"))
+
+(defonce ^:private motion (atom (if (.-matches reduce-mq) 0.16 1.0)))
+
+(defn- watch-motion! []
+  (try
+    (.addEventListener reduce-mq "change"
+                       (fn [e] (reset! motion (if (.-matches e) 0.16 1.0))))
+    (catch :default _ nil)))
+
 (defn- read-pref []
   (try (= "on" (.getItem js/localStorage scale-var)) (catch :default _ false)))
 
@@ -90,7 +107,7 @@
         dt (if prev (pal/clamp (/ (- ts prev) 1000) 0.0 0.05) 0.016)
         world (:world st)]
     (swap! S assoc :ts ts)
-    (swap! S update :world w/update-world dt)
+    (swap! S update :world w/update-world dt @motion)
     (let [[events world'] (w/drain-sfx (:world @S))]
       (swap! S assoc :world world')
       (doseq [e events] (a/sfx! e)))
@@ -125,6 +142,7 @@
                  :auto-arm (read-pref)
                  :hold-tone false})
       (paint-button! false)
+      (watch-motion!)
       (.addEventListener (:cv view) "pointerdown" on-down (js-obj "passive" false))
       (.addEventListener (:cv view) "pointermove" on-move (js-obj "passive" false))
       (.addEventListener (:cv view) "pointerup" on-up (js-obj "passive" false))
