@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080c18">
+<meta name="description" content="A fairy ring of mushrooms in a mossy clearing at dawn, woken with one thumb.">
+<title>Fairy Ring</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #080c18; overflow: hidden; }
+  body {
+    position: fixed; inset: 0;
+    touch-action: none;
+    -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  #scene {
+    position: absolute; inset: 0; display: block;
+    width: 100%; height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+  #sound {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: calc(env(safe-area-inset-right, 0px) + 10px);
+    min-width: 104px; min-height: 48px;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 0 12px;
+    border: 1px solid rgba(238, 228, 202, 0.34);
+    border-radius: 12px;
+    background: rgba(12, 18, 32, 0.55);
+    color: #f0e7d4;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.02em;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    cursor: pointer;
+  }
+  #sound[aria-pressed="true"] {
+    background: rgba(240, 214, 160, 0.20);
+    border-color: rgba(250, 234, 196, 0.58);
+    color: #ffeec9;
+  }
+  #sound:focus-visible { outline: 2px solid #ffe9bd; outline-offset: 2px; }
+  #sound span[aria-hidden] { font-size: 16px; line-height: 1; }
+</style>
+</head>
+<body>
+  <canvas id="scene" aria-label="A fairy ring of mushrooms in a mossy clearing at dawn"></canvas>
+  <button id="sound" type="button" aria-pressed="false" aria-label="Sound off">
+    <span aria-hidden="true">🔇</span><span>Muted</span>
+  </button>
+  <script src="app.js"></script>
+</body>
+</html>
