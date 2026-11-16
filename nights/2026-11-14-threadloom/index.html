@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e1013">
+<title>Threadloom — a quiet loom</title>
+<style>
+  :root { color-scheme: dark; --ink: #e8e2d4; --muted: #9a9285; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; overflow: hidden; background: #0e1013; }
+  body {
+    color: var(--ink);
+    font: 15px/1.4 ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    -webkit-font-smoothing: antialiased;
+    touch-action: none; user-select: none; -webkit-user-select: none;
+    -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
+  }
+  #app {
+    position: fixed; inset: 0;
+    display: flex; flex-direction: column;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; padding: 8px 14px 2px; flex: 0 0 auto;
+  }
+  h1 { font-size: 13px; letter-spacing: .22em; text-transform: uppercase; font-weight: 500; color: var(--muted); margin: 0; }
+  h1 span { color: #cbbf9f; letter-spacing: .06em; text-transform: none; }
+  #sound {
+    display: inline-flex; align-items: center; gap: 8px;
+    min-height: 44px; min-width: 44px; padding: 0 14px;
+    border-radius: 22px; border: 1px solid #33383f; background: #191d22; color: var(--ink);
+    font: inherit; font-size: 13px; letter-spacing: .04em; cursor: pointer;
+  }
+  #sound[aria-pressed="true"] { border-color: #6f8a6a; background: #1d2620; color: #d8e6cf; }
+  #sound svg { width: 18px; height: 18px; display: block; }
+  #stage { position: relative; flex: 1 1 auto; min-height: 0; }
+  canvas { display: block; width: 100%; height: 100%; }
+  footer { flex: 0 0 auto; padding: 4px 14px calc(10px + env(safe-area-inset-bottom)); text-align: center; }
+  #caption { font-size: 13px; color: #d9cfae; letter-spacing: .12em; min-height: 18px; opacity: 0; transition: opacity .9s ease; }
+  #caption.show { opacity: 1; }
+  #hint { font-size: 12px; color: var(--muted); opacity: .9; transition: opacity 1.4s ease; }
+  #hint.gone { opacity: 0; }
+  @media (min-width: 760px) {
+    #app { max-width: 680px; margin: 0 auto; }
+    h1 { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>Threadloom <span id="warpName">·</span></h1>
+    <button id="sound" type="button" aria-pressed="false" aria-label="Turn sound on">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 9h3l4-3.5v13L7 15H4z" id="spk"></path>
+        <path d="M15.5 8.5a5 5 0 0 1 0 7" id="wave1"></path>
+        <path d="M18 6a8.5 8.5 0 0 1 0 12" id="wave2"></path>
+      </svg>
+      <span id="soundLabel">Sound off</span>
+    </button>
+  </header>
+  <div id="stage"><canvas id="loom"></canvas></div>
+  <footer>
+    <div id="caption"></div>
+    <div id="hint">drag the shuttle &middot; tap to beat the weft &middot; long-press a spool &middot; swipe up or down for the warp</div>
+  </footer>
+</div>
+<script type="module" src="./app.js"></script>
+</body>
+</html>

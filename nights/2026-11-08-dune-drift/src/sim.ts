@@ -40,7 +40,9 @@ let dW: i32 = 96;        // current grid
 let dH: i32 = 160;
 let rng: u32 = 0x9e3779b9;
 
-let settle: f64 = 0;     // whole-scene give, 1 -> 0 (the pond's "settle")
+let settle: f64 = 0;     // whole-scene give: an eased spring, +down, rests at 0
+let settleV: f64 = 0;    // its velocity; a landing adds only a small impulse
+let moonGlow: f64 = 0;   // host-driven 0..1: warms the halo as a slow press nears
 let wave: f64 = 0;       // hidden: a slow ripple run across the field
 let waveX: f64 = 0;
 let gustT: f64 = 9;      // seconds until the next slow gust
@@ -84,20 +86,35 @@ function relax(iters: i32): void {
   }
 }
 
+// The ridge line is seeded: the same seed rebuilds the same field, a new one
+// draws a different calm silhouette. A fixed primary swell carries the relief;
+// the seed only shifts its phase and the two smaller harmonics, so every visit
+// looks like this piece while none of them look identical.
 function initField(): void {
   for (let i = 0; i < NPART; i++) store<i32>(PLIVE + (i << 2), 0);
   for (let i = 0; i < NDUST; i++) store<f64>(DL + (i << 3), 0);
   const h0 = f64(dH);
+  const base = 0.28 + frand() * 0.06;
+  const tilt = 0.10 + frand() * 0.06;                  // a gentle fall to the right
+  const p1 = frand() * 6.2831853;
+  const k1 = 1.00 + frand() * 0.60;
+  const a2 = 0.03 + frand() * 0.04;
+  const p2 = frand() * 6.2831853;
+  const k2 = 2.10 + frand() * 1.20;
+  const a3 = 0.02 + frand() * 0.03;
+  const p3 = frand() * 6.2831853;
+  const k3 = 3.60 + frand() * 1.60;
   for (let x = 0; x < dW; x++) {
     const t = f64(x) / f64(dW);
-    let h = h0 * 0.30
-      + h0 * 0.11 * Math.sin(t * 6.2831853 * 1.15 + 0.7)
-      + h0 * 0.05 * Math.sin(t * 6.2831853 * 2.60 + 2.1)
-      - h0 * 0.12 * t;                       // a gentle fall to the right
+    let h = h0 * base
+      + h0 * 0.11 * Math.sin(t * 6.2831853 * k1 + p1)
+      + h0 * a2 * Math.sin(t * 6.2831853 * k2 + p2)
+      + h0 * a3 * Math.sin(t * 6.2831853 * k3 + p3)
+      - h0 * tilt * t;
     hSet(x, cl(i32(Math.floor(h)), 2, dH - 4));
   }
-  relax(60);
-  settle = 0; wave = 0; gust = 0; gustT = 9;
+  relax(90);
+  settle = 0; settleV = 0; wave = 0; gust = 0; gustT = 9;
 }
 
 function initStars(): void {
@@ -139,7 +156,10 @@ export function amount(): f64 { return settle; }
 export function poll(): i32 { const e = events; events = 0; return e; }
 
 export function seed(v: u32): void { rng = v == 0 ? 1 : v; }
-export function setReduce(v: i32): void { reduce = v != 0 ? 1 : 0; if (reduce != 0) wave = 0; }
+export function setReduce(v: i32): void {
+  reduce = v != 0 ? 1 : 0;
+  if (reduce != 0) { wave = 0; settle = 0; settleV = 0; }
+}
 
 // The host decides the grid from the viewport, so the scene fills a phone in
 // portrait and a desktop window with no letterboxing and no distortion.
@@ -163,7 +183,7 @@ export function tap(x: f64, y: f64): void {
     if (load<i32>(PLIVE + (i << 2)) != 0) continue;
     store<f64>(PX + (i << 3), f64(col) + 0.5 + (frand() - 0.5) * 5.0);
     store<f64>(PY + (i << 3), f64(row) + frand() * 2.0);
-    store<f64>(PV + (i << 3), 6.0 + frand() * 10.0);
+    store<f64>(PV + (i << 3), 2.0 + frand() * 5.0);
     store<i32>(PLIVE + (i << 2), 1);
     n--;
   }
@@ -177,13 +197,17 @@ function nudge(col: i32, row: i32): void {
     hSet(col, hGet(col) - 1);
     hSet(tgt, hGet(tgt) + 1);
   }
-  spawnDust(f64(col) + 0.5, f64(dH - hGet(col)), 4, 3.0);
-  if (reduce == 0) settle = Math.max(settle, 0.4);
+  spawnDust(f64(col) + 0.5, f64(dH - hGet(col)), 3, 2.2);
+  if (reduce == 0) settleV = Math.min(settleV + 4.0, 12.0);
   events++;
 }
 
-// Hidden: tapping the moon sends a slow ripple across the whole field.
+// Hidden: a slow press on the moon sends a ripple across the whole field.
 export function ripple(): void { if (reduce == 0) { wave = 1; waveX = -18; } }
+
+// The host feeds a slow press's progress here; past halfway the moon's halo
+// warms a little — the only clue, and only when the secret is nearly there.
+export function setMoonGlow(v: f64): void { moonGlow = v < 0 ? 0 : (v > 1 ? 1 : v); }
 
 export function step(dt: f64): void {
   if (dt > 0.05) dt = 0.05;
@@ -198,7 +222,7 @@ export function step(dt: f64): void {
   for (let i = 0; i < NPART; i++) {
     if (load<i32>(PLIVE + (i << 2)) == 0) continue;
     const x = load<f64>(PX + (i << 3));
-    let v = load<f64>(PV + (i << 3)) + 240.0 * dt;
+    let v = load<f64>(PV + (i << 3)) + 120.0 * dt;
     let y = load<f64>(PY + (i << 3)) + v * dt;
     store<f64>(PV + (i << 3), v);
     const col = f2c(x, dW - 1);
@@ -206,7 +230,12 @@ export function step(dt: f64): void {
     if (y >= top) {
       hSet(col, cl(hGet(col) + 1, 0, dH - 2));
       store<i32>(PLIVE + (i << 2), 0);
-      if (reduce == 0) { settle = 1; spawnDust(x, top, 3, 2.2); }
+      // Ease the landing: a capped impulse, never a snap, and a soft puff of
+      // dust rather than a burst, so grains arrive softly.
+      if (reduce == 0) {
+        settleV = Math.min(settleV + 7.0, 12.0);
+        spawnDust(x, top, 2, 1.6);
+      }
       events++;
     } else {
       store<f64>(PY + (i << 3), y);
@@ -214,7 +243,19 @@ export function step(dt: f64): void {
   }
 
   relax(reduce == 0 ? 3 : 8);
-  settle = Math.max(0, settle - dt * (reduce == 0 ? 2.6 : 9.0));
+
+  // The whole-scene give is a damped spring (critically damped, so no
+  // overshoot): sand landing nudges its velocity down a little and the frame
+  // eases back to rest, a breath instead of a jerk.
+  if (reduce == 0) {
+    settleV += (-settle * 40.0 - settleV * 12.6) * dt;
+    settle += settleV * dt;
+    if (settle > 0.55) { settle = 0.55; if (settleV > 0) settleV = 0; }
+    if (settle < -0.20) { settle = -0.20; if (settleV < 0) settleV = 0; }
+    if (Math.abs(settle) < 0.0015 && Math.abs(settleV) < 0.02) { settle = 0; settleV = 0; }
+  } else {
+    settle = 0; settleV = 0;
+  }
 
   if (wave > 0) {
     waveX += dt * 22;
@@ -292,7 +333,7 @@ export function render(): void {
       const dx = f64(x) + 0.5 - mx, dy = f64(y) + 0.5 - my;
       const d = Math.sqrt(dx * dx + dy * dy);
       if (d <= mr) store<u8>(FBUF + y * dW + x, 9);
-      else if (d <= mr + 3.5) store<u8>(FBUF + y * dW + x, 8);
+      else if (d <= mr + 3.5 + moonGlow * 4.0) store<u8>(FBUF + y * dW + x, moonGlow > 0.2 ? 7 : 8);
     }
   }
 

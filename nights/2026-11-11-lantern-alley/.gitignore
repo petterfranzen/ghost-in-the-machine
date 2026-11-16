@@ -1,0 +1,4 @@
+# scala-cli build state, and the smoke check's screenshots
+src/.scala-build/
+src/.bsp/
+shots/

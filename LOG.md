@@ -33,12 +33,16 @@ when it fits a wish, and say in the PR which you followed.
 - A quiet beehive: plant flowers with a tap, and the bees only return when the scene is left calm - Swift - nudge not kill.
 - A night-train window: stars pass, tap the glass to fog it and a faint drawing shows underneath; fills the phone screen - V - full screen on mobile.
 
-| Date | Folder | Language | Idea | Verdict / feedback |
-|---|---|---|---|---|
-| 2026-10-28 | 2026-10-28-ripple-pool | Nim | A calm, one-handed tap-to-ripple pond with soft audio. | Great start. Wanted more ripples per stone, moving slower, and each impact dissipating gradually. Petter's idea for a next night: a zen garden raking experience. |
-| 2026-10-29 | 2026-10-29-zen-rake | Haxe | A zen sand garden you rake with one thumb; grooves settle behind the rake and slowly fade. | Underwhelming: the raking feels harsh, not relaxing. It needs more satisfying physics (sand that gives, settles and smooths softly). |
-| 2026-10-30 | 2026-10-30-fireflies | Elm | A dusk meadow you fill with fireflies: one tap lifts a small hush of them, and they drift, blink and slowly fade. | Liked a lot, very nice. More like this. |
-| 2026-10-31 | 2026-10-31-koi-drift | Gleam | A still pond you feed with one thumb: tap and food drifts down, the koi glide over and the ripples spread and fade. | Liked a lot, together with Lantern Moss. Keep the pond and the koi. |
-| 2026-11-01 | 2026-11-01-lantern-moss | Zig | A calm pixel-art clearing you explore with one thumb: gather three lost lights and wake an old stone. | Liked a lot, together with Koi Drift. Keep the pixel art. Next: combine the two, with taps that feel impactful and still calm. |
-| 2026-11-05 | 2026-11-05-songbranch | Go | A pixel-art dusk tree you nudge: tap a bird and it flutters in place and answers, the scene fills the phone, and small secrets hide in the moon, the nest and the leaves. | revised 7 Nov (gentler birds, full screen mobile, secrets); pending review |
-| 2026-11-08 | 2026-11-08-dune-drift | AssemblyScript | A quiet moonlit dune field: tap and a handful of sand drifts down and settles softly into the dunes. | pending review |
+Night rows moved: one file per night at `nights/<folder>/night.json` (keys `date`, `language`, `idea`, `verdict`); print the table with `python3 scripts/night-log.py`.
+
+## Lessons (newest first)
+
+Hard-won rules for the next night. Keep them short and general.
+
+| Date | Lesson | Source |
+|---|---|---|
+| 2026-11-15 | Dart's `dart:js_interop`: an `external` member with no declared return type is inferred `dynamic` and rejected — write `external void`. And a `@JS('AudioContext')` annotation on the extension type is what maps `external factory` to the real JS global; without it the factory compiles to `new <YourTypeName>()`, so every call throws one uncaught `Error` and nothing else happens — the app still runs and looks fine. | Steam Spring, 15 Nov |
+| 2026-11-15 | In this SDK's `dart:html`, `MouseEvent` has hidden `clientX`/`clientY` behind `_clientX` (use the public `.client` Point), and `dart:web_audio` is stale (its nodes have no `start()`). Web Audio in Dart means declaring the API by hand over `dart:js_interop`. | Steam Spring, 15 Nov |
+| 2026-11-08 | Long-press interactions need `touch-action:none` + `user-select:none` + `-webkit-touch-callout:none`, or iOS selects/magnifies. Use pointer events with `setPointerCapture` and non-passive `preventDefault()` on `pointerdown`/`touchstart`; never `user-scalable=no` (it hurts accessibility). | Dune Drift, 8 Nov |
+| 2026-11-14 | Canvas *silently ignores* an invalid `fillStyle` and keeps the last one, so a broken colour helper paints the previous colour over everything with no error anywhere. Format each channel as two hex digits, and print one shaded colour into a debug line before trusting the palette. | Threadloom |
+| 2026-11-08 | Secrets should be discovered, not shown. Gate a hidden reward on a gesture or timing (a slow press, several taps over time, or a height reached), and show no hint until it is nearly there. | Dune Drift 4/10 |

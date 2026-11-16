@@ -1,0 +1,8 @@
+{
+  "name": "threadloom",
+  "sources": [{ "dir": "src", "subdirs": true }],
+  "package-specs": [{ "module": "esmodule", "in-source": false }],
+  "suffix": ".res.js",
+  "bs-dependencies": [],
+  "warnings": { "error": "+101" }
+}

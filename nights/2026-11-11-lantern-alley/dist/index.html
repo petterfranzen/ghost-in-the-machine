@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>Lantern Alley</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden;
+    background: #0b0b14;
+    background: radial-gradient(120% 90% at 50% 40%, #14152a 0%, #0a0a12 70%, #06060b 100%);
+    touch-action: none; -webkit-user-select: none; user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+  /* on a wide screen the alley is a lit column in a dark room, not a letterbox */
+  #stage::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(46% 62% at 50% 52%, rgba(255,186,112,.10) 0%, rgba(255,150,80,.04) 45%, rgba(0,0,0,0) 72%);
+  }
+  canvas {
+    display: block; image-rendering: pixelated; image-rendering: crisp-edges;
+    box-shadow: 0 0 90px rgba(0,0,0,.75), 0 0 40px rgba(255,180,110,.06);
+    outline: 1px solid rgba(255,220,170,.07);
+  }
+  #sound {
+    position: fixed; right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    min-width: 44px; min-height: 44px; padding: 0 14px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font: 500 13px/1 ui-monospace, Menlo, monospace; letter-spacing: .02em;
+    color: #e8dfc8; background: rgba(24,24,40,.72);
+    border: 1px solid rgba(232,223,200,.28); border-radius: 999px;
+    backdrop-filter: blur(6px); cursor: pointer; z-index: 5;
+  }
+  #sound:active { transform: scale(.97); }
+  #sound > * { pointer-events: none; }
+  #sound .dot { width: 8px; height: 8px; border-radius: 50%; background: #6b6b86; }
+  #sound[data-on="true"] { color: #ffe9bd; border-color: rgba(255,207,122,.55); background: rgba(48,38,26,.72); }
+  #sound[data-on="true"] .dot { background: #ffcf7a; box-shadow: 0 0 8px #ffcf7a; }
+  #loading {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+    color: #8b8b9e; font-size: 13px; letter-spacing: .08em; z-index: 1;
+  }
+</style>
+</head>
+<body>
+  <div id="stage"><canvas id="c" width="180" height="320"></canvas></div>
+  <div id="loading">lantern alley</div>
+  <button id="sound" type="button" aria-pressed="false" aria-label="Sound off"><span class="dot"></span><span class="label">Sound off</span></button>
+  <script src="main.js"></script>
+</body>
+</html>

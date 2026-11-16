@@ -1,0 +1,21 @@
+package:
+  name: low-tide
+  dependencies:
+    - prelude
+    - arrays
+    - maybe
+    - numbers
+    - integers
+  test:
+    main: Test.Main
+    dependencies:
+      - prelude
+      - console
+      - arrays
+      - maybe
+      - numbers
+      - integers
+      - exceptions
+workspace:
+  packageSet:
+    registry: 81.11.4

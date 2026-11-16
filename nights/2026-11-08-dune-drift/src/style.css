@@ -27,6 +27,9 @@ body {
   display: grid;
   place-items: center;
   background: var(--bg);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 #stage {
@@ -35,11 +38,15 @@ body {
   height: 100%;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  touch-action: none;
+  touch-action: none;            /* the play area owns the gesture */
   cursor: crosshair;
   transform-origin: 50% 100%;
   will-change: transform;
   -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;     /* a long press pours sand, never selects */
+  user-select: none;
+  -webkit-touch-callout: none;   /* no iOS callout / magnifier */
+  -webkit-user-drag: none;
 }
 #stage:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
 

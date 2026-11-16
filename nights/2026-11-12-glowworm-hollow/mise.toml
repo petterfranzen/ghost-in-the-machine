@@ -1,0 +1,5 @@
+[tools]
+node = "24.22.2"
+# clang + wasm-ld for wasm32, no libc: the nightly pins its own compiler so CI
+# rebuilds the same binary. Released well over 24 h ago.
+"http:wasi-sdk" = { version = "25.0.0", url = "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-25/wasi-sdk-25.0-x86_64-linux.tar.gz", strip_components = 1 }

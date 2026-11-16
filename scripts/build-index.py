@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
-"""Writes the Pages landing page from LOG.md: one card per night with a dist/."""
+"""Writes the Pages landing page from nights/*/night.json: one card per night with a dist/."""
 import html
+import json
 import pathlib
 import sys
 
 root = pathlib.Path(__file__).resolve().parent.parent
 out = pathlib.Path(sys.argv[1])
 rows = []
-for line in (root / "LOG.md").read_text().splitlines():
-    cells = [c.strip() for c in line.strip().strip("|").split("|")]
-    if len(cells) < 5 or cells[0] in ("Date", "") or set(cells[0]) <= set("-:"):
-        continue
-    date, folder, lang, idea, verdict = cells[:5]
+for path in sorted((root / "nights").glob("*/night.json")):
+    night = json.loads(path.read_text())
+    folder = path.parent.name
     if (out / folder / "index.html").exists():
-        rows.append((date, folder, lang, idea, verdict))
+        rows.append((night["date"], folder, night["language"], night["idea"], night["verdict"]))
 rows.sort(reverse=True)
 
 items = "\n".join(

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080b18">
+<title>Steam Spring — a mountain hot spring at night</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; overflow: hidden; background: #080b18; }
+  body {
+    touch-action: none; user-select: none; -webkit-user-select: none;
+    -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
+    font: 15px/1.3 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  #spring {
+    position: fixed; inset: 0; display: block;
+    width: 100vw; height: 100vh;
+    touch-action: none; cursor: pointer;
+  }
+  #sound {
+    position: fixed;
+    top: calc(12px + env(safe-area-inset-top, 0px));
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    min-height: 44px; min-width: 44px;
+    padding: 11px 15px;
+    font: 500 15px/1.1 inherit;
+    color: #e9eeff;
+    background: rgba(12, 18, 38, 0.58);
+    border: 1px solid rgba(176, 200, 244, 0.38);
+    border-radius: 12px;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    cursor: pointer; touch-action: manipulation;
+    z-index: 5; transition: background 200ms ease, border-color 200ms ease, color 200ms ease;
+  }
+  #sound.on {
+    background: rgba(255, 196, 128, 0.24);
+    border-color: rgba(255, 214, 150, 0.65);
+    color: #fff6e8;
+  }
+  #sound:active { transform: translateY(1px); }
+</style>
+</head>
+<body>
+<canvas id="spring" width="900" height="600"
+  aria-label="A pixel-art hot spring at night. Tap the water to ripple it, hold a lantern to light it, drag through the steam to part it, sweep up or down to change the snow."></canvas>
+<button id="sound" type="button" aria-live="polite">Sound: off</button>
+<script src="main.dart.js" defer></script>
+</body>
+</html>
