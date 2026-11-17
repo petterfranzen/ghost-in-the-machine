@@ -2,6 +2,12 @@
 // stars, the constellations as they are named, glints, meteors, the aurora)
 // and finally the observatory on its hill.
 
+// The observatory, resolved to page pixels: its centre and its radius.
+class Obs(val cx: Double, val cy: Double, val r: Double)
+
+// A constellation's lines as they fade in: which one, and how bright.
+class ConFade(val ci: Int, val alpha: Double)
+
 fun drawScene(ctx: Ctx, l: Layers, w: World, view: View) {
   ctx.globalAlpha = 1.0
   ctx.globalCompositeOperation = "source-over"
@@ -33,7 +39,7 @@ fun drawStars(ctx: Ctx, w: World, view: View) {
   w.stars.forEachIndexed { i, s ->
     val x = view.x(s.lon)
     val y = view.y(s.alt)
-    if (x < -4.0 || x > view.w + 4.0 || y < -4.0 || y > view.hy + 2.0) return@forEachIndexed
+    if (!onScreen(view, x, y)) return@forEachIndexed
     val tw = 0.62 + 0.38 * kotlin.math.sin(w.time * s.speed * w.motion + s.phase)
     ctx.globalAlpha = ((0.26 + 0.74 * s.mag) * tw * gain).coerceIn(0.0, 1.0)
     val size = (1.4 + 1.6 * s.mag) * scale
@@ -42,6 +48,17 @@ fun drawStars(ctx: Ctx, w: World, view: View) {
     if (w.marks.contains(i)) drawMark(ctx, x, y, scale)
   }
   ctx.globalAlpha = 1.0
+}
+
+// A star is worth drawing only when it sits inside the frame (with a small
+// margin beyond each edge). Split into one guard per edge so the test stays
+// plain.
+private fun onScreen(view: View, x: Double, y: Double): Boolean {
+  if (x < -4.0) return false
+  if (x > view.w + 4.0) return false
+  if (y < -4.0) return false
+  if (y > view.hy + 2.0) return false
+  return true
 }
 
 fun drawMark(ctx: Ctx, x: Double, y: Double, scale: Double) {
@@ -58,19 +75,19 @@ fun drawNaming(ctx: Ctx, w: World, view: View) {
     if (!w.named.contains(ci)) return@forEach
     val flash = w.namings.firstOrNull { it.ci == ci }
     val alpha = if (flash == null) 0.2 else 0.2 + 0.6 * (flash.life / flash.max)
-    drawConstellationLines(ctx, w, view, ci, alpha)
+    drawConstellationLines(ctx, w, view, ConFade(ci, alpha))
   }
   w.namings.forEach { n -> drawNameLabel(ctx, w, view, n) }
   ctx.globalAlpha = 1.0
 }
 
-fun drawConstellationLines(ctx: Ctx, w: World, view: View, ci: Int, alpha: Double) {
-  val range = w.conRange(ci)
-  ctx.globalAlpha = alpha.coerceIn(0.0, 1.0)
+fun drawConstellationLines(ctx: Ctx, w: World, view: View, fade: ConFade) {
+  val range = w.conRange(fade.ci)
+  ctx.globalAlpha = fade.alpha.coerceIn(0.0, 1.0)
   ctx.strokeStyle = "#8ea3d8"
   ctx.lineWidth = 1.0
   ctx.beginPath()
-  CONSTELLATIONS[ci].edges.forEach { e ->
+  CONSTELLATIONS[fade.ci].edges.forEach { e ->
     val a = range.first + e.first
     val b = range.first + e.second
     ctx.moveTo(view.x(w.stars[a].lon), view.y(w.stars[a].alt))
@@ -168,79 +185,77 @@ fun drawAurora(ctx: Ctx, w: World, view: View) {
 fun obsCentre(view: View): Pair<Double, Double> = Pair(view.w * 0.28, view.hy - view.h * 0.055)
 
 fun drawObservatory(ctx: Ctx, w: World, view: View) {
-  val r = 46.0 * view.scale()
-  val cx = view.w * 0.28
-  val cy = view.hy - view.h * 0.055
-  drawBeam(ctx, w, cx, cy, r)
-  drawDomeBody(ctx, w, cx, cy, r)
-  drawWindowLight(ctx, cx, cy, r)
-  drawWatcher(ctx, w, cx, cy, r)
+  val o = Obs(view.w * 0.28, view.hy - view.h * 0.055, 46.0 * view.scale())
+  drawBeam(ctx, w, o)
+  drawDomeBody(ctx, w, o)
+  drawWindowLight(ctx, o)
+  drawWatcher(ctx, w, o)
   ctx.globalAlpha = 1.0
 }
 
-fun drawBeam(ctx: Ctx, w: World, cx: Double, cy: Double, r: Double) {
+fun drawBeam(ctx: Ctx, w: World, o: Obs) {
   if (w.domeGlow < 0.02) return
-  val grad = ctx.createLinearGradient(0.0, cy - r * 6.0, 0.0, cy - r * 0.8)
+  val grad = ctx.createLinearGradient(0.0, o.cy - o.r * 6.0, 0.0, o.cy - o.r * 0.8)
   grad.addColorStop(0.0, "rgba(255,231,178,0)")
   grad.addColorStop(1.0, "rgba(255,226,160,0.26)")
   ctx.globalAlpha = 0.35 + 0.65 * w.domeGlow
   ctx.fillStyle = grad
   ctx.beginPath()
-  ctx.moveTo(cx - r * 0.42, cy - r * 0.7)
-  ctx.lineTo(cx + r * 0.42, cy - r * 0.7)
-  ctx.lineTo(cx + r * 1.6, cy - r * 6.0)
-  ctx.lineTo(cx - r * 1.6, cy - r * 6.0)
+  ctx.moveTo(o.cx - o.r * 0.42, o.cy - o.r * 0.7)
+  ctx.lineTo(o.cx + o.r * 0.42, o.cy - o.r * 0.7)
+  ctx.lineTo(o.cx + o.r * 1.6, o.cy - o.r * 6.0)
+  ctx.lineTo(o.cx - o.r * 1.6, o.cy - o.r * 6.0)
   ctx.closePath()
   ctx.fill()
 }
 
-fun drawDomeBody(ctx: Ctx, w: World, cx: Double, cy: Double, r: Double) {
+fun drawDomeBody(ctx: Ctx, w: World, o: Obs) {
   ctx.fillStyle = "#182136"
-  ctx.fillRect(cx - r * 0.92, cy, r * 1.84, r * 0.95)
+  ctx.fillRect(o.cx - o.r * 0.92, o.cy, o.r * 1.84, o.r * 0.95)
   ctx.fillStyle = "#22304d"
   ctx.beginPath()
-  ctx.arc(cx, cy, r, kotlin.math.PI, 0.0)
+  ctx.arc(o.cx, o.cy, o.r, kotlin.math.PI, 0.0)
   ctx.closePath()
   ctx.fill()
   ctx.strokeStyle = "#41598a"
   ctx.lineWidth = 1.4
   ctx.beginPath()
-  ctx.arc(cx, cy, r, kotlin.math.PI, 0.0)
+  ctx.arc(o.cx, o.cy, o.r, kotlin.math.PI, 0.0)
   ctx.stroke()
-  drawSlit(ctx, w, cx, cy, r)
+  drawSlit(ctx, w, o)
 }
 
-fun drawSlit(ctx: Ctx, w: World, cx: Double, cy: Double, r: Double) {
+fun drawSlit(ctx: Ctx, w: World, o: Obs) {
   val open = w.domeGlow > 0.5
   ctx.fillStyle = if (open) "#ffe6b4" else "#080d1a"
   ctx.globalAlpha = if (open) 0.3 + 0.7 * w.domeGlow else 0.92
   ctx.beginPath()
-  ctx.moveTo(cx - r * 0.2, cy)
-  ctx.lineTo(cx - r * 0.11, cy - r * 0.95)
-  ctx.lineTo(cx + r * 0.11, cy - r * 0.95)
-  ctx.lineTo(cx + r * 0.2, cy)
+  ctx.moveTo(o.cx - o.r * 0.2, o.cy)
+  ctx.lineTo(o.cx - o.r * 0.11, o.cy - o.r * 0.95)
+  ctx.lineTo(o.cx + o.r * 0.11, o.cy - o.r * 0.95)
+  ctx.lineTo(o.cx + o.r * 0.2, o.cy)
   ctx.closePath()
   ctx.fill()
   ctx.globalAlpha = 1.0
 }
 
-fun drawWindowLight(ctx: Ctx, cx: Double, cy: Double, r: Double) {
-  val wx = cx + r * 0.52
-  val wy = cy + r * 0.42
-  val glow = ctx.createRadialGradient(wx, wy, 0.0, wx, wy, r * 1.3)
+fun drawWindowLight(ctx: Ctx, o: Obs) {
+  val wx = o.cx + o.r * 0.52
+  val wy = o.cy + o.r * 0.42
+  val glow = ctx.createRadialGradient(wx, wy, 0.0, wx, wy, o.r * 1.3)
   glow.addColorStop(0.0, "rgba(255,196,120,0.45)")
   glow.addColorStop(1.0, "rgba(255,196,120,0)")
   ctx.fillStyle = glow
-  ctx.fillRect(wx - r * 1.3, wy - r * 1.3, r * 2.6, r * 2.6)
+  ctx.fillRect(wx - o.r * 1.3, wy - o.r * 1.3, o.r * 2.6, o.r * 2.6)
   ctx.fillStyle = "#ffc478"
-  ctx.fillRect(wx - r * 0.1, wy - r * 0.1, r * 0.2, r * 0.2)
+  ctx.fillRect(wx - o.r * 0.1, wy - o.r * 0.1, o.r * 0.2, o.r * 0.2)
 }
 
-fun drawWatcher(ctx: Ctx, w: World, cx: Double, cy: Double, r: Double) {
-  val scale = (r / 46.0).coerceAtLeast(0.4)
+fun drawWatcher(ctx: Ctx, w: World, o: Obs) {
+  val scale = (o.r / 46.0).coerceAtLeast(0.4)
   val bob = kotlin.math.sin(w.time * (0.25 + 0.6 * w.motion)) * 1.6 * scale
-  val x = cx + r * 1.5
-  val feet = cy + r * 0.9
+  val x = o.cx + o.r * 1.5
+  val feet = o.cy + o.r * 0.9
   val body = 5.0 * scale
   ctx.globalAlpha = 0.92
   ctx.fillStyle = "#93a9d8"

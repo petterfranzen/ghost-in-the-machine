@@ -98,19 +98,29 @@ class World(seed0: Int) {
   fun tapAt(view: View, nx: Double, ny: Double): String {
     gesture()
     if (starOrDome(view, nx, ny) == "dome") {
-      domeOpen = !domeOpen
-      events.add(Ev("dome", if (domeOpen) 1.0 else 0.0, 0.0))
+      toggleDome()
       return "dome"
     }
     val i = nearestStar(view, nx, ny, 30.0 * view.scale())
     if (i < 0) return "sky"
+    chimeAt(i)
+    return "star"
+  }
+
+  private fun toggleDome() {
+    domeOpen = !domeOpen
+    events.add(Ev("dome", if (domeOpen) 1.0 else 0.0, 0.0))
+  }
+
+  // A tap on a star glints and sounds; the same star again within 1.3 s rings
+  // as a double.
+  private fun chimeAt(i: Int) {
     val s = stars[i]
     val twice = i == lastTapStar && time - lastTapAt < 1.3
     lastTapStar = i
     lastTapAt = time
     glints.add(Glint(s.lon, s.alt, if (twice) 1.5 else 0.85, if (twice) 1.5 else 0.85, if (twice) 1.0 else 0.72, twice))
     events.add(Ev(if (twice) "double" else "chime", pitchOf(i), s.mag))
-    return "star"
   }
 
   fun dragBy(view: View, dx: Double, dy: Double) {
@@ -262,13 +272,39 @@ class World(seed0: Int) {
 
   fun selfTest(): String {
     val fails = ArrayList<String>()
+    checkStars(fails)
+    checkSeeding(fails)
+    checkConstellations(fails)
+    checkPan(fails)
+    checkMeteors(fails)
+    if (fails.isEmpty()) return "ok: " + stars.size + " stars, " + CONSTELLATIONS.size + " constellations, seeded and repeatable"
+    return "FAIL: " + fails.joinToString("; ")
+  }
+
+  // One guard per edge, so the range test stays plain.
+  private fun starOnScreen(s: Star): Boolean {
+    if (s.lon < 0.0) return false
+    if (s.lon >= 1.0) return false
+    if (s.alt < 0.0) return false
+    if (s.alt > 1.0) return false
+    return true
+  }
+
+  private fun checkStars(fails: MutableList<String>) {
     if (stars.size != STAR_TOTAL) fails.add("star count " + stars.size)
-    if (stars.any { it.lon < 0.0 || it.lon >= 1.0 || it.alt < 0.0 || it.alt > 1.0 }) fails.add("star out of range")
+    if (!stars.all { starOnScreen(it) }) fails.add("star out of range")
+  }
+
+  private fun checkSeeding(fails: MutableList<String>) {
     val a = World(7)
     val b = World(7)
     val c = World(8)
     if (a.signature() != b.signature()) fails.add("seed 7 is not repeatable")
     if (a.signature() == c.signature()) fails.add("seeds 7 and 8 give the same sky")
+  }
+
+  private fun checkConstellations(fails: MutableList<String>) {
+    val a = World(7)
     val spec = CONSTELLATIONS[0]
     val range = a.conRange(0)
     if (range.count() != spec.pts.size) fails.add("constellation 0 range")
@@ -277,14 +313,19 @@ class World(seed0: Int) {
     if (a.named.count() != 1 || !a.named.contains(0)) fails.add("marking a constellation did not name it")
     a.markConstellation(0)
     if (a.named.count() != 1) fails.add("naming happened twice")
+  }
+
+  private fun checkPan(fails: MutableList<String>) {
+    val a = World(7)
     a.pan = 0.995
     a.dragBy(View(390.0, 844.0, a.pan, a.tilt), 6.0, 0.0)
     if (a.pan < 0.0 || a.pan >= 1.0) fails.add("pan did not wrap")
+  }
+
+  private fun checkMeteors(fails: MutableList<String>) {
     val d = World(9)
     d.idle = 40.0
     repeat(180) { d.update(View(390.0, 844.0, d.pan, d.tilt), 0.05) }
     if (d.meteors.isEmpty() && d.drain().none { it.kind == "meteor" }) fails.add("no meteor in 9 s of stillness")
-    if (fails.isEmpty()) return "ok: " + stars.size + " stars, " + CONSTELLATIONS.size + " constellations, seeded and repeatable"
-    return "FAIL: " + fails.joinToString("; ")
-}
+  }
 }

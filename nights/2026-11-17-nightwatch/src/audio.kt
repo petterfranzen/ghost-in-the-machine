@@ -35,6 +35,14 @@ external class AudioContext() {
 
 const val SILENT = 0.0001
 
+// One voice: what kind of wave it is, its pitch, and the shape of its envelope
+// (gain, attack, release). A lowpass filter is applied when filterHz is set.
+class VoiceSpec(val type: String, val freq: Double, val gain: Double, val attack: Double, val release: Double, val filterHz: Double)
+
+// One noise sweep: how long it runs, how loud it is, the band it travels between
+// and how resonant that band is.
+class SweepSpec(val dur: Double, val gain: Double, val from: Double, val to: Double, val q: Double)
+
 class AudioKit {
   private var ctx: AudioContext? = null
   private var master: GainNode? = null
@@ -169,35 +177,35 @@ class AudioKit {
     p.linearRampToValueAtTime(to.coerceAtLeast(SILENT), t + seconds)
   }
 
-  private fun voice(type: String, freq: Double, gain: Double, attack: Double, release: Double, filterHz: Double) {
+  private fun voice(v: VoiceSpec) {
     val c = ctx ?: return
     val out = master ?: return
     if (!on) return
     val t = c.currentTime
     val osc = c.createOscillator()
-    osc.type = type
-    osc.frequency.value = freq
+    osc.type = v.type
+    osc.frequency.value = v.freq
     val g = c.createGain()
     g.gain.value = SILENT
     g.gain.setValueAtTime(SILENT, t)
-    g.gain.exponentialRampToValueAtTime(gain, t + attack)
-    g.gain.exponentialRampToValueAtTime(SILENT, t + attack + release)
+    g.gain.exponentialRampToValueAtTime(v.gain, t + v.attack)
+    g.gain.exponentialRampToValueAtTime(SILENT, t + v.attack + v.release)
     var tail: AudioNode = osc
-    if (filterHz > 0.0) {
+    if (v.filterHz > 0.0) {
       val f = c.createBiquadFilter()
       f.type = "lowpass"
-      f.frequency.value = filterHz
+      f.frequency.value = v.filterHz
       osc.connect(f)
       tail = f
     }
     tail.connect(g)
     g.connect(out)
     osc.start(t)
-    osc.stop(t + attack + release + 0.05)
+    osc.stop(t + v.attack + v.release + 0.05)
     voices += 1
   }
 
-  private fun sweep(dur: Double, gain: Double, from: Double, to: Double, q: Double) {
+  private fun sweep(s: SweepSpec) {
     val c = ctx ?: return
     val out = master ?: return
     if (!on) return
@@ -207,58 +215,58 @@ class AudioKit {
     src.loop = true
     val f = c.createBiquadFilter()
     f.type = "bandpass"
-    f.Q.value = q
-    f.frequency.setValueAtTime(from, t)
-    f.frequency.exponentialRampToValueAtTime(to, t + dur)
+    f.Q.value = s.q
+    f.frequency.setValueAtTime(s.from, t)
+    f.frequency.exponentialRampToValueAtTime(s.to, t + s.dur)
     val g = c.createGain()
     g.gain.value = SILENT
     g.gain.setValueAtTime(SILENT, t)
-    g.gain.exponentialRampToValueAtTime(gain, t + 0.05)
-    g.gain.exponentialRampToValueAtTime(SILENT, t + dur)
+    g.gain.exponentialRampToValueAtTime(s.gain, t + 0.05)
+    g.gain.exponentialRampToValueAtTime(SILENT, t + s.dur)
     src.connect(f)
     f.connect(g)
     g.connect(out)
     src.start(t)
-    src.stop(t + dur + 0.05)
+    src.stop(t + s.dur + 0.05)
     voices += 1
   }
 
   fun confirm() {
-    voice("sine", 660.0, 0.13, 0.01, 0.45, 0.0)
-    voice("sine", 990.0, 0.07, 0.02, 0.6, 0.0)
+    voice(VoiceSpec("sine", 660.0, 0.13, 0.01, 0.45, 0.0))
+    voice(VoiceSpec("sine", 990.0, 0.07, 0.02, 0.6, 0.0))
   }
 
   fun chime(freq: Double, mag: Double) {
     val gain = 0.10 + 0.09 * mag
-    voice("sine", freq, gain, 0.012, 0.85, 0.0)
-    voice("triangle", freq * 2.0, gain * 0.28, 0.01, 0.5, 2600.0)
+    voice(VoiceSpec("sine", freq, gain, 0.012, 0.85, 0.0))
+    voice(VoiceSpec("triangle", freq * 2.0, gain * 0.28, 0.01, 0.5, 2600.0))
   }
 
   fun doubleChime(freq: Double) {
     chime(freq, 1.0)
-    voice("sine", freq * 1.5, 0.11, 0.05, 1.15, 0.0)
-    sweep(0.55, 0.045, 2400.0, 5200.0, 6.0)
+    voice(VoiceSpec("sine", freq * 1.5, 0.11, 0.05, 1.15, 0.0))
+    sweep(SweepSpec(0.55, 0.045, 2400.0, 5200.0, 6.0))
   }
 
   fun mark(freq: Double) {
-    voice("triangle", freq * 0.5, 0.14, 0.18, 1.5, 900.0)
-    voice("sine", freq * 0.25, 0.09, 0.22, 1.7, 0.0)
+    voice(VoiceSpec("triangle", freq * 0.5, 0.14, 0.18, 1.5, 900.0))
+    voice(VoiceSpec("sine", freq * 0.25, 0.09, 0.22, 1.7, 0.0))
   }
 
   fun naming(root: Double) {
-    voice("sine", root, 0.13, 0.25, 2.2, 0.0)
-    voice("sine", root * 1.5, 0.09, 0.35, 2.1, 0.0)
-    voice("sine", root * 2.0, 0.07, 0.5, 2.0, 0.0)
-    sweep(2.4, 0.03, 900.0, 3200.0, 3.0)
+    voice(VoiceSpec("sine", root, 0.13, 0.25, 2.2, 0.0))
+    voice(VoiceSpec("sine", root * 1.5, 0.09, 0.35, 2.1, 0.0))
+    voice(VoiceSpec("sine", root * 2.0, 0.07, 0.5, 2.0, 0.0))
+    sweep(SweepSpec(2.4, 0.03, 900.0, 3200.0, 3.0))
   }
 
   fun dome(open: Boolean) {
-    sweep(1.3, 0.11, if (open) 170.0 else 720.0, if (open) 720.0 else 170.0, 1.1)
-    voice("sine", 74.0, 0.13, 0.02, 1.1, 0.0)
+    sweep(SweepSpec(1.3, 0.11, if (open) 170.0 else 720.0, if (open) 720.0 else 170.0, 1.1))
+    voice(VoiceSpec("sine", 74.0, 0.13, 0.02, 1.1, 0.0))
   }
 
   fun meteor() {
-    sweep(0.8, 0.08, 1500.0, 240.0, 1.4)
+    sweep(SweepSpec(0.8, 0.08, 1500.0, 240.0, 1.4))
   }
 
   fun auroraVoice(up: Boolean) {
