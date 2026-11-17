@@ -31,13 +31,24 @@ fun seedFromUrl(): Int {
 fun pickSeed(): Int {
   val fromUrl = seedFromUrl()
   if (fromUrl > 0) return fromUrl
-  val stored = storeGet("nightwatch.seed")?.toIntOrNull()
-  if (stored != null && stored > 0) return stored
-  return ((js("Date.now()") as Double).toInt() % 899999) + 1000
+  return ((js("Date.now()") as Double) % 899999.0).toInt() + 1000
+}
+
+// The seed is the sky's name: it is written into the URL as soon as it is
+// chosen, and again after a reseed, so a sky can be linked to. `replaceState`
+// edits the address bar in place and leaves the back button alone.
+fun writeSeedToUrl(seed: Int) {
+  try {
+    val path = js("globalThis.location.pathname") as String
+    val query = "?seed=" + seed.toString()
+    js("globalThis.history.replaceState(null, '', path + query)")
+  } catch (e: Throwable) {
+    // A browser that refuses history edits still shows the sky; it just is not linkable.
+  }
 }
 
 fun restoreNamed() {
-  val raw = storeGet("nightwatch.named") ?: return
+  val raw = storeGet("nightwatch.named." + world.seed) ?: return
   raw.split(",").forEach { part ->
     val ci = part.toIntOrNull() ?: return@forEach
     if (world.named.contains(ci)) return@forEach
@@ -89,14 +100,13 @@ fun playEvent(ev: Ev) {
     "dome" -> { kit.dome(ev.a > 0.5); actOnTap("dome") }
     "meteor" -> { kit.meteor(); announce("A meteor crosses the sky.") }
     "aurora" -> announce("Ribbons of light rise over the hill.")
-    "reseed" -> { saveState(); announce("A fresh sky, and the dome re-aims.") }
+    "reseed" -> { saveState(); writeSeedToUrl(world.seed); announce("A fresh sky, and the dome re-aims.") }
     else -> Unit
   }
 }
 
 fun saveState() {
-  storeSet("nightwatch.seed", world.seed.toString())
-  storeSet("nightwatch.named", world.named.joinToString(","))
+  storeSet("nightwatch.named." + world.seed, world.named.joinToString(","))
 }
 
 fun drainEvents() {
@@ -144,6 +154,7 @@ fun boot() {
   hintEl = byId("hint")
   world = World(pickSeed())
   world.motion = if (isReducedMotion()) 0.35 else 1.0
+  writeSeedToUrl(world.seed)
   restoreNamed()
   pendingSound = storeGet("nightwatch.sound") == "on"
   sizeToWindow()
@@ -152,7 +163,7 @@ fun boot() {
   onOwned(canvasEl, "pointerup") { ev -> onUp(ev) }
   onOwned(canvasEl, "pointercancel") { ev -> onUp(ev) }
   onOwned(canvasEl, "contextmenu") { }
-  onOwned(canvasEl, "keydown") { ev -> onKey(ev) }
+  onKeyed(canvasEl) { ev -> onKey(ev) }
   onOwned(soundEl, "click") { ev -> setSound(soundEl.getAttribute("aria-pressed") != "true") }
   onPlain(js("globalThis"), "resize") { sizeToWindow() }
   onPlain(js("globalThis"), "orientationchange") { sizeToWindow() }
@@ -187,15 +198,12 @@ fun summary(): String = listOf(
 
 fun expose() {
   val read = { summary() }
-  val tap = { x: Double, y: Double -> tapForTest(x, y) }
-  val hold = { x: Double, y: Double -> holdForTest(x, y) }
-  val release = { holdReleaseForTest() }
   val sound = { want: Boolean -> setSound(want) }
   val test = { world.selfTest() }
   val reseed = { s: Int -> world.reseed(s) }
   val starPos = { i: Int -> starPosForTest(i) }
   val lookAt = { lon: Double -> lookAtForTest(lon) }
-  js("globalThis.Nightwatch = { read: read, tap: tap, hold: hold, holdEnd: release, sound: sound, selfTest: test, seed: reseed, starPos: starPos, lookAt: lookAt, ready: true }")
+  js("globalThis.Nightwatch = { read: read, sound: sound, selfTest: test, seed: reseed, starPos: starPos, lookAt: lookAt, ready: true }")
 }
 
 fun main() {

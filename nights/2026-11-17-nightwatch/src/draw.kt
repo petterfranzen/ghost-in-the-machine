@@ -11,6 +11,7 @@ class Layers {
   var w: Double = 0.0
   var h: Double = 0.0
   var dpr: Double = 1.0
+  var seed: Int = Int.MIN_VALUE
 }
 
 fun sizeCanvas(c: CanvasEl, w: Double, h: Double, dpr: Double): Ctx {
@@ -22,16 +23,19 @@ fun sizeCanvas(c: CanvasEl, w: Double, h: Double, dpr: Double): Ctx {
 }
 
 fun ensureLayers(l: Layers, w: Double, h: Double, dpr: Double, seed: Int) {
-  if (l.sky != null && l.w == w && l.h == h && l.dpr == dpr) return
+  val resized = l.sky == null || l.w != w || l.h != h || l.dpr != dpr
+  val reseeded = l.seed != seed
+  if (!resized && !reseeded) return
   l.w = w
   l.h = h
   l.dpr = dpr
-  val sky = makeCanvas()
-  val ground = makeCanvas()
-  paintSky(sky, w, h, dpr, seed)
-  paintGround(ground, w, h, dpr)
-  l.sky = sky
-  l.ground = ground
+  l.seed = seed
+  if (resized) {
+    l.sky = makeCanvas()
+    l.ground = makeCanvas()
+    paintGround(l.ground!!, w, h, dpr)
+  }
+  paintSky(l.sky!!, w, h, dpr, seed)
 }
 
 fun paintSky(c: CanvasEl, w: Double, h: Double, dpr: Double, seed: Int) {
@@ -96,10 +100,11 @@ fun paintRidge(ctx: Ctx, w: Double, h: Double, colour: String, edge: (Double) ->
   ctx.beginPath()
   ctx.moveTo(0.0, h)
   var x = 0.0
-  while (x <= w) {
+  while (x < w) {
     ctx.lineTo(x, edge(x))
     x += 6.0
   }
+  ctx.lineTo(w, edge(w))
   ctx.lineTo(w, h)
   ctx.closePath()
   ctx.fill()

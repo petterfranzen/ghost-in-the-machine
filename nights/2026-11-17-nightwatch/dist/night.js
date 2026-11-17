@@ -3079,12 +3079,6 @@ var night = function (_) {
   function sin(x) {
     return Math.sin(x);
   }
-  function abs(x) {
-    return Math.abs(x);
-  }
-  function max(a, b) {
-    return Math.max(a, b);
-  }
   function sqrt(x) {
     return Math.sqrt(x);
   }
@@ -3093,6 +3087,12 @@ var night = function (_) {
   }
   function pow_0(_this__u8e3s4, x) {
     return Math.pow(_this__u8e3s4, x);
+  }
+  function abs(x) {
+    return Math.abs(x);
+  }
+  function max(a, b) {
+    return Math.max(a, b);
   }
   function get_INV_2_26() {
     _init_properties_PlatformRandom_kt__6kjv62();
@@ -17078,6 +17078,11 @@ var night = function (_) {
       fn(ev);
     }, {passive: false});
   }
+  function onKeyed(el, fn) {
+    el.addEventListener('keydown', function (ev) {
+      fn(ev);
+    }, {passive: false});
+  }
   function onPlain(el, kind, fn) {
     el.addEventListener(kind, function (ev) {
       fn(ev);
@@ -17125,6 +17130,7 @@ var night = function (_) {
     this.w_1 = 0.0;
     this.h_1 = 0.0;
     this.dpr_1 = 1.0;
+    this.seed_1 = IntCompanionObject_getInstance().MIN_VALUE;
   }
   protoOf(Layers).set_sky_fybhjm_k$ = function (_set____db54di) {
     this.sky_1 = _set____db54di;
@@ -17156,6 +17162,12 @@ var night = function (_) {
   protoOf(Layers).get_dpr_18j75v_k$ = function () {
     return this.dpr_1;
   };
+  protoOf(Layers).set_seed_vts7za_k$ = function (_set____db54di) {
+    this.seed_1 = _set____db54di;
+  };
+  protoOf(Layers).get_seed_wou8ca_k$ = function () {
+    return this.seed_1;
+  };
   function sizeCanvas(c, w, h, dpr) {
     _init_properties_draw_kt__mxa2tg();
     c.width = numberToInt(w * dpr);
@@ -17166,17 +17178,20 @@ var night = function (_) {
   }
   function ensureLayers(l, w, h, dpr, seed) {
     _init_properties_draw_kt__mxa2tg();
-    if (((!(l.sky_1 == null) ? l.w_1 === w : false) ? l.h_1 === h : false) ? l.dpr_1 === dpr : false)
+    var resized = ((l.sky_1 == null ? true : !(l.w_1 === w)) ? true : !(l.h_1 === h)) ? true : !(l.dpr_1 === dpr);
+    var reseeded = !(l.seed_1 === seed);
+    if (!resized ? !reseeded : false)
       return Unit_getInstance();
     l.w_1 = w;
     l.h_1 = h;
     l.dpr_1 = dpr;
-    var sky = makeCanvas();
-    var ground = makeCanvas();
-    paintSky(sky, w, h, dpr, seed);
-    paintGround(ground, w, h, dpr);
-    l.sky_1 = sky;
-    l.ground_1 = ground;
+    l.seed_1 = seed;
+    if (resized) {
+      l.sky_1 = makeCanvas();
+      l.ground_1 = makeCanvas();
+      paintGround(ensureNotNull(l.ground_1), w, h, dpr);
+    }
+    paintSky(ensureNotNull(l.sky_1), w, h, dpr, seed);
   }
   function paintSky(c, w, h, dpr, seed) {
     _init_properties_draw_kt__mxa2tg();
@@ -17260,10 +17275,11 @@ var night = function (_) {
     ctx.beginPath();
     ctx.moveTo(0.0, h);
     var x = 0.0;
-    while (x <= w) {
+    while (x < w) {
       ctx.lineTo(x, edge(x));
       x = x + 6.0;
     }
+    ctx.lineTo(w, edge(w));
     ctx.lineTo(w, h);
     ctx.closePath();
     ctx.fill();
@@ -17412,19 +17428,13 @@ var night = function (_) {
     if (!gestureMoved) {
       var fromDownX = (p.first_1 - downX) * get_viewW();
       var fromDownY = (p.second_1 - downY) * get_viewH();
-      // Inline function 'kotlin.math.abs' call
-      var tmp = Math.abs(fromDownX);
-      // Inline function 'kotlin.math.max' call
-      // Inline function 'kotlin.math.abs' call
-      var b = Math.abs(fromDownY) * 0.7;
-      if (tmp > Math.max(7.0, b)) {
-        gestureMoved = true;
-        get_world().holdEnd_cqk7ia_k$(currentView());
-      } else {
-        lastX = p.first_1;
-        lastY = p.second_1;
+      // Inline function 'kotlin.math.sqrt' call
+      var x = fromDownX * fromDownX + fromDownY * fromDownY;
+      var travel = Math.sqrt(x);
+      if (travel < 6.0)
         return Unit_getInstance();
-      }
+      gestureMoved = true;
+      get_world().holdEnd_cqk7ia_k$(currentView());
     }
     get_world().dragBy_uaulgt_k$(currentView(), (p.first_1 - lastX) * get_viewW(), (p.second_1 - lastY) * get_viewH());
     lastX = p.first_1;
@@ -17457,32 +17467,30 @@ var night = function (_) {
     var tmp = ev.key;
     var key = (!(tmp == null) ? typeof tmp === 'string' : false) ? tmp : THROW_CCE();
     var v = currentView();
-    if (key === 'ArrowLeft') {
-      get_world().dragBy_uaulgt_k$(v, get_viewW() * 0.05, 0.0);
+    switch (key) {
+      case 'ArrowLeft':
+        ev.preventDefault();
+        get_world().dragBy_uaulgt_k$(v, get_viewW() * 0.05, 0.0);
+        break;
+      case 'ArrowRight':
+        ev.preventDefault();
+        get_world().dragBy_uaulgt_k$(v, -get_viewW() * 0.05, 0.0);
+        break;
+      case 'ArrowUp':
+        ev.preventDefault();
+        get_world().dragBy_uaulgt_k$(v, 0.0, get_viewH() * 0.05);
+        break;
+      case 'ArrowDown':
+        ev.preventDefault();
+        get_world().dragBy_uaulgt_k$(v, 0.0, -get_viewH() * 0.05);
+        break;
+      case 'Enter':
+      case ' ':
+        ev.preventDefault();
+        gestures = gestures + 1 | 0;
+        actOnTap(get_world().tapAt_jls9iw_k$(v, 0.5, 0.42));
+        break;
     }
-    if (key === 'ArrowRight') {
-      get_world().dragBy_uaulgt_k$(v, -get_viewW() * 0.05, 0.0);
-    }
-    if (key === 'ArrowUp') {
-      get_world().dragBy_uaulgt_k$(v, 0.0, get_viewH() * 0.05);
-    }
-    if (key === 'ArrowDown') {
-      get_world().dragBy_uaulgt_k$(v, 0.0, -get_viewH() * 0.05);
-    }
-    if (key === 'Enter' ? true : key === ' ') {
-      gestures = gestures + 1 | 0;
-      actOnTap(get_world().tapAt_jls9iw_k$(v, 0.5, 0.42));
-    }
-  }
-  function tapForTest(x, y) {
-    return get_world().tapAt_jls9iw_k$(currentView(), x, y);
-  }
-  function holdForTest(x, y) {
-    get_world().holdStart_n9xofh_k$(x, y);
-    get_world().holdT_1 = 0.9;
-  }
-  function holdReleaseForTest() {
-    get_world().holdEnd_cqk7ia_k$(currentView());
   }
   function starPosForTest(i) {
     var v = currentView();
@@ -17694,16 +17702,27 @@ var night = function (_) {
     var fromUrl = seedFromUrl();
     if (fromUrl > 0)
       return fromUrl;
-    var tmp0_safe_receiver = storeGet('nightwatch.seed');
-    var stored = tmp0_safe_receiver == null ? null : toIntOrNull(tmp0_safe_receiver);
-    if (!(stored == null) ? stored > 0 : false)
-      return stored;
     var tmp = Date.now();
-    return (numberToInt((!(tmp == null) ? typeof tmp === 'number' : false) ? tmp : THROW_CCE()) % 899999 | 0) + 1000 | 0;
+    return numberToInt(((!(tmp == null) ? typeof tmp === 'number' : false) ? tmp : THROW_CCE()) % 899999.0) + 1000 | 0;
+  }
+  function writeSeedToUrl(seed) {
+    _init_properties_main_kt__ykjpl3();
+    try {
+      var tmp = globalThis.location.pathname;
+      var path = (!(tmp == null) ? typeof tmp === 'string' : false) ? tmp : THROW_CCE();
+      var query = '?seed=' + seed.toString();
+      globalThis.history.replaceState(null, '', path + query);
+    } catch ($p) {
+      if ($p instanceof Error) {
+        var e = $p;
+      } else {
+        throw $p;
+      }
+    }
   }
   function restoreNamed() {
     _init_properties_main_kt__ykjpl3();
-    var tmp0_elvis_lhs = storeGet('nightwatch.named');
+    var tmp0_elvis_lhs = storeGet('nightwatch.named.' + get_world().seed_1);
     var tmp;
     if (tmp0_elvis_lhs == null) {
       return Unit_getInstance();
@@ -17803,6 +17822,7 @@ var night = function (_) {
         break;
       case 'reseed':
         saveState();
+        writeSeedToUrl(get_world().seed_1);
         announce('A fresh sky, and the dome re-aims.');
         break;
       default:
@@ -17811,8 +17831,7 @@ var night = function (_) {
   }
   function saveState() {
     _init_properties_main_kt__ykjpl3();
-    storeSet('nightwatch.seed', get_world().seed_1.toString());
-    storeSet('nightwatch.named', joinToString_0(get_world().named_1, ','));
+    storeSet('nightwatch.named.' + get_world().seed_1, joinToString_0(get_world().named_1, ','));
   }
   function drainEvents() {
     _init_properties_main_kt__ykjpl3();
@@ -17866,6 +17885,7 @@ var night = function (_) {
     set_hintEl(byId('hint'));
     set_world(new World(pickSeed()));
     get_world().motion_1 = isReducedMotion() ? 0.35 : 1.0;
+    writeSeedToUrl(get_world().seed_1);
     restoreNamed();
     set_pendingSound(storeGet('nightwatch.sound') === 'on');
     sizeToWindow();
@@ -17880,7 +17900,7 @@ var night = function (_) {
     var tmp_3 = get_canvasEl();
     onOwned(tmp_3, 'contextmenu', boot$lambda_3);
     var tmp_4 = get_canvasEl();
-    onOwned(tmp_4, 'keydown', boot$lambda_4);
+    onKeyed(tmp_4, boot$lambda_4);
     var tmp_5 = get_soundEl();
     onOwned(tmp_5, 'click', boot$lambda_5);
     var tmp_6 = globalThis;
@@ -17899,15 +17919,12 @@ var night = function (_) {
   function expose() {
     _init_properties_main_kt__ykjpl3();
     var read = expose$lambda;
-    var tap = expose$lambda_0;
-    var hold = expose$lambda_1;
-    var release = expose$lambda_2;
-    var sound = expose$lambda_3;
-    var test = expose$lambda_4;
-    var reseed = expose$lambda_5;
-    var starPos = expose$lambda_6;
-    var lookAt = expose$lambda_7;
-    globalThis.Nightwatch = {read: read, tap: tap, hold: hold, holdEnd: release, sound: sound, selfTest: test, seed: reseed, starPos: starPos, lookAt: lookAt, ready: true};
+    var sound = expose$lambda_0;
+    var test = expose$lambda_1;
+    var reseed = expose$lambda_2;
+    var starPos = expose$lambda_3;
+    var lookAt = expose$lambda_4;
+    globalThis.Nightwatch = {read: read, sound: sound, selfTest: test, seed: reseed, starPos: starPos, lookAt: lookAt, ready: true};
   }
   function main() {
     _init_properties_main_kt__ykjpl3();
@@ -17976,39 +17993,25 @@ var night = function (_) {
     _init_properties_main_kt__ykjpl3();
     return summary();
   }
-  function expose$lambda_0(x, y) {
-    _init_properties_main_kt__ykjpl3();
-    return tapForTest(x, y);
-  }
-  function expose$lambda_1(x, y) {
-    _init_properties_main_kt__ykjpl3();
-    holdForTest(x, y);
-    return Unit_getInstance();
-  }
-  function expose$lambda_2() {
-    _init_properties_main_kt__ykjpl3();
-    holdReleaseForTest();
-    return Unit_getInstance();
-  }
-  function expose$lambda_3(want) {
+  function expose$lambda_0(want) {
     _init_properties_main_kt__ykjpl3();
     setSound(want);
     return Unit_getInstance();
   }
-  function expose$lambda_4() {
+  function expose$lambda_1() {
     _init_properties_main_kt__ykjpl3();
     return get_world().selfTest_jppfy6_k$();
   }
-  function expose$lambda_5(s) {
+  function expose$lambda_2(s) {
     _init_properties_main_kt__ykjpl3();
     get_world().reseed_xbnc4_k$(s);
     return Unit_getInstance();
   }
-  function expose$lambda_6(i) {
+  function expose$lambda_3(i) {
     _init_properties_main_kt__ykjpl3();
     return starPosForTest(i);
   }
-  function expose$lambda_7(lon) {
+  function expose$lambda_4(lon) {
     _init_properties_main_kt__ykjpl3();
     lookAtForTest(lon);
     return Unit_getInstance();

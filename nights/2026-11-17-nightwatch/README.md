@@ -42,12 +42,14 @@ so no build happens at deploy time.
 | **Tap the observatory dome** | The dome slit opens or closes; the light on the hill changes. |
 | **Long-press a star** (hold ~0.8 s) | Marks it: a low, warm tone, and the star keeps a small ring. |
 | **Long-press the dome** | A whole new sky is seeded and the dome re-aims. |
-| **Leave it idle** | Meteors cross the sky every 6–13 s; after a while ribbons of aurora rise over the hill and fade. |
+| **Leave it idle** | Meteors cross the sky every 6–13 s. Once three constellations have been named, staying still for about twelve seconds raises ribbons of aurora over the hill, which fade as soon as you move again. |
 | **Sound button** (bottom left) | Starts muted. Turning it on fades in the ambient bed within half a second and plays a short confirming chime. The choice is remembered. |
 
 Marking every star of a constellation makes it name itself: the figure draws
 its lines, a label appears beside it and a soft chord plays. Five constellations
 are scattered across the sky; the names are the ones the sky earned tonight.
+Named constellations are remembered per sky, so the seed in the URL brings back
+both the stars and the names you gave them.
 
 ## Sound
 
@@ -98,14 +100,15 @@ which is why every fresh sky has its own five figures with their own names.
 
 - Give each constellation its own short melody instead of a single chord, so
   naming one feels like meeting it.
-- Let the marked stars stay marked across a reload (the seed already persists).
 - A slow meteor shower as a rare event, once every few minutes.
 - More vertical depth: a horizon layer with a village or a lake reflecting the
   sky.
 
 ## Check
 
-`tools/check.cjs` is a Playwright smoke check: it loads the committed page at
+`tools/check.cjs` is a Playwright smoke check: it drives the page with real
+pointer and keyboard events (no test hooks for the gestures themselves), and
+loads the committed page at
 1280×800 and 390×844, turns sound on, pans, taps stars, marks a whole
 constellation, waits for a meteor and asserts no console errors, no failed
 requests and no sideways scrolling. Run it against a served `dist/`:

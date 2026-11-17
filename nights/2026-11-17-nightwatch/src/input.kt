@@ -40,14 +40,10 @@ fun onMove(ev: dynamic) {
   if (!gestureMoved) {
     val fromDownX = (p.first - downX) * viewW
     val fromDownY = (p.second - downY) * viewH
-    if (kotlin.math.abs(fromDownX) > kotlin.math.max(7.0, kotlin.math.abs(fromDownY) * 0.7)) {
-      gestureMoved = true
-      world.holdEnd(currentView())
-    } else {
-      lastX = p.first
-      lastY = p.second
-      return
-    }
+    val travel = kotlin.math.sqrt(fromDownX * fromDownX + fromDownY * fromDownY)
+    if (travel < 6.0) return
+    gestureMoved = true
+    world.holdEnd(currentView())
   }
   world.dragBy(currentView(), (p.first - lastX) * viewW, (p.second - lastY) * viewH)
   lastX = p.first
@@ -74,29 +70,20 @@ fun onUp(ev: dynamic) {
   }
 }
 
+// Only the keys the sky uses are swallowed: Tab and Shift-Tab must still walk
+// out of the canvas to the sound button, so the page works from a keyboard.
 fun onKey(ev: dynamic) {
   val key = ev.key as String
   val v = currentView()
-  if (key == "ArrowLeft") world.dragBy(v, viewW * 0.05, 0.0)
-  if (key == "ArrowRight") world.dragBy(v, -viewW * 0.05, 0.0)
-  if (key == "ArrowUp") world.dragBy(v, 0.0, viewH * 0.05)
-  if (key == "ArrowDown") world.dragBy(v, 0.0, -viewH * 0.05)
-  if (key == "Enter" || key == " ") {
+  if (key == "ArrowLeft") { ev.preventDefault(); world.dragBy(v, viewW * 0.05, 0.0) }
+  else if (key == "ArrowRight") { ev.preventDefault(); world.dragBy(v, -viewW * 0.05, 0.0) }
+  else if (key == "ArrowUp") { ev.preventDefault(); world.dragBy(v, 0.0, viewH * 0.05) }
+  else if (key == "ArrowDown") { ev.preventDefault(); world.dragBy(v, 0.0, -viewH * 0.05) }
+  else if (key == "Enter" || key == " ") {
+    ev.preventDefault()
     gestures += 1
     actOnTap(world.tapAt(v, 0.5, 0.42))
   }
-}
-
-// The smoke check drives the same gestures the fingers do.
-fun tapForTest(x: Double, y: Double): String = world.tapAt(currentView(), x, y)
-
-fun holdForTest(x: Double, y: Double) {
-  world.holdStart(x, y)
-  world.holdT = 0.9
-}
-
-fun holdReleaseForTest() {
-  world.holdEnd(currentView())
 }
 
 fun starPosForTest(i: Int): String {

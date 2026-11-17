@@ -68,6 +68,12 @@ fun onOwned(el: dynamic, kind: String, fn: (dynamic) -> Unit) {
   js("el.addEventListener(kind, function (ev) { ev.preventDefault(); fn(ev); }, { passive: false })")
 }
 
+// A key listener that leaves keys it does not use to the browser: Tab has to
+// keep moving focus, or the sound button is unreachable without a mouse.
+fun onKeyed(el: dynamic, fn: (dynamic) -> Unit) {
+  js("el.addEventListener('keydown', function (ev) { fn(ev); }, { passive: false })")
+}
+
 fun onPlain(el: dynamic, kind: String, fn: (dynamic) -> Unit) {
   js("el.addEventListener(kind, function (ev) { fn(ev); }, { passive: true })")
 }
