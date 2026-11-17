@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#04060f">
+<meta name="description" content="Nightwatch — a small hilltop observatory under a night sky. Drag the sky, tap the stars, and let the constellations name themselves.">
+<title>Nightwatch</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2304060f'/%3E%3Ccircle cx='16' cy='13' r='7' fill='%2322304d'/%3E%3Crect x='9' y='20' width='14' height='5' fill='%23182136'/%3E%3Ccircle cx='22' cy='7' r='1.6' fill='%23eef2ff'/%3E%3Ccircle cx='7' cy='5' r='1.1' fill='%23cfe0ff'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --ink: #e9eefb;
+    --dim: #b3bed6;
+    --bg: #04060f;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+  }
+  #stage { position: fixed; inset: 0; height: 100dvh; }
+  #sky {
+    position: absolute; inset: 0;
+    display: block; width: 100%; height: 100%;
+    touch-action: none;
+    user-select: none; -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #sky:focus-visible { outline: 2px solid #9fc4ff; outline-offset: -3px; }
+  #dock {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    background: linear-gradient(180deg, rgba(4,6,15,0) 0%, rgba(4,6,15,0.72) 45%, rgba(4,6,15,0.94) 100%);
+    pointer-events: none;
+  }
+  #sound {
+    pointer-events: auto;
+    min-height: 44px; min-width: 44px;
+    padding: 10px 18px;
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 1px solid rgba(186,203,238,0.55);
+    border-radius: 999px;
+    background: rgba(19,27,48,0.82);
+    color: var(--ink);
+    font: inherit; font-size: 16px;
+    cursor: pointer;
+  }
+  #sound:hover { background: rgba(28,39,68,0.9); }
+  #sound .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #5b688a;
+    border: 1px solid rgba(222,232,252,0.55);
+    pointer-events: none;
+  }
+  #sound[aria-pressed="true"] .dot { background: #ffe4a3; box-shadow: 0 0 10px #ffd873; }
+  #hint {
+    margin: 0; text-align: right; color: var(--dim); font-size: 16px;
+    opacity: 0; transition: opacity 1.1s ease-out;
+  }
+  #status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (prefers-reduced-motion: reduce) {
+    #hint { transition: none; }
+    #sound { transition: none; }
+  }
+</style>
+</head>
+<body>
+<main id="stage">
+  <canvas id="sky" tabindex="0" role="button"
+    aria-label="A night sky over a hilltop observatory. Drag to pan the stars, tap a star to hear it, press and hold a star to mark it, tap the dome to open it."></canvas>
+  <div id="dock">
+    <button id="sound" type="button" aria-pressed="false"><span class="dot" aria-hidden="true"></span><span id="soundlabel">Sound off</span></button>
+    <p id="hint">hold a star until it rings</p>
+  </div>
+  <p id="status" role="status" aria-live="polite"></p>
+</main>
+<script>window.Nightwatch = { ready: false };</script>
+<script src="night.js"></script>
+</body>
+</html>
