@@ -477,8 +477,13 @@ var night = function (_) {
   setMetadataFor(Iterator_3, 'Iterator', classMeta, VOID, [Iterator]);
   setMetadataFor(UShortArray, 'UShortArray', classMeta, VOID, [Collection]);
   setMetadataFor(ExperimentalUnsignedTypes, 'ExperimentalUnsignedTypes', classMeta, VOID, [Annotation]);
+  setMetadataFor(VoiceSpec, 'VoiceSpec', classMeta);
+  setMetadataFor(SweepSpec, 'SweepSpec', classMeta);
   setMetadataFor(AudioKit, 'AudioKit', classMeta, VOID, VOID, AudioKit);
   setMetadataFor(Layers, 'Layers', classMeta, VOID, VOID, Layers);
+  setMetadataFor(Surface, 'Surface', classMeta);
+  setMetadataFor(Obs, 'Obs', classMeta);
+  setMetadataFor(ConFade, 'ConFade', classMeta);
   setMetadataFor(Rng, 'Rng', classMeta);
   setMetadataFor(Star, 'Star', classMeta);
   setMetadataFor(ConSpec, 'ConSpec', classMeta);
@@ -16654,6 +16659,54 @@ var night = function (_) {
     return SILENT;
   }
   var SILENT;
+  function VoiceSpec(type, freq, gain, attack, release, filterHz) {
+    this.type_1 = type;
+    this.freq_1 = freq;
+    this.gain_1 = gain;
+    this.attack_1 = attack;
+    this.release_1 = release;
+    this.filterHz_1 = filterHz;
+  }
+  protoOf(VoiceSpec).get_type_wovaf7_k$ = function () {
+    return this.type_1;
+  };
+  protoOf(VoiceSpec).get_freq_wom75t_k$ = function () {
+    return this.freq_1;
+  };
+  protoOf(VoiceSpec).get_gain_womhmw_k$ = function () {
+    return this.gain_1;
+  };
+  protoOf(VoiceSpec).get_attack_b4xpht_k$ = function () {
+    return this.attack_1;
+  };
+  protoOf(VoiceSpec).get_release_jav6e6_k$ = function () {
+    return this.release_1;
+  };
+  protoOf(VoiceSpec).get_filterHz_rat5yr_k$ = function () {
+    return this.filterHz_1;
+  };
+  function SweepSpec(dur, gain, from, to, q) {
+    this.dur_1 = dur;
+    this.gain_1 = gain;
+    this.from_1 = from;
+    this.to_1 = to;
+    this.q_1 = q;
+  }
+  protoOf(SweepSpec).get_dur_18j71k_k$ = function () {
+    return this.dur_1;
+  };
+  protoOf(SweepSpec).get_gain_womhmw_k$ = function () {
+    return this.gain_1;
+  };
+  protoOf(SweepSpec).get_from_wom7eb_k$ = function () {
+    return this.from_1;
+  };
+  protoOf(SweepSpec).get_to_kntnng_k$ = function () {
+    return this.to_1;
+  };
+  protoOf(SweepSpec).get_q_1mhr60_k$ = function () {
+    return this.q_1;
+  };
   function _set_ctx__4w43b2($this, _set____db54di) {
     $this.ctx_1 = _set____db54di;
   }
@@ -16820,7 +16873,7 @@ var night = function (_) {
     p.setValueAtTime(coerceAtLeast_0(p.value, 1.0E-4), t);
     p.linearRampToValueAtTime(coerceAtLeast_0(to, 1.0E-4), t + seconds);
   }
-  function voice($this, type, freq, gain, attack, release, filterHz) {
+  function voice($this, v) {
     var tmp0_elvis_lhs = $this.ctx_1;
     var tmp;
     if (tmp0_elvis_lhs == null) {
@@ -16841,28 +16894,28 @@ var night = function (_) {
       return Unit_getInstance();
     var t = c.currentTime;
     var osc = c.createOscillator();
-    osc.type = type;
-    osc.frequency.value = freq;
+    osc.type = v.type_1;
+    osc.frequency.value = v.freq_1;
     var g = c.createGain();
     g.gain.value = 1.0E-4;
     g.gain.setValueAtTime(1.0E-4, t);
-    g.gain.exponentialRampToValueAtTime(gain, t + attack);
-    g.gain.exponentialRampToValueAtTime(1.0E-4, t + attack + release);
+    g.gain.exponentialRampToValueAtTime(v.gain_1, t + v.attack_1);
+    g.gain.exponentialRampToValueAtTime(1.0E-4, t + v.attack_1 + v.release_1);
     var tail = osc;
-    if (filterHz > 0.0) {
+    if (v.filterHz_1 > 0.0) {
       var f = c.createBiquadFilter();
       f.type = 'lowpass';
-      f.frequency.value = filterHz;
+      f.frequency.value = v.filterHz_1;
       osc.connect(f);
       tail = f;
     }
     tail.connect(g);
     g.connect(out);
     osc.start(t);
-    osc.stop(t + attack + release + 0.05);
+    osc.stop(t + v.attack_1 + v.release_1 + 0.05);
     $this.voices_1 = $this.voices_1 + 1 | 0;
   }
-  function sweep($this, dur, gain, from, to, q) {
+  function sweep($this, s) {
     var tmp0_elvis_lhs = $this.ctx_1;
     var tmp;
     if (tmp0_elvis_lhs == null) {
@@ -16887,19 +16940,19 @@ var night = function (_) {
     src.loop = true;
     var f = c.createBiquadFilter();
     f.type = 'bandpass';
-    f.Q.value = q;
-    f.frequency.setValueAtTime(from, t);
-    f.frequency.exponentialRampToValueAtTime(to, t + dur);
+    f.Q.value = s.q_1;
+    f.frequency.setValueAtTime(s.from_1, t);
+    f.frequency.exponentialRampToValueAtTime(s.to_1, t + s.dur_1);
     var g = c.createGain();
     g.gain.value = 1.0E-4;
     g.gain.setValueAtTime(1.0E-4, t);
-    g.gain.exponentialRampToValueAtTime(gain, t + 0.05);
-    g.gain.exponentialRampToValueAtTime(1.0E-4, t + dur);
+    g.gain.exponentialRampToValueAtTime(s.gain_1, t + 0.05);
+    g.gain.exponentialRampToValueAtTime(1.0E-4, t + s.dur_1);
     src.connect(f);
     f.connect(g);
     g.connect(out);
     src.start(t);
-    src.stop(t + dur + 0.05);
+    src.stop(t + s.dur_1 + 0.05);
     $this.voices_1 = $this.voices_1 + 1 | 0;
   }
   function AudioKit() {
@@ -16955,35 +17008,35 @@ var night = function (_) {
     this.state_1 = this.on_1 ? 'playing' : 'muted';
   };
   protoOf(AudioKit).confirm_vr4qa8_k$ = function () {
-    voice(this, 'sine', 660.0, 0.13, 0.01, 0.45, 0.0);
-    voice(this, 'sine', 990.0, 0.07, 0.02, 0.6, 0.0);
+    voice(this, new VoiceSpec('sine', 660.0, 0.13, 0.01, 0.45, 0.0));
+    voice(this, new VoiceSpec('sine', 990.0, 0.07, 0.02, 0.6, 0.0));
   };
   protoOf(AudioKit).chime_rlv50s_k$ = function (freq, mag) {
     var gain = 0.1 + 0.09 * mag;
-    voice(this, 'sine', freq, gain, 0.012, 0.85, 0.0);
-    voice(this, 'triangle', freq * 2.0, gain * 0.28, 0.01, 0.5, 2600.0);
+    voice(this, new VoiceSpec('sine', freq, gain, 0.012, 0.85, 0.0));
+    voice(this, new VoiceSpec('triangle', freq * 2.0, gain * 0.28, 0.01, 0.5, 2600.0));
   };
   protoOf(AudioKit).doubleChime_zc7ln9_k$ = function (freq) {
     this.chime_rlv50s_k$(freq, 1.0);
-    voice(this, 'sine', freq * 1.5, 0.11, 0.05, 1.15, 0.0);
-    sweep(this, 0.55, 0.045, 2400.0, 5200.0, 6.0);
+    voice(this, new VoiceSpec('sine', freq * 1.5, 0.11, 0.05, 1.15, 0.0));
+    sweep(this, new SweepSpec(0.55, 0.045, 2400.0, 5200.0, 6.0));
   };
   protoOf(AudioKit).mark_uh7dvt_k$ = function (freq) {
-    voice(this, 'triangle', freq * 0.5, 0.14, 0.18, 1.5, 900.0);
-    voice(this, 'sine', freq * 0.25, 0.09, 0.22, 1.7, 0.0);
+    voice(this, new VoiceSpec('triangle', freq * 0.5, 0.14, 0.18, 1.5, 900.0));
+    voice(this, new VoiceSpec('sine', freq * 0.25, 0.09, 0.22, 1.7, 0.0));
   };
   protoOf(AudioKit).naming_y2aqj6_k$ = function (root) {
-    voice(this, 'sine', root, 0.13, 0.25, 2.2, 0.0);
-    voice(this, 'sine', root * 1.5, 0.09, 0.35, 2.1, 0.0);
-    voice(this, 'sine', root * 2.0, 0.07, 0.5, 2.0, 0.0);
-    sweep(this, 2.4, 0.03, 900.0, 3200.0, 3.0);
+    voice(this, new VoiceSpec('sine', root, 0.13, 0.25, 2.2, 0.0));
+    voice(this, new VoiceSpec('sine', root * 1.5, 0.09, 0.35, 2.1, 0.0));
+    voice(this, new VoiceSpec('sine', root * 2.0, 0.07, 0.5, 2.0, 0.0));
+    sweep(this, new SweepSpec(2.4, 0.03, 900.0, 3200.0, 3.0));
   };
   protoOf(AudioKit).dome_544r3i_k$ = function (open) {
-    sweep(this, 1.3, 0.11, open ? 170.0 : 720.0, open ? 720.0 : 170.0, 1.1);
-    voice(this, 'sine', 74.0, 0.13, 0.02, 1.1, 0.0);
+    sweep(this, new SweepSpec(1.3, 0.11, open ? 170.0 : 720.0, open ? 720.0 : 170.0, 1.1));
+    voice(this, new VoiceSpec('sine', 74.0, 0.13, 0.02, 1.1, 0.0));
   };
   protoOf(AudioKit).meteor_6l8t0c_k$ = function () {
-    sweep(this, 0.8, 0.08, 1500.0, 240.0, 1.4);
+    sweep(this, new SweepSpec(0.8, 0.08, 1500.0, 240.0, 1.4));
   };
   protoOf(AudioKit).auroraVoice_k3b19_k$ = function (up) {
     if (!up) {
@@ -17168,6 +17221,24 @@ var night = function (_) {
   protoOf(Layers).get_seed_wou8ca_k$ = function () {
     return this.seed_1;
   };
+  function Surface(w, h, dpr, seed) {
+    this.w_1 = w;
+    this.h_1 = h;
+    this.dpr_1 = dpr;
+    this.seed_1 = seed;
+  }
+  protoOf(Surface).get_w_1mhr66_k$ = function () {
+    return this.w_1;
+  };
+  protoOf(Surface).get_h_1mhr5r_k$ = function () {
+    return this.h_1;
+  };
+  protoOf(Surface).get_dpr_18j75v_k$ = function () {
+    return this.dpr_1;
+  };
+  protoOf(Surface).get_seed_wou8ca_k$ = function () {
+    return this.seed_1;
+  };
   function sizeCanvas(c, w, h, dpr) {
     _init_properties_draw_kt__mxa2tg();
     c.width = numberToInt(w * dpr);
@@ -17176,46 +17247,46 @@ var night = function (_) {
     ctx.setTransform(dpr, 0.0, 0.0, dpr, 0.0, 0.0);
     return ctx;
   }
-  function ensureLayers(l, w, h, dpr, seed) {
+  function ensureLayers(l, s) {
     _init_properties_draw_kt__mxa2tg();
-    var resized = ((l.sky_1 == null ? true : !(l.w_1 === w)) ? true : !(l.h_1 === h)) ? true : !(l.dpr_1 === dpr);
-    var reseeded = !(l.seed_1 === seed);
+    var resized = ((l.sky_1 == null ? true : !(l.w_1 === s.w_1)) ? true : !(l.h_1 === s.h_1)) ? true : !(l.dpr_1 === s.dpr_1);
+    var reseeded = !(l.seed_1 === s.seed_1);
     if (!resized ? !reseeded : false)
       return Unit_getInstance();
-    l.w_1 = w;
-    l.h_1 = h;
-    l.dpr_1 = dpr;
-    l.seed_1 = seed;
+    l.w_1 = s.w_1;
+    l.h_1 = s.h_1;
+    l.dpr_1 = s.dpr_1;
+    l.seed_1 = s.seed_1;
     if (resized) {
       l.sky_1 = makeCanvas();
       l.ground_1 = makeCanvas();
-      paintGround(ensureNotNull(l.ground_1), w, h, dpr);
+      paintGround(ensureNotNull(l.ground_1), s);
     }
-    paintSky(ensureNotNull(l.sky_1), w, h, dpr, seed);
+    paintSky(ensureNotNull(l.sky_1), s);
   }
-  function paintSky(c, w, h, dpr, seed) {
+  function paintSky(c, s) {
     _init_properties_draw_kt__mxa2tg();
-    var ctx = sizeCanvas(c, w, h, dpr);
-    var grad = ctx.createLinearGradient(0.0, 0.0, 0.0, h * 0.92);
+    var ctx = sizeCanvas(c, s.w_1, s.h_1, s.dpr_1);
+    var grad = ctx.createLinearGradient(0.0, 0.0, 0.0, s.h_1 * 0.92);
     grad.addColorStop(0.0, '#04060f');
     grad.addColorStop(0.42, '#0a1226');
     grad.addColorStop(0.74, '#121c33');
     grad.addColorStop(1.0, '#1c2841');
     ctx.fillStyle = grad;
-    ctx.fillRect(0.0, 0.0, w, h);
-    paintMilkyWay(ctx, w, h, seed);
-    paintHorizonGlow(ctx, w, h);
+    ctx.fillRect(0.0, 0.0, s.w_1, s.h_1);
+    paintMilkyWay(ctx, s);
+    paintHorizonGlow(ctx, s);
   }
-  function bandY(x, w, h) {
+  function bandY(x, s) {
     _init_properties_draw_kt__mxa2tg();
-    var tmp = h * 0.34;
+    var tmp = s.h_1 * 0.34;
     // Inline function 'kotlin.math.sin' call
-    var x_0 = x / w * 2.7 + 0.6;
-    return tmp + Math.sin(x_0) * h * 0.05 + x / w * h * 0.16;
+    var x_0 = x / s.w_1 * 2.7 + 0.6;
+    return tmp + Math.sin(x_0) * s.h_1 * 0.05 + x / s.w_1 * s.h_1 * 0.16;
   }
-  function paintMilkyWay(ctx, w, h, seed) {
+  function paintMilkyWay(ctx, s) {
     _init_properties_draw_kt__mxa2tg();
-    var rng = new Rng(seed ^ 1013904242);
+    var rng = new Rng(s.seed_1 ^ 1013904242);
     // Inline function 'kotlin.arrayOf' call
     // Inline function 'kotlin.js.unsafeCast' call
     // Inline function 'kotlin.js.asDynamic' call
@@ -17223,10 +17294,10 @@ var night = function (_) {
     var i = 0;
     $l$loop: while (i < 2600) {
       i = i + 1 | 0;
-      var x = rng.unit_251ms_k$() * w;
-      var spread = (rng.unit_251ms_k$() + rng.unit_251ms_k$() + rng.unit_251ms_k$() - 1.5) * h * 0.085;
-      var y = bandY(x, w, h) + spread;
-      if (y < 0.0 ? true : y > h * 0.9)
+      var x = rng.unit_251ms_k$() * s.w_1;
+      var spread = (rng.unit_251ms_k$() + rng.unit_251ms_k$() + rng.unit_251ms_k$() - 1.5) * s.h_1 * 0.085;
+      var y = bandY(x, s) + spread;
+      if (y < 0.0 ? true : y > s.h_1 * 0.9)
         continue $l$loop;
       ctx.globalAlpha = 0.05 + 0.07 * rng.unit_251ms_k$();
       ctx.fillStyle = colours[rng.below_2tt9tl_k$(colours.length)];
@@ -17234,83 +17305,83 @@ var night = function (_) {
     }
     ctx.globalAlpha = 1.0;
   }
-  function paintHorizonGlow(ctx, w, h) {
+  function paintHorizonGlow(ctx, s) {
     _init_properties_draw_kt__mxa2tg();
-    var glow = ctx.createLinearGradient(0.0, h * 0.68, 0.0, h);
+    var glow = ctx.createLinearGradient(0.0, s.h_1 * 0.68, 0.0, s.h_1);
     glow.addColorStop(0.0, 'rgba(30,46,78,0)');
     glow.addColorStop(0.7, 'rgba(46,68,104,0.34)');
     glow.addColorStop(1.0, 'rgba(70,96,138,0.5)');
     ctx.fillStyle = glow;
-    ctx.fillRect(0.0, h * 0.68, w, h * 0.32);
+    ctx.fillRect(0.0, s.h_1 * 0.68, s.w_1, s.h_1 * 0.32);
   }
-  function farRidge(x, w, h) {
+  function farRidge(x, s) {
     _init_properties_draw_kt__mxa2tg();
-    var tmp = h * 0.905;
+    var tmp = s.h_1 * 0.905;
     // Inline function 'kotlin.math.sin' call
-    var x_0 = x / w * 3.1 + 0.4;
-    var tmp_0 = tmp - Math.sin(x_0) * h * 0.022;
+    var x_0 = x / s.w_1 * 3.1 + 0.4;
+    var tmp_0 = tmp - Math.sin(x_0) * s.h_1 * 0.022;
     // Inline function 'kotlin.math.sin' call
-    var x_1 = x / w * 7.3 + 2.1;
-    return tmp_0 - Math.sin(x_1) * h * 0.008;
+    var x_1 = x / s.w_1 * 7.3 + 2.1;
+    return tmp_0 - Math.sin(x_1) * s.h_1 * 0.008;
   }
-  function nearRidge(x, w, h) {
+  function nearRidge(x, s) {
     _init_properties_draw_kt__mxa2tg();
-    var tmp = h * 0.955;
+    var tmp = s.h_1 * 0.955;
     // Inline function 'kotlin.math.sin' call
-    var x_0 = x / w * 2.2 + 1.9;
-    return tmp - Math.sin(x_0) * h * 0.014;
+    var x_0 = x / s.w_1 * 2.2 + 1.9;
+    return tmp - Math.sin(x_0) * s.h_1 * 0.014;
   }
-  function paintGround(c, w, h, dpr) {
+  function paintGround(c, s) {
     _init_properties_draw_kt__mxa2tg();
-    var ctx = sizeCanvas(c, w, h, dpr);
-    paintRidge(ctx, w, h, '#0e1729', paintGround$lambda(w, h));
-    paintTreeline(ctx, w, h);
-    paintRidge(ctx, w, h, '#070c18', paintGround$lambda_0(w, h));
-    paintObservatoryHill(ctx, w, h);
+    var ctx = sizeCanvas(c, s.w_1, s.h_1, s.dpr_1);
+    paintRidge(ctx, s, '#0e1729', paintGround$lambda(s));
+    paintTreeline(ctx, s);
+    paintRidge(ctx, s, '#070c18', paintGround$lambda_0(s));
+    paintObservatoryHill(ctx, s);
   }
-  function paintRidge(ctx, w, h, colour, edge) {
+  function paintRidge(ctx, s, colour, edge) {
     _init_properties_draw_kt__mxa2tg();
     ctx.globalAlpha = 1.0;
     ctx.fillStyle = colour;
     ctx.beginPath();
-    ctx.moveTo(0.0, h);
+    ctx.moveTo(0.0, s.h_1);
     var x = 0.0;
-    while (x < w) {
+    while (x < s.w_1) {
       ctx.lineTo(x, edge(x));
       x = x + 6.0;
     }
-    ctx.lineTo(w, edge(w));
-    ctx.lineTo(w, h);
+    ctx.lineTo(s.w_1, edge(s.w_1));
+    ctx.lineTo(s.w_1, s.h_1);
     ctx.closePath();
     ctx.fill();
   }
-  function paintTreeline(ctx, w, h) {
+  function paintTreeline(ctx, s) {
     _init_properties_draw_kt__mxa2tg();
     var rng = new Rng(31291);
-    var x = w * 0.02;
-    while (x < w * 0.98) {
-      var top = farRidge(x, w, h);
-      var tall = rng.range_cnhnb7_k$(h * 0.008, h * 0.026);
+    var x = s.w_1 * 0.02;
+    while (x < s.w_1 * 0.98) {
+      var top = farRidge(x, s);
+      var tall = rng.range_cnhnb7_k$(s.h_1 * 0.008, s.h_1 * 0.026);
       var wide = tall * 0.55;
       ctx.fillStyle = '#0a1120';
       ctx.beginPath();
-      ctx.moveTo(x - wide, top + h * 0.004);
+      ctx.moveTo(x - wide, top + s.h_1 * 0.004);
       ctx.lineTo(x, top - tall);
-      ctx.lineTo(x + wide, top + h * 0.004);
+      ctx.lineTo(x + wide, top + s.h_1 * 0.004);
       ctx.closePath();
       ctx.fill();
-      x = x + rng.range_cnhnb7_k$(w * 0.035, w * 0.085);
+      x = x + rng.range_cnhnb7_k$(s.w_1 * 0.035, s.w_1 * 0.085);
     }
   }
-  function paintObservatoryHill(ctx, w, h) {
+  function paintObservatoryHill(ctx, s) {
     _init_properties_draw_kt__mxa2tg();
-    var cx = w * 0.28;
-    var base = h * 0.925;
+    var cx = s.w_1 * 0.28;
+    var base = s.h_1 * 0.925;
     ctx.fillStyle = '#0c1424';
     ctx.beginPath();
-    ctx.moveTo(cx - w * 0.22, h);
-    ctx.quadraticCurveTo(cx - w * 0.06, base - h * 0.045, cx, base);
-    ctx.quadraticCurveTo(cx + w * 0.06, base - h * 0.045, cx + w * 0.22, h);
+    ctx.moveTo(cx - s.w_1 * 0.22, s.h_1);
+    ctx.quadraticCurveTo(cx - s.w_1 * 0.06, base - s.h_1 * 0.045, cx, base);
+    ctx.quadraticCurveTo(cx + s.w_1 * 0.06, base - s.h_1 * 0.045, cx + s.w_1 * 0.22, s.h_1);
     ctx.closePath();
     ctx.fill();
   }
@@ -17321,14 +17392,14 @@ var night = function (_) {
       px = px - 1.0;
     return px * width;
   }
-  function paintGround$lambda($w, $h) {
+  function paintGround$lambda($s) {
     return function (x) {
-      return farRidge(x, $w, $h);
+      return farRidge(x, $s);
     };
   }
-  function paintGround$lambda_0($w, $h) {
+  function paintGround$lambda_0($s) {
     return function (x) {
-      return nearRidge(x, $w, $h);
+      return nearRidge(x, $s);
     };
   }
   var properties_initialized_draw_kt_73mc9m;
@@ -17772,7 +17843,7 @@ var night = function (_) {
     set_ctx(get_canvasEl().getContext('2d'));
     get_ctx().setTransform(get_dpr(), 0.0, 0.0, get_dpr(), 0.0, 0.0);
     set_layerSeed(get_world().seed_1);
-    ensureLayers(get_layers(), get_viewW(), get_viewH(), get_dpr(), get_world().seed_1);
+    ensureLayers(get_layers(), new Surface(get_viewW(), get_viewH(), get_dpr(), get_world().seed_1));
   }
   function announce(text) {
     _init_properties_main_kt__ykjpl3();
@@ -17869,7 +17940,7 @@ var night = function (_) {
     get_world().update_nm4qkx_k$(view, dt);
     if (!(get_world().seed_1 === get_layerSeed())) {
       set_layerSeed(get_world().seed_1);
-      ensureLayers(get_layers(), get_viewW(), get_viewH(), get_dpr(), get_world().seed_1);
+      ensureLayers(get_layers(), new Surface(get_viewW(), get_viewH(), get_dpr(), get_world().seed_1));
     }
     drawScene(get_ctx(), get_layers(), get_world(), view);
     drainEvents();
@@ -18034,6 +18105,30 @@ var night = function (_) {
       pendingSound = false;
     }
   }
+  function Obs(cx, cy, r) {
+    this.cx_1 = cx;
+    this.cy_1 = cy;
+    this.r_1 = r;
+  }
+  protoOf(Obs).get_cx_knto1u_k$ = function () {
+    return this.cx_1;
+  };
+  protoOf(Obs).get_cy_knto1t_k$ = function () {
+    return this.cy_1;
+  };
+  protoOf(Obs).get_r_1mhr61_k$ = function () {
+    return this.r_1;
+  };
+  function ConFade(ci, alpha) {
+    this.ci_1 = ci;
+    this.alpha_1 = alpha;
+  }
+  protoOf(ConFade).get_ci_knto29_k$ = function () {
+    return this.ci_1;
+  };
+  protoOf(ConFade).get_alpha_iooth1_k$ = function () {
+    return this.alpha_1;
+  };
   function drawScene(ctx, l, w, view) {
     ctx.globalAlpha = 1.0;
     ctx.globalCompositeOperation = 'source-over';
@@ -18073,7 +18168,7 @@ var night = function (_) {
         var i = checkIndexOverflow(tmp1);
         var x = view.x_rqsusy_k$(item.lon_1);
         var y = view.y_ddyr3h_k$(item.alt_1);
-        if (((x < -4.0 ? true : x > view.w_1 + 4.0) ? true : y < -4.0) ? true : y > view.hy_1 + 2.0) {
+        if (!onScreen(view, x, y)) {
           break $l$block;
         }
         // Inline function 'kotlin.math.sin' call
@@ -18089,6 +18184,17 @@ var night = function (_) {
       }
     }
     ctx.globalAlpha = 1.0;
+  }
+  function onScreen(view, x, y) {
+    if (x < -4.0)
+      return false;
+    if (x > view.w_1 + 4.0)
+      return false;
+    if (y < -4.0)
+      return false;
+    if (y > view.hy_1 + 2.0)
+      return false;
+    return true;
   }
   function drawMark(ctx, x, y, scale) {
     ctx.globalAlpha = 0.5;
@@ -18124,7 +18230,7 @@ var night = function (_) {
         }
         var flash = tmp$ret$2;
         var alpha = flash == null ? 0.2 : 0.2 + 0.6 * (flash.life_1 / flash.max_1);
-        drawConstellationLines(ctx, w, view, element, alpha);
+        drawConstellationLines(ctx, w, view, new ConFade(element, alpha));
       }
     }
     // Inline function 'kotlin.collections.forEach' call
@@ -18136,14 +18242,14 @@ var night = function (_) {
     }
     ctx.globalAlpha = 1.0;
   }
-  function drawConstellationLines(ctx, w, view, ci, alpha) {
-    var range = w.conRange_horobn_k$(ci);
-    ctx.globalAlpha = coerceIn(alpha, 0.0, 1.0);
+  function drawConstellationLines(ctx, w, view, fade) {
+    var range = w.conRange_horobn_k$(fade.ci_1);
+    ctx.globalAlpha = coerceIn(fade.alpha_1, 0.0, 1.0);
     ctx.strokeStyle = '#8ea3d8';
     ctx.lineWidth = 1.0;
     ctx.beginPath();
     // Inline function 'kotlin.collections.forEach' call
-    var tmp0_iterator = get_CONSTELLATIONS().get_c1px32_k$(ci).edges_1.iterator_jk1svi_k$();
+    var tmp0_iterator = get_CONSTELLATIONS().get_c1px32_k$(fade.ci_1).edges_1.iterator_jk1svi_k$();
     while (tmp0_iterator.hasNext_bitz1p_k$()) {
       var element = tmp0_iterator.next_20eer_k$();
       // Inline function 'drawConstellationLines.<anonymous>' call
@@ -18272,77 +18378,75 @@ var night = function (_) {
     return new Pair(view.w_1 * 0.28, view.hy_1 - view.h_1 * 0.055);
   }
   function drawObservatory(ctx, w, view) {
-    var r = 46.0 * view.scale_1t1miy_k$();
-    var cx = view.w_1 * 0.28;
-    var cy = view.hy_1 - view.h_1 * 0.055;
-    drawBeam(ctx, w, cx, cy, r);
-    drawDomeBody(ctx, w, cx, cy, r);
-    drawWindowLight(ctx, cx, cy, r);
-    drawWatcher(ctx, w, cx, cy, r);
+    var o = new Obs(view.w_1 * 0.28, view.hy_1 - view.h_1 * 0.055, 46.0 * view.scale_1t1miy_k$());
+    drawBeam(ctx, w, o);
+    drawDomeBody(ctx, w, o);
+    drawWindowLight(ctx, o);
+    drawWatcher(ctx, w, o);
     ctx.globalAlpha = 1.0;
   }
-  function drawBeam(ctx, w, cx, cy, r) {
+  function drawBeam(ctx, w, o) {
     if (w.domeGlow_1 < 0.02)
       return Unit_getInstance();
-    var grad = ctx.createLinearGradient(0.0, cy - r * 6.0, 0.0, cy - r * 0.8);
+    var grad = ctx.createLinearGradient(0.0, o.cy_1 - o.r_1 * 6.0, 0.0, o.cy_1 - o.r_1 * 0.8);
     grad.addColorStop(0.0, 'rgba(255,231,178,0)');
     grad.addColorStop(1.0, 'rgba(255,226,160,0.26)');
     ctx.globalAlpha = 0.35 + 0.65 * w.domeGlow_1;
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.moveTo(cx - r * 0.42, cy - r * 0.7);
-    ctx.lineTo(cx + r * 0.42, cy - r * 0.7);
-    ctx.lineTo(cx + r * 1.6, cy - r * 6.0);
-    ctx.lineTo(cx - r * 1.6, cy - r * 6.0);
+    ctx.moveTo(o.cx_1 - o.r_1 * 0.42, o.cy_1 - o.r_1 * 0.7);
+    ctx.lineTo(o.cx_1 + o.r_1 * 0.42, o.cy_1 - o.r_1 * 0.7);
+    ctx.lineTo(o.cx_1 + o.r_1 * 1.6, o.cy_1 - o.r_1 * 6.0);
+    ctx.lineTo(o.cx_1 - o.r_1 * 1.6, o.cy_1 - o.r_1 * 6.0);
     ctx.closePath();
     ctx.fill();
   }
-  function drawDomeBody(ctx, w, cx, cy, r) {
+  function drawDomeBody(ctx, w, o) {
     ctx.fillStyle = '#182136';
-    ctx.fillRect(cx - r * 0.92, cy, r * 1.84, r * 0.95);
+    ctx.fillRect(o.cx_1 - o.r_1 * 0.92, o.cy_1, o.r_1 * 1.84, o.r_1 * 0.95);
     ctx.fillStyle = '#22304d';
     ctx.beginPath();
-    ctx.arc(cx, cy, r, get_PI(), 0.0);
+    ctx.arc(o.cx_1, o.cy_1, o.r_1, get_PI(), 0.0);
     ctx.closePath();
     ctx.fill();
     ctx.strokeStyle = '#41598a';
     ctx.lineWidth = 1.4;
     ctx.beginPath();
-    ctx.arc(cx, cy, r, get_PI(), 0.0);
+    ctx.arc(o.cx_1, o.cy_1, o.r_1, get_PI(), 0.0);
     ctx.stroke();
-    drawSlit(ctx, w, cx, cy, r);
+    drawSlit(ctx, w, o);
   }
-  function drawSlit(ctx, w, cx, cy, r) {
+  function drawSlit(ctx, w, o) {
     var open = w.domeGlow_1 > 0.5;
     ctx.fillStyle = open ? '#ffe6b4' : '#080d1a';
     ctx.globalAlpha = open ? 0.3 + 0.7 * w.domeGlow_1 : 0.92;
     ctx.beginPath();
-    ctx.moveTo(cx - r * 0.2, cy);
-    ctx.lineTo(cx - r * 0.11, cy - r * 0.95);
-    ctx.lineTo(cx + r * 0.11, cy - r * 0.95);
-    ctx.lineTo(cx + r * 0.2, cy);
+    ctx.moveTo(o.cx_1 - o.r_1 * 0.2, o.cy_1);
+    ctx.lineTo(o.cx_1 - o.r_1 * 0.11, o.cy_1 - o.r_1 * 0.95);
+    ctx.lineTo(o.cx_1 + o.r_1 * 0.11, o.cy_1 - o.r_1 * 0.95);
+    ctx.lineTo(o.cx_1 + o.r_1 * 0.2, o.cy_1);
     ctx.closePath();
     ctx.fill();
     ctx.globalAlpha = 1.0;
   }
-  function drawWindowLight(ctx, cx, cy, r) {
-    var wx = cx + r * 0.52;
-    var wy = cy + r * 0.42;
-    var glow = ctx.createRadialGradient(wx, wy, 0.0, wx, wy, r * 1.3);
+  function drawWindowLight(ctx, o) {
+    var wx = o.cx_1 + o.r_1 * 0.52;
+    var wy = o.cy_1 + o.r_1 * 0.42;
+    var glow = ctx.createRadialGradient(wx, wy, 0.0, wx, wy, o.r_1 * 1.3);
     glow.addColorStop(0.0, 'rgba(255,196,120,0.45)');
     glow.addColorStop(1.0, 'rgba(255,196,120,0)');
     ctx.fillStyle = glow;
-    ctx.fillRect(wx - r * 1.3, wy - r * 1.3, r * 2.6, r * 2.6);
+    ctx.fillRect(wx - o.r_1 * 1.3, wy - o.r_1 * 1.3, o.r_1 * 2.6, o.r_1 * 2.6);
     ctx.fillStyle = '#ffc478';
-    ctx.fillRect(wx - r * 0.1, wy - r * 0.1, r * 0.2, r * 0.2);
+    ctx.fillRect(wx - o.r_1 * 0.1, wy - o.r_1 * 0.1, o.r_1 * 0.2, o.r_1 * 0.2);
   }
-  function drawWatcher(ctx, w, cx, cy, r) {
-    var scale = coerceAtLeast_0(r / 46.0, 0.4);
+  function drawWatcher(ctx, w, o) {
+    var scale = coerceAtLeast_0(o.r_1 / 46.0, 0.4);
     // Inline function 'kotlin.math.sin' call
     var x = w.time_1 * (0.25 + 0.6 * w.motion_1);
     var bob = Math.sin(x) * 1.6 * scale;
-    var x_0 = cx + r * 1.5;
-    var feet = cy + r * 0.9;
+    var x_0 = o.cx_1 + o.r_1 * 1.5;
+    var feet = o.cy_1 + o.r_1 * 0.9;
     var body = 5.0 * scale;
     ctx.globalAlpha = 0.92;
     ctx.fillStyle = '#93a9d8';
@@ -18739,6 +18843,18 @@ var night = function (_) {
   function starOrDome($this, view, nx, ny) {
     return domeHit($this, view, nx, ny) ? 'dome' : 'star';
   }
+  function toggleDome($this) {
+    $this.domeOpen_1 = !$this.domeOpen_1;
+    $this.events_1.add_utx5q5_k$(new Ev('dome', $this.domeOpen_1 ? 1.0 : 0.0, 0.0));
+  }
+  function chimeAt($this, i) {
+    var s = $this.stars_1.get_c1px32_k$(i);
+    var twice = i === $this.lastTapStar_1 ? $this.time_1 - $this.lastTapAt_1 < 1.3 : false;
+    $this.lastTapStar_1 = i;
+    $this.lastTapAt_1 = $this.time_1;
+    $this.glints_1.add_utx5q5_k$(new Glint(s.lon_1, s.alt_1, twice ? 1.5 : 0.85, twice ? 1.5 : 0.85, twice ? 1.0 : 0.72, twice));
+    $this.events_1.add_utx5q5_k$(new Ev(twice ? 'double' : 'chime', $this.pitchOf_rwvovz_k$(i), s.mag_1));
+  }
   function integrateCamera($this, dt) {
     $this.pan_1 = $this.pan_1 + $this.panVel_1 * dt;
     $this.panTotal_1 = $this.panTotal_1 + $this.panVel_1 * dt;
@@ -18835,6 +18951,171 @@ var night = function (_) {
     }
     if ($this.auroraOn_1 ? $this.aurora_1 < 0.05 : false)
       $this.auroraOn_1 = false;
+  }
+  function starOnScreen($this, s) {
+    if (s.lon_1 < 0.0)
+      return false;
+    if (s.lon_1 >= 1.0)
+      return false;
+    if (s.alt_1 < 0.0)
+      return false;
+    if (s.alt_1 > 1.0)
+      return false;
+    return true;
+  }
+  function checkStars($this, fails) {
+    if (!($this.stars_1.get_size_woubt6_k$() === get_STAR_TOTAL())) {
+      fails.add_utx5q5_k$('star count ' + $this.stars_1.get_size_woubt6_k$());
+    }
+    var tmp$ret$0;
+    $l$block_0: {
+      // Inline function 'kotlin.collections.all' call
+      var this_0 = $this.stars_1;
+      var tmp;
+      if (isInterface(this_0, Collection)) {
+        tmp = this_0.isEmpty_y1axqb_k$();
+      } else {
+        tmp = false;
+      }
+      if (tmp) {
+        tmp$ret$0 = true;
+        break $l$block_0;
+      }
+      var tmp0_iterator = this_0.iterator_jk1svi_k$();
+      while (tmp0_iterator.hasNext_bitz1p_k$()) {
+        var element = tmp0_iterator.next_20eer_k$();
+        // Inline function 'World.checkStars.<anonymous>' call
+        if (!starOnScreen($this, element)) {
+          tmp$ret$0 = false;
+          break $l$block_0;
+        }
+      }
+      tmp$ret$0 = true;
+    }
+    if (!tmp$ret$0) {
+      fails.add_utx5q5_k$('star out of range');
+    }
+  }
+  function checkSeeding($this, fails) {
+    var a = new World(7);
+    var b = new World(7);
+    var c = new World(8);
+    if (!(a.signature_hr6myg_k$() === b.signature_hr6myg_k$())) {
+      fails.add_utx5q5_k$('seed 7 is not repeatable');
+    }
+    if (a.signature_hr6myg_k$() === c.signature_hr6myg_k$()) {
+      fails.add_utx5q5_k$('seeds 7 and 8 give the same sky');
+    }
+  }
+  function checkConstellations($this, fails) {
+    var a = new World(7);
+    var spec = get_CONSTELLATIONS().get_c1px32_k$(0);
+    var range = a.conRange_horobn_k$(0);
+    if (!(count(range) === spec.pts_1.get_size_woubt6_k$())) {
+      fails.add_utx5q5_k$('constellation 0 range');
+    }
+    var tmp$ret$0;
+    $l$block_0: {
+      // Inline function 'kotlin.collections.any' call
+      var tmp;
+      if (isInterface(range, Collection)) {
+        tmp = range.isEmpty_y1axqb_k$();
+      } else {
+        tmp = false;
+      }
+      if (tmp) {
+        tmp$ret$0 = false;
+        break $l$block_0;
+      }
+      var tmp0_iterator = range.iterator_jk1svi_k$();
+      while (tmp0_iterator.hasNext_bitz1p_k$()) {
+        var element = tmp0_iterator.next_20eer_k$();
+        // Inline function 'World.checkConstellations.<anonymous>' call
+        // Inline function 'kotlin.math.abs' call
+        var x = a.stars_1.get_c1px32_k$(element).lon_1 - spec.pts_1.get_c1px32_k$(element - range.first_1 | 0).first_1;
+        if (Math.abs(x) > 1.0E-4) {
+          tmp$ret$0 = true;
+          break $l$block_0;
+        }
+      }
+      tmp$ret$0 = false;
+    }
+    if (tmp$ret$0) {
+      fails.add_utx5q5_k$('constellation 0 is not where the table says');
+    }
+    a.markConstellation_roxs5e_k$(0);
+    var tmp_0;
+    // Inline function 'kotlin.collections.count' call
+    if (!(a.named_1.get_size_woubt6_k$() === 1)) {
+      tmp_0 = true;
+    } else {
+      tmp_0 = !a.named_1.contains_aljjnj_k$(0);
+    }
+    if (tmp_0) {
+      fails.add_utx5q5_k$('marking a constellation did not name it');
+    }
+    a.markConstellation_roxs5e_k$(0);
+    // Inline function 'kotlin.collections.count' call
+    if (!(a.named_1.get_size_woubt6_k$() === 1)) {
+      fails.add_utx5q5_k$('naming happened twice');
+    }
+  }
+  function checkPan($this, fails) {
+    var a = new World(7);
+    a.pan_1 = 0.995;
+    a.dragBy_uaulgt_k$(new View(390.0, 844.0, a.pan_1, a.tilt_1), 6.0, 0.0);
+    if (a.pan_1 < 0.0 ? true : a.pan_1 >= 1.0) {
+      fails.add_utx5q5_k$('pan did not wrap');
+    }
+  }
+  function checkMeteors($this, fails) {
+    var d = new World(9);
+    d.idle_1 = 40.0;
+    // Inline function 'kotlin.repeat' call
+    // Inline function 'kotlin.contracts.contract' call
+    var inductionVariable = 0;
+    if (inductionVariable < 180)
+      do {
+        var index = inductionVariable;
+        inductionVariable = inductionVariable + 1 | 0;
+        // Inline function 'World.checkMeteors.<anonymous>' call
+        d.update_nm4qkx_k$(new View(390.0, 844.0, d.pan_1, d.tilt_1), 0.05);
+      }
+       while (inductionVariable < 180);
+    var tmp;
+    if (d.meteors_1.isEmpty_y1axqb_k$()) {
+      var tmp$ret$0;
+      $l$block_0: {
+        // Inline function 'kotlin.collections.none' call
+        var this_0 = d.drain_1l2ad4_k$();
+        var tmp_0;
+        if (isInterface(this_0, Collection)) {
+          tmp_0 = this_0.isEmpty_y1axqb_k$();
+        } else {
+          tmp_0 = false;
+        }
+        if (tmp_0) {
+          tmp$ret$0 = true;
+          break $l$block_0;
+        }
+        var tmp0_iterator = this_0.iterator_jk1svi_k$();
+        while (tmp0_iterator.hasNext_bitz1p_k$()) {
+          var element = tmp0_iterator.next_20eer_k$();
+          // Inline function 'World.checkMeteors.<anonymous>' call
+          if (element.kind_1 === 'meteor') {
+            tmp$ret$0 = false;
+            break $l$block_0;
+          }
+        }
+        tmp$ret$0 = true;
+      }
+      tmp = tmp$ret$0;
+    } else {
+      tmp = false;
+    }
+    if (tmp) {
+      fails.add_utx5q5_k$('no meteor in 9 s of stillness');
+    }
   }
   function World$advanceGlints$lambda(it) {
     return it.life_1 <= 0.0;
@@ -19120,19 +19401,13 @@ var night = function (_) {
   protoOf(World).tapAt_jls9iw_k$ = function (view, nx, ny) {
     this.gesture_yuu2rd_k$();
     if (starOrDome(this, view, nx, ny) === 'dome') {
-      this.domeOpen_1 = !this.domeOpen_1;
-      this.events_1.add_utx5q5_k$(new Ev('dome', this.domeOpen_1 ? 1.0 : 0.0, 0.0));
+      toggleDome(this);
       return 'dome';
     }
     var i = this.nearestStar_3doa3c_k$(view, nx, ny, 30.0 * view.scale_1t1miy_k$());
     if (i < 0)
       return 'sky';
-    var s = this.stars_1.get_c1px32_k$(i);
-    var twice = i === this.lastTapStar_1 ? this.time_1 - this.lastTapAt_1 < 1.3 : false;
-    this.lastTapStar_1 = i;
-    this.lastTapAt_1 = this.time_1;
-    this.glints_1.add_utx5q5_k$(new Glint(s.lon_1, s.alt_1, twice ? 1.5 : 0.85, twice ? 1.5 : 0.85, twice ? 1.0 : 0.72, twice));
-    this.events_1.add_utx5q5_k$(new Ev(twice ? 'double' : 'chime', this.pitchOf_rwvovz_k$(i), s.mag_1));
+    chimeAt(this, i);
     return 'star';
   };
   protoOf(World).dragBy_uaulgt_k$ = function (view, dx, dy) {
@@ -19223,148 +19498,11 @@ var night = function (_) {
   };
   protoOf(World).selfTest_jppfy6_k$ = function () {
     var fails = ArrayList_init_$Create$();
-    if (!(this.stars_1.get_size_woubt6_k$() === get_STAR_TOTAL())) {
-      fails.add_utx5q5_k$('star count ' + this.stars_1.get_size_woubt6_k$());
-    }
-    var tmp$ret$0;
-    $l$block_0: {
-      // Inline function 'kotlin.collections.any' call
-      var this_0 = this.stars_1;
-      var tmp;
-      if (isInterface(this_0, Collection)) {
-        tmp = this_0.isEmpty_y1axqb_k$();
-      } else {
-        tmp = false;
-      }
-      if (tmp) {
-        tmp$ret$0 = false;
-        break $l$block_0;
-      }
-      var tmp0_iterator = this_0.iterator_jk1svi_k$();
-      while (tmp0_iterator.hasNext_bitz1p_k$()) {
-        var element = tmp0_iterator.next_20eer_k$();
-        // Inline function 'World.selfTest.<anonymous>' call
-        if (((element.lon_1 < 0.0 ? true : element.lon_1 >= 1.0) ? true : element.alt_1 < 0.0) ? true : element.alt_1 > 1.0) {
-          tmp$ret$0 = true;
-          break $l$block_0;
-        }
-      }
-      tmp$ret$0 = false;
-    }
-    if (tmp$ret$0) {
-      fails.add_utx5q5_k$('star out of range');
-    }
-    var a = new World(7);
-    var b = new World(7);
-    var c = new World(8);
-    if (!(a.signature_hr6myg_k$() === b.signature_hr6myg_k$())) {
-      fails.add_utx5q5_k$('seed 7 is not repeatable');
-    }
-    if (a.signature_hr6myg_k$() === c.signature_hr6myg_k$()) {
-      fails.add_utx5q5_k$('seeds 7 and 8 give the same sky');
-    }
-    var spec = get_CONSTELLATIONS().get_c1px32_k$(0);
-    var range = a.conRange_horobn_k$(0);
-    if (!(count(range) === spec.pts_1.get_size_woubt6_k$())) {
-      fails.add_utx5q5_k$('constellation 0 range');
-    }
-    var tmp$ret$2;
-    $l$block_2: {
-      // Inline function 'kotlin.collections.any' call
-      var tmp_0;
-      if (isInterface(range, Collection)) {
-        tmp_0 = range.isEmpty_y1axqb_k$();
-      } else {
-        tmp_0 = false;
-      }
-      if (tmp_0) {
-        tmp$ret$2 = false;
-        break $l$block_2;
-      }
-      var tmp0_iterator_0 = range.iterator_jk1svi_k$();
-      while (tmp0_iterator_0.hasNext_bitz1p_k$()) {
-        var element_0 = tmp0_iterator_0.next_20eer_k$();
-        // Inline function 'World.selfTest.<anonymous>' call
-        // Inline function 'kotlin.math.abs' call
-        var x = a.stars_1.get_c1px32_k$(element_0).lon_1 - spec.pts_1.get_c1px32_k$(element_0 - range.first_1 | 0).first_1;
-        if (Math.abs(x) > 1.0E-4) {
-          tmp$ret$2 = true;
-          break $l$block_2;
-        }
-      }
-      tmp$ret$2 = false;
-    }
-    if (tmp$ret$2) {
-      fails.add_utx5q5_k$('constellation 0 is not where the table says');
-    }
-    a.markConstellation_roxs5e_k$(0);
-    var tmp_1;
-    // Inline function 'kotlin.collections.count' call
-    if (!(a.named_1.get_size_woubt6_k$() === 1)) {
-      tmp_1 = true;
-    } else {
-      tmp_1 = !a.named_1.contains_aljjnj_k$(0);
-    }
-    if (tmp_1) {
-      fails.add_utx5q5_k$('marking a constellation did not name it');
-    }
-    a.markConstellation_roxs5e_k$(0);
-    // Inline function 'kotlin.collections.count' call
-    if (!(a.named_1.get_size_woubt6_k$() === 1)) {
-      fails.add_utx5q5_k$('naming happened twice');
-    }
-    a.pan_1 = 0.995;
-    a.dragBy_uaulgt_k$(new View(390.0, 844.0, a.pan_1, a.tilt_1), 6.0, 0.0);
-    if (a.pan_1 < 0.0 ? true : a.pan_1 >= 1.0) {
-      fails.add_utx5q5_k$('pan did not wrap');
-    }
-    var d = new World(9);
-    d.idle_1 = 40.0;
-    // Inline function 'kotlin.repeat' call
-    // Inline function 'kotlin.contracts.contract' call
-    var inductionVariable = 0;
-    if (inductionVariable < 180)
-      do {
-        var index = inductionVariable;
-        inductionVariable = inductionVariable + 1 | 0;
-        // Inline function 'World.selfTest.<anonymous>' call
-        d.update_nm4qkx_k$(new View(390.0, 844.0, d.pan_1, d.tilt_1), 0.05);
-      }
-       while (inductionVariable < 180);
-    var tmp_2;
-    if (d.meteors_1.isEmpty_y1axqb_k$()) {
-      var tmp$ret$7;
-      $l$block_4: {
-        // Inline function 'kotlin.collections.none' call
-        var this_1 = d.drain_1l2ad4_k$();
-        var tmp_3;
-        if (isInterface(this_1, Collection)) {
-          tmp_3 = this_1.isEmpty_y1axqb_k$();
-        } else {
-          tmp_3 = false;
-        }
-        if (tmp_3) {
-          tmp$ret$7 = true;
-          break $l$block_4;
-        }
-        var tmp0_iterator_1 = this_1.iterator_jk1svi_k$();
-        while (tmp0_iterator_1.hasNext_bitz1p_k$()) {
-          var element_1 = tmp0_iterator_1.next_20eer_k$();
-          // Inline function 'World.selfTest.<anonymous>' call
-          if (element_1.kind_1 === 'meteor') {
-            tmp$ret$7 = false;
-            break $l$block_4;
-          }
-        }
-        tmp$ret$7 = true;
-      }
-      tmp_2 = tmp$ret$7;
-    } else {
-      tmp_2 = false;
-    }
-    if (tmp_2) {
-      fails.add_utx5q5_k$('no meteor in 9 s of stillness');
-    }
+    checkStars(this, fails);
+    checkSeeding(this, fails);
+    checkConstellations(this, fails);
+    checkPan(this, fails);
+    checkMeteors(this, fails);
     if (fails.isEmpty_y1axqb_k$())
       return 'ok: ' + this.stars_1.get_size_woubt6_k$() + ' stars, ' + get_CONSTELLATIONS().get_size_woubt6_k$() + ' constellations, seeded and repeatable';
     return 'FAIL: ' + joinToString_0(fails, '; ');

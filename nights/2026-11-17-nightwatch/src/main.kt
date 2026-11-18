@@ -74,7 +74,7 @@ fun sizeToWindow() {
   ctx = canvasEl.getContext("2d")
   ctx.setTransform(dpr, 0.0, 0.0, dpr, 0.0, 0.0)
   layerSeed = world.seed
-  ensureLayers(layers, viewW, viewH, dpr, world.seed)
+  ensureLayers(layers, Surface(viewW, viewH, dpr, world.seed))
 }
 
 fun announce(text: String) {
@@ -138,7 +138,7 @@ fun frame(stamp: Double) {
   world.update(view, dt)
   if (world.seed != layerSeed) {
     layerSeed = world.seed
-    ensureLayers(layers, viewW, viewH, dpr, world.seed)
+    ensureLayers(layers, Surface(viewW, viewH, dpr, world.seed))
   }
   drawScene(ctx, layers, world, view)
   drainEvents()
