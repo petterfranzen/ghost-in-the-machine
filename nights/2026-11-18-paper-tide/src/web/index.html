@@ -69,12 +69,27 @@
     background: var(--card);
   }
   #app:focus-visible { outline: 2px solid var(--dim); outline-offset: 2px; }
+  /* The caption may grow to two lines; the height it gets is fixed either way,
+     so the picture above it never moves when the words get longer. */
   footer {
     flex: 0 0 auto;
-    padding: 6px 14px 10px;
+    height: calc(2.7em + 12px);
+    padding: 4px 14px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     color: var(--dim);
     font-size: 16px;
+  }
+  #status {
+    margin: 0;
+    max-height: 2.7em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
@@ -88,9 +103,11 @@
 </header>
 <div id="stage">
   <canvas id="app" width="180" height="320" tabindex="0" role="button"
-          aria-label="A paper boat drifting down a rainy night gutter. Press Enter to nudge the water."></canvas>
+          aria-label="A paper boat drifting down a rainy night gutter, gathering lanterns. Press Enter to nudge the water."></canvas>
 </div>
-<footer id="status" aria-live="polite">A small paper boat drifts down the gutter.</footer>
+<footer id="statusbar">
+  <p id="status" aria-live="polite">A small paper boat drifts down the gutter. Steer it into the lanterns as it goes.</p>
+</footer>
 <script src="app.js"></script>
 <script>main();</script>
 </body>

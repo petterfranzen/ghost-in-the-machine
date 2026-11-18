@@ -28,7 +28,8 @@ public final class Sounds {
     /* SWELL  */ { SWEEP, 900, 1800, 1.10, 0.09, 1500, 0 },
     /* PAW    */ { TONE, 420, 170, 0.36, 0.11, 900, 0 },
     /* STARS  */ { ARPEGGIO, 659, 1319, 0.60, 0.07, 3600, 4 },
-    /* GONE   */ { TONE_BRUSH, 300, 110, 0.50, 0.10, 600, 0 }
+    /* GONE   */ { TONE_BRUSH, 300, 110, 0.50, 0.10, 600, 0 },
+    /* CATCH  */ { ARPEGGIO, 784, 1175, 0.34, 0.11, 4200, 3 }
   };
 
   /** Semitone offsets for the arpeggio voices: a pentatonic ladder upwards. */

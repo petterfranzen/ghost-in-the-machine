@@ -9,11 +9,13 @@ public final class Renderer {
   private final Screen s;
   private final Sprites sprites;
   private final WaterView water;
+  private final LightView lights;
 
   public Renderer(Screen s) {
     this.s = s;
     this.sprites = new Sprites(s);
     this.water = new WaterView(s);
+    this.lights = new LightView(s);
   }
 
   public void draw(World w) {
@@ -24,8 +26,10 @@ public final class Renderer {
     sprites.lantern(w, LANTERN_X, LANTERN_Y);
     sprites.starfield(w);
     sprites.flotsam(w);
+    lights.lanterns(w);
     sprites.boat(w);
     sprites.cat(w);
+    lights.flare(w);
   }
 
   /** A block kerb, wet and lamp-lit near the lantern. */
