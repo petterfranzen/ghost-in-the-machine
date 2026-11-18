@@ -17,6 +17,7 @@ public final class Events {
   public static final int PAW = 10;
   public static final int STARS = 11;
   public static final int GONE = 12;
+  public static final int CATCH = 13;
 
   private static final int CAP = 48;
   private final int[] kind = new int[CAP];

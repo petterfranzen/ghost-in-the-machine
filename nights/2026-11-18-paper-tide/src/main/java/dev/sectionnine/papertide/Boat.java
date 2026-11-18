@@ -12,6 +12,9 @@ public final class Boat {
 
   public static final double HIT = 9.0;
 
+  /** The most sideways speed a nudge can give the hull, in pixels a second. */
+  public static final double STEER = 46.0;
+
   public double x;
   public double y;
   public double vx;
@@ -23,6 +26,7 @@ public final class Boat {
   public double reveal;
   public double fade = 1.0;
   public int laps;
+  public double bump;
   private double wake;
   private double wander;
 
@@ -49,8 +53,7 @@ public final class Boat {
     if (state == FOLDING) {
       if (stateT <= 0) {
         state = DRIFT;
-        w.events.add(Events.FOLD, x, y, 0);
-        w.events.announce("A fresh boat is folded at the top of the gutter.");
+        w.startRun();
       }
       return;
     }
@@ -61,7 +64,8 @@ public final class Boat {
     wander += w.rnd.signed() * dt * 0.7;
     wander = clamp(wander, -0.5, 0.5);
     vx = vx * (1.0 - 1.6 * dt) + wander * dt * 14.0;
-    vy = w.speed + 1.4 + (y < 24 ? 16.0 : 0.0);
+    vy = w.speed * (1.0 - 0.55 * bump) + 1.4 + (y < 24 ? 16.0 : 0.0);
+    bump = Math.max(0, bump - dt * 0.9);
     x = clamp(x + vx * dt, World.KERB + 6, World.W - World.KERB - 6);
     y += vy * dt;
     angle = angle * 0.94 + clamp(vx * 0.5, -0.4, 0.4) * 0.06;
@@ -74,6 +78,7 @@ public final class Boat {
       state = SINKING;
       stateT = 3.2;
       laps++;
+      w.endRun();
       w.events.add(Events.GONE, x, y, 0);
     }
   }
@@ -88,11 +93,18 @@ public final class Boat {
     angle = 0;
     wander = 0;
     hold = 0;
+    bump = 0;
   }
 
+  /** A shove from the water: sideways speed in pixels a second, and a hop. */
   public void nudge(double ix, double iy) {
-    vx += ix;
+    vx = clamp(vx + ix, -STEER, STEER);
     y += iy * 6;
+  }
+
+  /** A drag carried through the water: the boat is coaxed toward that speed. */
+  public void steer(double target) {
+    vx += (clamp(target, -STEER, STEER) - vx) * 0.35;
   }
 
   /** A still press, held: the boat slowly unfolds a folded secret. */
