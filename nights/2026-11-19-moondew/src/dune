@@ -1,0 +1,10 @@
+(library
+ (name moondew_lib)
+ (modules dom util palette level game draw audio)
+ (libraries js_of_ocaml))
+
+(executable
+ (name main)
+ (modes js)
+ (modules main)
+ (libraries moondew_lib js_of_ocaml))
