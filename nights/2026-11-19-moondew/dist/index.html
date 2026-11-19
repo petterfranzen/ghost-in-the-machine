@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Moondew</title>
+<meta name="description" content="A calm pond-trail puzzle: one thumb wakes the moon-dew.">
+<meta name="theme-color" content="#0b1220">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%230b1220'/><circle cx='8' cy='8' r='3' fill='%23bfe9ff'/></svg>">
+</head>
+<body>
+<div id="app">
+  <header class="hud">
+    <div class="hud-left">
+      <span id="pond-label" class="label">Pond 1</span>
+      <span id="flowers" class="flowers" aria-hidden="true"></span>
+    </div>
+    <button id="sound" class="sound" type="button" aria-pressed="false" aria-label="Turn sound on">Sound off</button>
+  </header>
+
+  <main class="stage">
+    <canvas id="pond" width="360" height="480" aria-label="A moonlit pond seen from above"></canvas>
+    <p id="hint" class="hint" role="status" aria-live="polite">Drag from the sleeping koi.</p>
+  </main>
+
+  <footer class="legend" id="legend">
+    <span class="key"><i class="sw dew"></i>dew</span>
+    <span class="key"><i class="sw moss"></i>moss</span>
+    <span class="key" id="key-deep" hidden><i class="sw deep"></i>deep water</span>
+    <span class="key" id="key-current" hidden><i class="sw current"></i>current</span>
+  </footer>
+</div>
+<script src="moondew.js"></script>
+</body>
+</html>

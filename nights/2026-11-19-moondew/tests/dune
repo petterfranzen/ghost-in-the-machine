@@ -1,0 +1,14 @@
+(test
+ (name level_test)
+ (modules level_test)
+ (libraries moondew_lib))
+
+(executable
+ (name solution)
+ (modules solution)
+ (libraries moondew_lib))
+
+(executable
+ (name pond_dump)
+ (modules pond_dump)
+ (libraries moondew_lib))
