@@ -56,30 +56,30 @@ type spec = {
 }
 
 let table = [|
-  { size = (4, 4); dew = 5; moss = 0; deep = false; current = false;
-    caption = "one trail, every dew" };
-  { size = (5, 5); dew = 6; moss = 10; deep = false; current = false;
-    caption = "moss will not take a step" };
-  { size = (5, 6); dew = 7; moss = 15; deep = true; current = false;
-    caption = "deep water: the trail may cross itself" };
-  { size = (6, 6); dew = 8; moss = 15; deep = true; current = false;
-    caption = "a wider pond" };
-  { size = (6, 6); dew = 9; moss = 20; deep = true; current = true;
-    caption = "a current runs: leave the way it flows" };
-  { size = (6, 7); dew = 10; moss = 20; deep = true; current = true;
-    caption = "the koi is patient" };
-  { size = (7, 7); dew = 11; moss = 22; deep = true; current = true;
-    caption = "the reeds close in" };
+  { size = (4, 4); dew = 1; moss = 0; deep = false; current = false;
+    caption = "Draw one trail from the koi stone to the dewdrop" };
+  { size = (5, 5); dew = 3; moss = 30; deep = false; current = false;
+    caption = "Moss will not take a step - walk around it" };
+  { size = (5, 5); dew = 5; moss = 20; deep = true; current = false;
+    caption = "Deep water is the one place the trail may cross itself" };
+  { size = (6, 6); dew = 6; moss = 20; deep = true; current = true;
+    caption = "A current turns the trail - leave the way it flows" };
+  { size = (6, 6); dew = 8; moss = 18; deep = true; current = true;
+    caption = "Three rules now: moss, deep water, currents" };
+  { size = (6, 7); dew = 9; moss = 20; deep = true; current = true;
+    caption = "A longer shore" };
+  { size = (7, 7); dew = 11; moss = 20; deep = true; current = true;
+    caption = "The reeds close in" };
   { size = (7, 7); dew = 12; moss = 22; deep = true; current = true;
-    caption = "keep the trail open" };
-  { size = (7, 8); dew = 13; moss = 24; deep = true; current = true;
-    caption = "the long shore" };
+    caption = "Keep the trail open" };
+  { size = (7, 8); dew = 13; moss = 22; deep = true; current = true;
+    caption = "The long shore" };
   { size = (8, 8); dew = 14; moss = 24; deep = true; current = true;
-    caption = "the far bank" };
-  { size = (8, 8); dew = 15; moss = 26; deep = true; current = true;
-    caption = "a still, wide pond" };
+    caption = "The far bank" };
+  { size = (8, 8); dew = 15; moss = 24; deep = true; current = true;
+    caption = "A still, wide pond" };
   { size = (8, 9); dew = 16; moss = 26; deep = true; current = true;
-    caption = "the last pond" };
+    caption = "The last pond" };
 |]
 
 let count_levels = Array.length table

@@ -161,10 +161,17 @@ let dew_chime t n =
   voice t ~kind:"sine" ~freq:(freq *. 2.01) ~dur:0.5 ~vol:0.09 ()
 
 let moss_thud t =
-  noise_voice t ~kind:"lowpass" ~freq:220.0 ~dur:0.18 ~vol:0.22 ()
+  noise_voice t ~kind:"lowpass" ~freq:230.0 ~dur:0.20 ~vol:0.16 ()
 
 let ripple_sound t =
   noise_voice t ~kind:"bandpass" ~freq:1500.0 ~q:1.2 ~dur:0.24 ~vol:0.07 ()
+
+
+(* A gentle refusal for a step that broke a water rule (a stone already used,
+   or a current taken the wrong way).  Soft and short, never a buzz. *)
+let refuse t =
+  voice t ~kind:"sine" ~freq:392.0 ~dur:0.20 ~vol:0.10 ();
+  voice t ~kind:"sine" ~freq:311.1 ~dur:0.30 ~vol:0.08 ()
 
 let koi_plop t =
   voice t ~kind:"sine" ~freq:520.0 ~dur:0.22 ~vol:0.16 ();

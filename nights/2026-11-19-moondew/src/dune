@@ -1,6 +1,6 @@
 (library
  (name moondew_lib)
- (modules dom util palette level game draw audio)
+ (modules dom util palette level game draw audio hud water pond input)
  (libraries js_of_ocaml))
 
 (executable
