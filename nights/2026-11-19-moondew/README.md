@@ -9,6 +9,33 @@ from the first second (the dew still glowing on the water), a rule that teaches
 itself the moment you break it, and a pond after pond that grows wider and
 meaner. Nothing is timed and nothing rushes you.
 
+## What changed on 20 Nov
+
+Petter's feedback on the first version: *"The graphics are very intense and
+glitchy, the game rules are unclear and don't seem to matter. More structure
+needed."* This revision answers all three.
+
+- **Calmer water.** The old renderer sampled a hash of the *clock* for every
+  tile's highlight and wash, so each stone jumped a little every frame — that
+  was the glitch. Nothing that moves is sampled from the clock any more; the
+  only motion is a slow breath on the dew and the fireflies, on a ten-second
+  and an eighteen-second cycle. Everything is drawn at whole canvas pixels, the
+  palette is a few steps softer, the pulses are shallower, and the ambient
+  clock stops entirely under `prefers-reduced-motion` (so the pond is a still
+  photograph, while taps still answer).
+- **Rules you can see, and that matter.** Pond 1 is now one dew, one obvious
+  path and one line of text; ponds 2, 3 and 4 each introduce exactly one rule
+  (moss, deep water, currents) with their own one-line hint and a legend swatch
+  that only appears when you can first meet it. Every rule answers
+  immediately: a refused step makes the whole pond give a small shake and a
+  soft sound, moss with its own low thud. The goal is stated as a count
+  ("3 of 5 dew awake"), and a pond that wakes says so before the next one comes
+  in. Undo and Restart are ordinary buttons along the bottom, next to the
+  strip.
+- **More structure.** A start screen with the one line, the sound button and a
+  Begin; and the flower row is now the pond strip — one 44 px target per pond,
+  tappable to replay any pond you have already woken.
+
 ## The wish it follows
 
 Petter's wish for the night of 19 Nov, and the one this night follows:
@@ -29,12 +56,13 @@ Drift and Ripple Pool, from the 2 Nov wish), with an actual game inside it.
   refuses it; a woken dew stone closes behind you (so order matters); deep
   water is the one place the trail may cross itself again; and where a current
   runs, the trail must leave the way it flows.
-- **How it gets harder:** twelve ponds, from a 4x4 with five dew and no moss to
+- **How it gets harder:** twelve ponds, from a 4x4 with a single dew and no moss to
   an 8x9 with sixteen dew, a quarter of it moss, deep water and currents — then
   the pond keeps going, a little fuller each time.
-- **How progress is visible:** a row of flowers at the top lights one petal per
-  pond woken, the label counts the ponds, and the pond you are in visibly fills
-  with light as the dew wakes. The final pond opens the whole surface into
+- **How progress is visible:** the pond strip along the bottom lights one
+  flower per pond woken (and every lit one can be tapped to replay that pond),
+  the label counts the ponds, the counter counts the dew, and the pond you are
+  in visibly fills with light as the dew wakes. The final pond opens the whole surface into
   bloom; after that the water simply keeps going.
 - **Losing gently:** when the trail is walled in with dew still asleep, the
   water stills, the ripple settles, and the trail comes back to the koi's stone
@@ -79,21 +107,27 @@ dune runtest
 
 ## How to play
 
+- **Begin** on the start screen (the sound button sits in the header throughout).
 - **Drag** from the koi's stone (or from the head of the trail) across the
   water. The trail follows your thumb one stone at a time.
-- **Tap the head of the trail** to step back one stone.
-- **Long press** anywhere for a nudge: the next step of a solution glints for
-  a few seconds (free, always available).
-- **Swipe** across open water for ripples and a small koi splash — the scene
-  remembers, and the koi will not settle for a while.
-- **Tap the dark moss** and the trail stops with a soft thud (moss takes no
-  step); the trail answers with a ripple on the stone you could not take.
+- **Tap the head of the trail**, or the **Undo** button, to step back one stone.
+  **Restart** takes the pond back to the koi's stone.
+- **Long press** anywhere for a nudge: the next step of a solution glints for a
+  few seconds and the hint line says what it is (free, always available).
+- **Swipe** across open water for ripples — the scene remembers, and the koi
+  will not settle for a while.
+- **A refused step** — moss, a stone the trail has already taken, or a current
+  taken the wrong way — shakes the pond by a few pixels and answers with a soft
+  sound, and leaves a ripple on the stone it could not take.
+- **Tap a lit flower** in the pond strip to replay a pond you have already
+  woken.
 - **Idle** for a while on a fresh trail and the pond offers the same glint by
   itself, so nobody gets stuck in silence.
-- **Arrow keys / z / h / r** do the same on a desktop.
+- **Arrow keys / z / u / h / r** do the same on a desktop.
 
 The legend under the pond fills in by itself as deep water and currents first
-appear — a rule is never named before you can meet it.
+appear — a rule is never named before you can meet it. Ponds 1 to 4 each carry
+their new rule in their caption, so the rule is read once and then met.
 
 ## Sound
 
@@ -107,8 +141,8 @@ chime and the ambient bed fading in over a third of a second.
 - **Each step** rings a soft triangle note up a pentatonic ladder as the trail
   grows, so a long trail becomes a slow phrase.
 - **Waking a dew** is a two-partial sine chime, a little brighter with each one.
-- **Moss** answers a drag into it with a low, short thud; a current that
-  refuses a step uses the same voice.
+- **A refused step** is a short falling pair of sines, soft and low; moss has
+  its own low thud.
 - **Undo, ripples, koi:** a filtered noise splash, a band-passed ripple, and a
   short downward plop when the koi stirs.
 - **The water stilling** is a gentle falling pair of notes, and **waking a
@@ -120,25 +154,41 @@ chime and the ambient bed fading in over a third of a second.
 
 The whole pond is synthesised — no sprite sheet, no samples. Each stone is a
 handful of snapped rectangles drawn in canvas coordinates, so the grid stays
-crisp at any scale, and every animation is a function of time and a hash, which
-means no state to keep in sync. The palette is deliberately flat: indigo water,
-three shades of moss, one warm stone for the koi, and pale dew with a pulsing
-halo.
+crisp at any scale. The palette is deliberately flat: indigo water, three
+shades of moss, one warm stone for the koi, and pale dew with a small halo.
 
-The game engine is separate from all of that: `level.ml` grows ponds,
-`game.ml` knows the rules and nothing else, `draw.ml` only looks, `audio.ml`
-only listens, and `main.ml` wires the browser to them. That split is why the
-tests can replay a pond in plain OCaml without a browser anywhere near them,
-and why the rules were the easiest part of the night to get right — the pattern
-matcher turns "may the trail step here" into four short lines.
+The calm pass is the interesting part of this revision, because the glitch was
+a design mistake rather than a bug. The first version made each tile's
+highlight and wash a function of `hash(tile, clock)`, which reads as water at
+60 fps and as television static at 30 — every frame, every stone moved a little
+in a different direction. The fix is a rule: **nothing that moves may be
+sampled from the clock.** What remains is a small set of anchors, each a pure
+function of time with a period measured in seconds — dew breathes on a ten-
+second cycle, the head light on four and a half, the fireflies drift on a
+parametric ellipse so they can never jump a seam. Then two clocks: an *ambient*
+clock that carries all of that and stops dead when the player asks for reduced
+motion, and the real clock, which drives only the short answers to a gesture —
+a ripple, the refusal shake — because those must stay live even when the water
+is still. Everything is snapped to whole canvas pixels, so a shaking pond moves
+in visible steps instead of resampling itself.
+
+The game engine is separate from all of that: `level.ml` grows ponds, `game.ml`
+knows the rules and nothing else, `draw.ml` only looks, `audio.ml` only
+listens, `hud.ml` owns the DOM text, `water.ml` holds the pond and its layout,
+`pond.ml` runs a pond's life, and `input.ml` listens to the player. That split
+is why the tests can replay a pond in plain OCaml without a browser anywhere
+near them, and why the rules were the easiest part of the night to get right —
+the pattern matcher turns "may the trail step here" into four short lines, and
+`Game.refusal` returns *why* a step was turned away so the pond can answer with
+the right sound.
 
 What OCaml made easy: the rules, the generator and the tests, all of which were
 written in one pass and worked. What it made harder: the browser. `js_of_ocaml`
 is happy to be untyped, but the compiler cannot see through the DOM, so every
 canvas call and every Web Audio node needed a small declared helper — that is
-why all of it lives in `js.ml` and `audio.ml` and nowhere else. The one lesson
+why all of it lives in `dom.ml` and `audio.ml` and nowhere else. The one lesson
 worth keeping: the trail is a *list*, the changes are pure functions of it, and
-undo/reset/still are all just "build the same state from a shorter trail" —
+undo/restart/still are all just "build the same state from a shorter trail" —
 which removed a whole class of bugs before they existed.
 
 ## Code health
@@ -154,7 +204,7 @@ the pond shapes live in one data table, and no file reaches 300 lines.
   you find a shorter trail than the last.
 - Dew that sleeps in pairs: waking one leaves a ripple in the other, so the
   order of the whole pond matters.
-- Let the ponds be revisited from the flower row, and let the koi of a woken
-  pond stay in the water as a small resident.
-- A first-run glint on the very first stone, so the tap-to-start is unmistakable
-  on a phone with a thick thumb.
+- Remember which ponds are woken between visits (`localStorage`), so the strip
+  is a real progress save.
+- A first-run glint on the very first stone, so the drag-to-start is
+  unmistakable on a phone with a thick thumb.

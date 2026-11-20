@@ -1,12 +1,16 @@
 (* The rules of the water.
 
-   One trail, starting at the koi's stone.  It may not cross itself, except
-   through deep water; moss refuses it; dew is woken once and then closes
-   behind it; a current must be left the way it flows.  The pond is woken
-   when every dew has been touched, and stills when the trail can no longer
-   move with dew left to find. *)
+   One trail, starting at the koi's stone.  Moss refuses it; open water takes
+   a single step; deep water may be crossed again; dew is woken once and then
+   closes behind you; a current must be left the way it flows.  The pond is
+   woken when every dew has been touched, and stills when the trail can no
+   longer move with dew left to find. *)
 
 type status = Playing | Won | Stilled
+
+(* Why a step was turned away.  Each has its own small answer, so a refused
+   move teaches the rule it broke instead of just doing nothing. *)
+type refusal = Edge | Moss | Taken | Flow
 
 type t = {
   level : Level.t;
@@ -39,7 +43,20 @@ let can_step level visits i d = with_flow level i d &&
 let has_move level visits i =
   Array.exists (fun d -> can_step level visits i d) Level.dirs
 
-let legal_steps g = Array.to_list Level.dirs |> List.filter (can_step g.level g.visits (head g))
+(* The rule a refused step broke.  [None] means the step is legal. *)
+let refusal level visits i d =
+  if not (with_flow level i d) then Some Flow
+  else match Level.neighbour level i d with
+    | None -> Some Edge
+    | Some j ->
+      (match Level.tile_at level j with
+       | Level.Moss -> Some Moss
+       | Level.Deep | Level.Spring -> None
+       | Level.Water | Level.Dew | Level.Current _ ->
+         if visits.(j) = 0 then None else Some Taken)
+
+let legal_steps g =
+  Array.to_list Level.dirs |> List.filter (can_step g.level g.visits (head g))
 
 let of_trail level trail =
   let visits = Array.make (Level.size level) 0 in

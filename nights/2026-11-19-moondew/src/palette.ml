@@ -1,26 +1,29 @@
-(* Night-pond colours.  Flat hex strings keep the renderer simple; the canvas
-   takes them straight. *)
+(* Night-pond colours, kept soft.  Flat hex strings keep the renderer simple;
+   the canvas takes them straight.  Everything here is a few steps down from
+   full saturation, so the pond reads as moonlight rather than neon. *)
 
-let bg_top = "#0e1a2c"
-let bg_bottom = "#070d16"
+let bg_top = "#101c2d"
+let bg_bottom = "#0a111d"
 
-let moss = [| "#243b34"; "#2c473d"; "#1d302c" |]
-let water = [| "#14273f"; "#182f4a"; "#112238" |]
-let deep = [| "#0d3b4d"; "#10465c"; "#0b3040" |]
-let current = "#1d5b62"
+let moss = [| "#2b4139"; "#334b41"; "#233329" |]
+let water = [| "#1b3049"; "#1e3550"; "#172a40" |]
+let deep = [| "#15424f"; "#194b58"; "#123743" |]
+let current = "#2a5f66"
 
-let stone = "#3b4a5e"
-let spring = "#4a3a2a"
-let spring_lit = "#d8a86a"
-let koi_body = "#f2f4f7"
-let koi_fin = "#f3a6b8"
-let koi_spot = "#e8632f"
+let stone = "#3a485a"
+let grid = "rgba(150, 196, 232, 0.13)"
+let spring = "#4a4032"
+let spring_lit = "#c9a878"
+let koi_body = "#dde4ec"
+let koi_fin = "#d3a2ab"
+let koi_spot = "#bf6a48"
 
-let dew = "#bfe9ff"
-let dew_core = "#ffffff"
-let dew_dim = "#5c86a6"
-let trail = "#9fe6ff"
-let trail_glow = "rgba(159, 230, 255, 0.16)"
-let flower = "#f0c9e2"
-let mote = "#ffe9a8"
-let glint = "#fff6d0"
+let dew = "#a6d3ec"
+let dew_core = "#e6f2fa"
+let dew_dim = "#54708a"
+let trail = "#8ecbe6"
+let trail_glow = "rgba(142, 203, 230, 0.10)"
+let trail_mid = "rgba(122, 188, 224, 0.40)"
+let flower = "#dcc0d6"
+let mote = "#e6d3a2"
+let glint = "#ecdcb0"
