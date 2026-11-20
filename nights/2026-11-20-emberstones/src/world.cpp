@@ -45,12 +45,13 @@ void emb_resize(int w, int h) {
   if (w > MAXW) w = MAXW; if (h > MAXH) h = MAXH;
   g_shW = w; g_shH = h;
   g_cx = 0.5f * (float)w;
-  g_cy = 0.68f * (float)h;                 /* ring sits in the lower third */
   g_rx = 0.38f * (float)w;
   if (g_rx > 0.46f * (float)h) g_rx = 0.46f * (float)h;
   g_ry = 0.80f * g_rx;                     /* open enough to read as a circle */
-  if (g_ry > 0.22f * (float)h) g_ry = 0.22f * (float)h;  /* leave room for the UI */
+  if (g_ry > 0.13f * (float)h) g_ry = 0.13f * (float)h;  /* fit the ground band */
   if (g_ry < 12.0f) g_ry = 12.0f;
+  /* keep the whole ring below the horizon: the ground runs 0.60h..0.90h */
+  g_cy = 0.60f * (float)h + g_ry + 8.0f;
   emb_poseStones();
 }
 
