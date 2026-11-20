@@ -31,9 +31,25 @@ second with a short confirming chime. Your choice is remembered.
   evening settles, and if you leave the water still long enough the gutter
   offers you something else entirely.
 
-Nothing is scored and nothing is timed. If the boat reaches the drain it
-slips under and a fresh one is folded at the top of the gutter, so the evening
-keeps going.
+### The gentle game
+
+Paper lanterns float down the gutter on the current. Your boat gathers them as
+it drifts past — each one settles onto the water behind it and joins the string
+trailing from the stern, so you can see at a glance how the run is going. The
+small lamp-and-number in the top-left corner is the same count, readable at a
+distance.
+
+Steer with the water, not against it: a tap beside the boat nudges it toward
+that side, a drag carries it along with your thumb, a flick pushes it ahead in
+the current. Nothing is timed and nothing can be failed — if the boat misses a
+lantern, it simply drifts on. A run ends when the boat reaches the grate at the
+drain: it slips under and the tally is banked ("That boat carried 3 lanterns.
+Best 7."), then a fresh boat is folded at the top of the gutter and the evening
+continues. The best run is kept in local storage, so it survives a reload.
+
+Each lantern caught plays a soft rising chime over the rain, and the string
+behind the boat glows a little brighter for a moment. Reaching the grate plays a
+low, contented settle — the end of a run, not a failure.
 
 ## How to build
 
