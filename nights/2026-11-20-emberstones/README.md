@@ -42,8 +42,8 @@ Every one of these has its own sound and its own reply in the picture.
 
 - **Tap a stone** — it lights, and so do the stones its rule reaches. The lit
   ones glow warm and their runes burn brighter.
-- **Tap bare ground** — the earth answers with a low thud and a small puff of
-  dust; the ring ignores you politely.
+- **Tap bare ground** — the earth answers with a low thud; the ring ignores you
+  politely.
 - **Long-press a stone** — the circle leans in and shows you which stone is
   warm: a pale blue halo over the one that wants to be lit. Hold longer and it
   stays with you for a while.
@@ -52,13 +52,13 @@ Every one of these has its own sound and its own reply in the picture.
 - **Undo** — take the last stone back, one at a time, back to the start of the
   circle.
 - **Again** — set the circle back to its opening pose.
-- **Wait** — leave it alone for a few seconds and the valley starts talking to
-  itself: the hint text drifts, embers rise from the ground, and after a couple
-  of minutes something crosses the sky. Idle is not a dead state here.
+- **Wait** — leave it alone and the valley starts talking to itself: embers
+  rise from the ground and drift up to the horizon, and the hint text drifts
+  back in. Idle is not a dead state here.
 
 Finishing a circle is the discovery: after the last rune lights, the ring holds
 for a moment, the sky shifts, and the next circle is deeper and darker than the
-one before. Circle four has moss on some stones — moss will not take a tap, so
+one before. Circle five has moss on some stones — moss will not take a tap, so
 the rules change under you. Circle six finishes with a keystone at the centre
 that only appears once the ring is complete; long-press the middle to wake it
 and the sky turns.
