@@ -145,6 +145,8 @@ body {
   cursor: pointer;
 }
 
+.ctl[hidden] { display: none; }
+
 .ctl .dot {
   width: 10px;
   height: 10px;

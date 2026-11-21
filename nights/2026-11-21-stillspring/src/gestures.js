@@ -40,6 +40,7 @@ export function createGestures({ grid, board, onTap, onHint, onSecret, onSweep, 
     press.moved = true;
     clearTimers();
     press.consumed = true;
+    press.swept.add(`${press.x},${press.y}`);
     onSweep(press.x, press.y);
   }
 

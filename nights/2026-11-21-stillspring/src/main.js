@@ -222,6 +222,7 @@ dom.restart.addEventListener('click', () => {
   game.call('restart');
   audio.play('restart');
   refresh();
+  startLevel();
   announce(`Level ${state.progress} restarted. ${state.hint}`);
 });
 
