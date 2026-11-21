@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Stillspring</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%230d1c24'/%3E%3Cpath d='M8 3v10M3 8h10' stroke='%235fd6c6' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="frame">
+  <header class="head">
+    <h1 class="title">Stillspring</h1>
+    <p class="caption" id="caption">Lead the spring to the garden.</p>
+  </header>
+
+  <section class="stage" id="stage">
+    <div class="board" id="board">
+      <canvas id="canvas" aria-hidden="true"></canvas>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <footer class="dock">
+    <div class="dock-row">
+      <button class="ctl" id="sound" type="button" aria-pressed="false">
+        <span class="dot" aria-hidden="true"></span><span class="label">Sound off</span>
+      </button>
+      <button class="ctl" id="undo" type="button">Undo</button>
+      <button class="ctl" id="restart" type="button">Restart</button>
+      <button class="ctl go" id="next" type="button" hidden>Next</button>
+    </div>
+    <div class="dock-row foot">
+      <p class="level" id="level">Level 1 of 6</p>
+      <p class="pips" id="pips" aria-hidden="true"></p>
+    </div>
+  </footer>
+</main>
+<p class="sr" id="say" role="status" aria-live="polite"></p>
+<script src="app.js"></script>
+</body>
+</html>
