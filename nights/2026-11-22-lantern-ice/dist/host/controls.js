@@ -14,6 +14,7 @@ function attachControls(scene, game, sound, painter) {
     sound: document.getElementById('sound'),
     undo: document.getElementById('undo'),
     restart: document.getElementById('restart'),
+    status: document.getElementById('status'),
   };
   const canvas = document.getElementById('bay');
   const state = { down: false, x0: 0, y0: 0, t0: 0, holdFired: false, handled: false, timer: 0, shown: {} };
@@ -81,6 +82,18 @@ function attachControls(scene, game, sound, painter) {
     else game.slide(dy > 0 ? 2 : 0);
   }
 
+  // Enter or Space on the canvas greets the middle of the bay, the way a tap
+  // there would: a reader who cannot swipe still gets an answer.
+  function onCanvasKey(ev) {
+    if (ev.key !== 'Enter' && ev.key !== ' ' && ev.key !== 'Spacebar') return;
+    ev.preventDefault();
+    const b = painter.box();
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor((rect.width / 2 - b.x) / b.s);
+    const y = Math.floor((rect.height / 2 - b.y) / b.s);
+    game.tap(x, y);
+  }
+
   function onKey(ev) {
     const dirs = { ArrowUp: 0, w: 0, ArrowRight: 1, d: 1, ArrowDown: 2, s: 2, ArrowLeft: 3, a: 3 };
     const key = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key;
@@ -138,6 +151,18 @@ function attachControls(scene, game, sound, painter) {
     showCount();
     showPips();
     showSound();
+    showStatus();
+  }
+
+  // One polite line for a screen reader: where the skater is now, and when the
+  // bay is finished. It only speaks when the level or the ending changes.
+  function showStatus() {
+    const h = scene.hud;
+    const line = h.free ? 'Free skate. The bay is yours.'
+      : `Level ${h.level}. ${scene.hint}`;
+    if (state.shown.status === line) return;
+    state.shown.status = line;
+    if (ui.status) ui.status.textContent = line;
   }
 
   function pipRow(level, levels) {
@@ -151,6 +176,7 @@ function attachControls(scene, game, sound, painter) {
   canvas.addEventListener('pointerup', onUp);
   canvas.addEventListener('pointercancel', () => { state.down = false; clearTimeout(state.timer); if (state.holdFired) game.press(0); });
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+  canvas.addEventListener('keydown', onCanvasKey);
   window.addEventListener('keydown', onKey);
   document.querySelectorAll('[data-dir]').forEach((btn) => {
     btn.addEventListener('click', () => game.slide(Number(btn.dataset.dir)));

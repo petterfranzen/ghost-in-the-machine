@@ -49,8 +49,13 @@
     background: rgba(150, 200, 230, 0.22);
   }
   .pips i.lit { background: var(--amber); box-shadow: 0 0 8px rgba(255, 203, 122, 0.7); }
-  .hint { margin: 0; color: var(--dim); font-size: 13.5px; max-width: 62ch; }
-  .count { margin: 0; color: var(--ink); font-size: 13.5px; letter-spacing: 0.02em; }
+  .hint { margin: 0; color: var(--dim); font-size: 16px; max-width: 62ch; }
+  .count { margin: 0; color: var(--ink); font-size: 16px; letter-spacing: 0.02em; }
+  .sr {
+    font-size: 16px;
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
   .tools { display: flex; gap: 8px; }
   .btn {
     min-height: 44px;
@@ -66,6 +71,11 @@
     cursor: pointer;
   }
   .btn:active { transform: translateY(1px); }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    .btn:active { transform: none; }
+    .pips i.lit { box-shadow: none; }
+  }
   #sound.on { border-color: rgba(255, 203, 122, 0.7); color: var(--amber); }
   #sound { justify-self: end; }
   .pad {
@@ -84,12 +94,12 @@
   .pad .right { grid-area: 2 / 3; }
   @media (min-width: 780px) {
     .pad { right: 24px; bottom: 24px; }
-    .hint { font-size: 14px; }
+    .hint { font-size: 16px; }
   }
 </style>
 </head>
 <body>
-<canvas id="bay" aria-label="A frozen bay at night. Swipe or use the arrows to skate."></canvas>
+<canvas id="bay" tabindex="0" role="button" aria-label="A frozen bay at night. Swipe, tap, or use the arrows to skate. Press Enter to greet the bay."></canvas>
 <header class="hud">
   <div class="row">
     <div id="pips" class="pips"></div>
@@ -102,6 +112,7 @@
     <button id="restart" class="btn">Restart</button>
   </div>
 </header>
+<p id="status" class="sr" aria-live="polite"></p>
 <nav class="pad" aria-label="Skate">
   <button class="btn up" data-dir="0" aria-label="Skate up">&#8593;</button>
   <button class="btn left" data-dir="3" aria-label="Skate left">&#8592;</button>

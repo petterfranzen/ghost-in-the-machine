@@ -6,6 +6,13 @@ const ICE_TOP = '#274a66';
 const ICE_BOT = '#16304a';
 const ICE_EDGE = '#4b7fa6';
 
+// Motion, softened: with `prefers-reduced-motion: reduce` the weather drifts at a
+// third of its speed and the lamp pulse quiets down; a swipe still answers at once.
+const MOTION = (() => {
+  try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.35 : 1; }
+  catch (e) { return 1; }
+})();
+
 function createPainter(canvas, scene) {
   const c = canvas.getContext('2d');
   const fx = [];
@@ -47,8 +54,8 @@ function createPainter(canvas, scene) {
     drawMarks(t);
     drawLights(t);
     drawKeeper(t);
-    drawFx(dt);
-    drawSnow(t, dt, w, h);
+    drawFx(dt * MOTION);
+    drawSnow(t, dt * MOTION, w, h);
   }
 
   function drawSky(t, h) {
@@ -135,7 +142,7 @@ function createPainter(canvas, scene) {
       for (let cx = 0; cx < scene.grid.w; cx++) {
         if (scene.tileAt(cx, cy) !== 5 || !scene.lit[`${cx},${cy}`]) continue;
         const p = cell(cx, cy);
-        const flick = 0.82 + 0.18 * Math.sin(t * 2.7 + hash(cx, cy) * 9);
+        const flick = 0.82 + 0.18 * MOTION * Math.sin(t * 2.7 * MOTION + hash(cx, cy) * 9);
         lamp(c, { x: p.px + p.s / 2, y: p.py + p.s * 0.55, r: p.s * 3.4, alpha: 0.4 * flick });
       }
     }
