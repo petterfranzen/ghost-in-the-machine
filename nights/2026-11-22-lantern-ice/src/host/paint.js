@@ -2,9 +2,9 @@
 // it — the tiles the game pushed, the keeper's spot, and a little weather.
 window.LakePaint = (function () {
   const { TILE_DRAW, KEEPER_DRAW, FX_LIFE, FX_DRAW, drawSkid, drawCrack, hash, roundRect, lamp, KEEPER, GLOW } = window.LakeArt;
-const ICE_TOP = '#172c41';
-const ICE_BOT = '#0d1a28';
-const ICE_EDGE = '#2b4a66';
+const ICE_TOP = '#274a66';
+const ICE_BOT = '#16304a';
+const ICE_EDGE = '#4b7fa6';
 
 function createPainter(canvas, scene) {
   const c = canvas.getContext('2d');

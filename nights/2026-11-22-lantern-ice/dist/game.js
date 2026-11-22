@@ -8355,8 +8355,10 @@ g = new $ref(g)
 			/** @type {bool} */
 			g.val.dirty = new bool(new bool(false));
 		}
-		main__Game_push_hud(g.valueOf(),new int(0), new int( g.val.idx.valueOf() + new i32(1).valueOf()));
-		main__Game_push_hud(g.valueOf(),new int(1), new int( main__levels().len.valueOf() - new i32(1).valueOf()));
+		/** @type {int} */
+		const last = new int(new int( main__levels().len.valueOf() - new i32(1).valueOf()));
+		main__Game_push_hud(g.valueOf(),new int(0), ((new bool(new int( g.val.idx.valueOf() + new i32(1).valueOf()).valueOf() > last.valueOf())).valueOf() ? last : new int( g.val.idx.valueOf() + new i32(1).valueOf())));
+		main__Game_push_hud(g.valueOf(),new int(1), last);
 		main__Game_push_hud(g.valueOf(),new int(2), main__Game_lit_count(g.valueOf(),));
 		main__Game_push_hud(g.valueOf(),new int(3), ((g.val.board.free).valueOf() ? new int(0) : main__Game_lantern_count(g.valueOf(),)));
 		main__Game_push_hud(g.valueOf(),new int(4), ((g.val.won).valueOf() ? new int(1) : new int(0)));

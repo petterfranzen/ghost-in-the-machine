@@ -170,9 +170,11 @@ function main() {
 
   for (let i = 0; i < 8; i++) {
     if (!playLevel(g, layouts[i], i)) break;
-    check(`the bay moves on to level ${i + 2}`, g.log.hud[0] === i + 2, `level ${g.log.hud[0]}`);
+    // The ninth record is the free skate, so the pips stop at eight.
+    const want = Math.min(i + 2, 8);
+    check(`the bay moves on to level ${want}`, g.log.hud[0] === want, `level ${g.log.hud[0]}`);
   }
-  check('the last bay is free skating', g.log.hud[5] === 1 && g.log.hud[0] === 9);
+  check('the last bay is free skating', g.log.hud[5] === 1 && g.log.hud[0] === 8);
   const hookedCalls = [...g.log.calls].every((n) => n.startsWith('lake_'));
   check('every hook the game calls is one the host defines', hookedCalls);
 

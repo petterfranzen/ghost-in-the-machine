@@ -3,7 +3,7 @@ function hash(x, y, salt) {
   return n - Math.floor(n);
 }
 
-const KEEPER = { robe: '#0f1926', trim: '#1d2f42', hood: '#22384d', lamp: '#ffd28a' };
+const KEEPER = { robe: '#1b2f45', trim: '#33597a', hood: '#3f6b90', lamp: '#ffd28a' };
 const GLOW = '#ffcb7a';
 
 // A rounded rectangle from a record: one argument, and the call sites read
@@ -43,13 +43,13 @@ const TILE_DRAW = [
 
 function drawIce(c, p, at) {
   const g = c.createLinearGradient(p.px, p.py, p.px, p.py + p.s);
-  g.addColorStop(0, hash(at.x, at.y, 1) > 0.5 ? 'rgba(255,255,255,0.045)' : 'rgba(255,255,255,0.022)');
+  g.addColorStop(0, hash(at.x, at.y, 1) > 0.5 ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.055)');
   g.addColorStop(1, 'rgba(0,0,0,0)');
   c.fillStyle = g;
   c.fillRect(p.px, p.py, p.s, p.s);
   // A seam on two edges only: enough to read the grid, quiet enough to forget.
-  c.strokeStyle = 'rgba(150,205,235,0.10)';
-  c.lineWidth = Math.max(0.5, p.s * 0.012);
+  c.strokeStyle = 'rgba(160,215,245,0.22)';
+  c.lineWidth = Math.max(0.6, p.s * 0.016);
   c.beginPath();
   c.moveTo(p.px + p.s, p.py);
   c.lineTo(p.px + p.s, p.py + p.s);

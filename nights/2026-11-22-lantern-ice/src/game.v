@@ -824,8 +824,11 @@ fn (mut g Game) push_scene() {
 		}
 		g.dirty = false
 	}
-	g.push_hud(0, g.idx + 1)
-	g.push_hud(1, levels().len - 1)
+	// The last record in the table is the free skate, not a level: keep the
+	// number on the pips honest even when the bay is already ours.
+	last := levels().len - 1
+	g.push_hud(0, if g.idx + 1 > last { last } else { g.idx + 1 })
+	g.push_hud(1, last)
 	g.push_hud(2, g.lit_count())
 	g.push_hud(3, if g.board.free { 0 } else { g.lantern_count() })
 	g.push_hud(4, if g.won { 1 } else { 0 })
