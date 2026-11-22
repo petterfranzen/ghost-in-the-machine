@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lantern Ice</title>
+<style>
+  :root {
+    --ink: #dceaf6;
+    --dim: #8ea7bd;
+    --amber: #ffcb7a;
+    --panel: rgba(10, 20, 32, 0.62);
+    --edge: rgba(150, 200, 230, 0.22);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: #060a12;
+    color: var(--ink);
+    font: 15px/1.45 ui-rounded, "Segoe UI", system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+  #bay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+  }
+  .hud {
+    position: fixed;
+    top: env(safe-area-inset-top, 0);
+    left: 0;
+    right: 0;
+    padding: 10px 14px 0;
+    display: grid;
+    gap: 6px;
+    pointer-events: none;
+  }
+  .hud button { pointer-events: auto; }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .pips { display: flex; gap: 6px; flex: 1; }
+  .pips i {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: rgba(150, 200, 230, 0.22);
+  }
+  .pips i.lit { background: var(--amber); box-shadow: 0 0 8px rgba(255, 203, 122, 0.7); }
+  .hint { margin: 0; color: var(--dim); font-size: 13.5px; max-width: 62ch; }
+  .count { margin: 0; color: var(--ink); font-size: 13.5px; letter-spacing: 0.02em; }
+  .tools { display: flex; gap: 8px; }
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 14px;
+    border-radius: 12px;
+    border: 1px solid var(--edge);
+    background: var(--panel);
+    color: var(--ink);
+    font: inherit;
+    font-size: 14px;
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+  }
+  .btn:active { transform: translateY(1px); }
+  #sound.on { border-color: rgba(255, 203, 122, 0.7); color: var(--amber); }
+  #sound { justify-self: end; }
+  .pad {
+    position: fixed;
+    right: calc(12px + env(safe-area-inset-right, 0));
+    bottom: calc(12px + env(safe-area-inset-bottom, 0));
+    display: grid;
+    grid-template-columns: repeat(3, 46px);
+    grid-template-rows: repeat(2, 46px);
+    gap: 8px;
+  }
+  .pad .btn { padding: 0; font-size: 20px; }
+  .pad .up { grid-area: 1 / 2; }
+  .pad .left { grid-area: 2 / 1; }
+  .pad .down { grid-area: 2 / 2; }
+  .pad .right { grid-area: 2 / 3; }
+  @media (min-width: 780px) {
+    .pad { right: 24px; bottom: 24px; }
+    .hint { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="bay" aria-label="A frozen bay at night. Swipe or use the arrows to skate."></canvas>
+<header class="hud">
+  <div class="row">
+    <div id="pips" class="pips"></div>
+    <button id="sound" class="btn" aria-pressed="false">Sound off</button>
+  </div>
+  <p id="hint" class="hint"></p>
+  <p id="count" class="count"></p>
+  <div class="tools">
+    <button id="undo" class="btn">Undo</button>
+    <button id="restart" class="btn">Restart</button>
+  </div>
+</header>
+<nav class="pad" aria-label="Skate">
+  <button class="btn up" data-dir="0" aria-label="Skate up">&#8593;</button>
+  <button class="btn left" data-dir="3" aria-label="Skate left">&#8592;</button>
+  <button class="btn down" data-dir="2" aria-label="Skate down">&#8595;</button>
+  <button class="btn right" data-dir="1" aria-label="Skate right">&#8594;</button>
+</nav>
+<script src="./host/sound.js"></script>
+<script src="./host/art.js"></script>
+<script src="./host/paint.js"></script>
+<script src="./host/bridge.js"></script>
+<script src="./host/controls.js"></script>
+<script src="./game.js"></script>
+<script src="./host/main.js"></script>
+</body>
+</html>
