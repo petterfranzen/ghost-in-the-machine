@@ -128,7 +128,7 @@ Every source file I wrote, scored with `cs review` (CodeScene):
 Code Health: src/host/art.js new -> 10.0
 Code Health: src/host/paint.js new -> 10.0
 Code Health: src/host/bridge.js new -> 10.0
-Code Health: src/host/controls.js new -> 10.0
+Code Health: src/host/controls.js new -> 9.68
 Code Health: src/host/sound.js new -> 10.0
 Code Health: src/host/main.js new -> 10.0
 Code Health: tools/solver.js new -> 10.0
