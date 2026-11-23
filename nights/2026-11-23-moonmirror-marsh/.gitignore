@@ -1,0 +1,6 @@
+# Build scratch, never committed. dist/ is committed on purpose: Pages serves it as is.
+src/bin/
+src/obj/
+publish/
+tools/*/bin/
+tools/*/obj/
