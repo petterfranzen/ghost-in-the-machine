@@ -23,7 +23,18 @@ Marsh.boot = function boot(dotNet) {
   this.bind();
   this.loadSound();
   this.paintSoundButton();
-  requestAnimationFrame((now) => this.tick(now));
+  this.start();
+};
+
+// The frame loop owns requestAnimationFrame; the watchdog restarts it if the
+// browser ever drops a frame (a hidden tab, a throttled headless run).
+Marsh.start = function start() {
+  if (this.frame) return;
+  const step = (now) => { this.frame = requestAnimationFrame(step); this.tick(now); };
+  this.frame = requestAnimationFrame(step);
+  this.watch = window.setInterval(() => {
+    if (performance.now() - (this.clock || 0) > 1200) this.tick(performance.now());
+  }, 800);
 };
 
 Marsh.bind = function bind() {
@@ -216,6 +227,7 @@ Marsh.newLevel = function newLevel() {
   this.motes = [];
   this.idleAt = 0;
   this.fade = 1;
+  this.fadeFrom = performance.now();
   this.heronSung = false;
   document.getElementById('ending').hidden = true;
 };
@@ -296,15 +308,13 @@ Marsh.refreshHint = function refreshHint(now) {
 
 Marsh.tick = function tick(now) {
   this.clock = now;
-  if (this.scene) {
-    this.idle(now);
-    this.drift(now);
-    this.prune(now);
-    this.refreshHint(now);
-    this.fade = Math.max(0, this.fade - 0.022);
-    MarshDraw.paint(this.view(now));
-  }
-  requestAnimationFrame((next) => this.tick(next));
+  if (!this.scene) return;
+  this.idle(now);
+  this.drift(now);
+  this.prune(now);
+  this.refreshHint(now);
+  this.fade = Math.max(0, 1 - (now - this.fadeFrom) / 900);
+  MarshDraw.paint(this.view(now));
 };
 
 Marsh.idle = function idle(now) {
@@ -352,6 +362,10 @@ Marsh.sfx = function sfx(name) { Sound.play(name); };
 Marsh.shutdown = function shutdown() {
   Sound.disable();
   this.scene = null;
+  if (this.frame) window.cancelAnimationFrame(this.frame);
+  if (this.watch) window.clearInterval(this.watch);
+  this.frame = null;
+  this.watch = null;
 };
 
 window.Marsh = Marsh;
