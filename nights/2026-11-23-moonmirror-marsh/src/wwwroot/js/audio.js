@@ -136,11 +136,11 @@ const Sound = {
     if (!this.bed) return;
     const chords = [[110, 164.8], [110, 146.8], [98, 146.8], [87.3, 130.8], [87.3, 123.5]];
     const chord = chords[Math.max(0, Math.min(chords.length - 1, level))];
-    this.glide(this.bed.root, chord[0]);
-    this.glide(this.bed.fifth, chord[1]);
+    this.glideBed(this.bed.root, chord[0]);
+    this.glideBed(this.bed.fifth, chord[1]);
   },
 
-  glide(voice, frequency) {
+  glideBed(voice, frequency) {
     const now = this.ctx.currentTime;
     voice.filter.frequency.linearRampToValueAtTime(500 + frequency, now + 2.5);
     voice.gain.gain.linearRampToValueAtTime(0.055, now + 2.5);
