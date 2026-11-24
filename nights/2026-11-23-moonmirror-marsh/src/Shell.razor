@@ -1,0 +1,27 @@
+@using Microsoft.JSInterop
+@using MoonmirrorMarsh.Game
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+@* Renders nothing: the marsh is drawn on a canvas by the page, and C# holds the rules. *@
+
+@code {
+    private MarshBridge? bridge;
+    private DotNetObjectReference<MarshBridge>? handle;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        bridge = new MarshBridge(new MarshGame(Levels.All), JS);
+        handle = DotNetObjectReference.Create(bridge);
+        await JS.InvokeVoidAsync("Marsh.boot", handle);
+        await bridge.Publish();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (handle is null) return;
+        await JS.InvokeVoidAsync("Marsh.shutdown");
+        handle.Dispose();
+    }
+}

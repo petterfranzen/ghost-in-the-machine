@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050d13" />
+  <meta name="description" content="Moonmirror Marsh: a calm night-marsh puzzle. Turn the stone mirrors so the moonbeam reaches every lantern." />
+  <title>Moonmirror Marsh</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div id="app" hidden></div>
+
+  <main id="marsh">
+    <div id="stage">
+      <canvas id="scene" width="176" height="152" aria-label="The marsh, with stone mirrors and lanterns"></canvas>
+      <div id="ending" hidden>
+        <p id="ending-text"></p>
+        <button id="btn-again" type="button">Walk the marsh again</button>
+      </div>
+    </div>
+
+    <header id="hud">
+      <p id="level-line">Moonmirror Marsh</p>
+      <p id="hint">Lighting the lanterns…</p>
+      <p id="progress"></p>
+    </header>
+
+    <footer id="controls">
+      <button id="btn-undo" type="button">Undo</button>
+      <button id="btn-restart" type="button">Restart</button>
+      <button id="btn-sound" type="button" aria-pressed="false">Sound off</button>
+    </footer>
+  </main>
+
+  <div id="blazor-error-ui" hidden>
+    <span>The marsh needs a moment to wake up. Reload the page to try again.</span>
+  </div>
+
+  <script src="js/audio.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/marsh.js"></script>
+  <script src="_framework/blazor.webassembly.js"></script>
+</body>
+</html>
