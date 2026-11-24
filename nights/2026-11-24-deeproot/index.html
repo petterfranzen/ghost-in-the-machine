@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deeproot</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='3' y='3' width='58' height='58' rx='12' fill='%230b1410' stroke='%238bffbe' stroke-opacity='0.4' stroke-width='3'/%3E%3Ccircle cx='29' cy='25' r='12' fill='none' stroke='%238bffbe' stroke-width='7'/%3E%3Cpath d='M31 34 L31 52 M31 44 Q42 40 44 30' fill='none' stroke='%238bffbe' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<main class="hud" id="hud">
+  <header class="bar">
+    <p class="level" id="level">Level 1 of 7</p>
+    <p class="goal" id="goal">Buds 0 of 0</p>
+  </header>
+  <p class="hint" id="hint"></p>
+  <div class="stage">
+    <canvas id="board" width="672" height="576" role="img" aria-label="A cross-section of earth: soil, stone, water, buds, moss gates and a buried ember."></canvas>
+  </div>
+  <footer class="bar">
+    <button type="button" id="undo">Undo</button>
+    <button type="button" id="restart">Restart</button>
+    <button type="button" id="sound" aria-pressed="false">Sound off</button>
+  </footer>
+  <p class="note" id="note" role="status" aria-live="polite"></p>
+</main>
+<script type="module" src="./app/main.js"></script>
+</body>
+</html>
