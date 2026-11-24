@@ -20,17 +20,17 @@ function makeGame(code) {
   lua.lua_pcall(L, 0, 0, 0);
   lua.lua_getglobal(L, to_luastring('HOST_dispatch'));
   const ref = lauxlib.luaL_ref(L, lua.LUA_REGISTRYINDEX);
-  const call = (op) => {
+  const call = (op, a) => {
     lua.lua_rawgeti(L, lua.LUA_REGISTRYINDEX, ref);
     lua.lua_pushstring(L, to_luastring(op));
-    lua.lua_pushnil(L);
+    if (a === undefined) lua.lua_pushnil(L); else lua.lua_pushinteger(L, a);
     lua.lua_pushnil(L);
     lua.lua_pcall(L, 3, 1, 0);
     const out = to_jsstring(lua.lua_tostring(L, -1));
     lua.lua_pop(L, 1);
     return out;
   };
-  return { snap: () => JSON.parse(call('snap')) };
+  return { snap: () => JSON.parse(call('snap')), jump: (li) => call('jump', li) };
 }
 
 let failures = 0;
@@ -51,7 +51,29 @@ check('south band starts at the centre', box.S.y === 350, `${box.S.y}`);
 const inside = (b) => b.x >= 200 && b.y >= 300 && b.x + b.w <= 302 && b.y + b.h <= 402;
 check('every band lies inside the tile', Object.values(box).every(inside));
 
-const snap = makeGame(src).snap();
+const game = makeGame(src);
+
+// Every stone on every level must draw its whole shape: each open side's band
+// stays inside the tile, so the tile clip never cuts a groove in half.
+const SIDES = [
+  { name: 'N', bit: 1 }, { name: 'E', bit: 2 }, { name: 'S', bit: 4 }, { name: 'W', bit: 8 },
+];
+const dirOf = { N: D.N, E: D.E, S: D.S, W: D.W };
+const levelBox = { px: 0, py: 0, s: 100 };
+const insideTile = (b) => b.x >= 0 && b.y >= 0 && b.x + b.w <= 102 && b.y + b.h <= 102;
+const maskGrid = (str) => str.split(';').map((row) => row.split(',').map(Number));
+for (let li = 1; li <= 6; li += 1) {
+  game.jump(li);
+  const grid = maskGrid(game.snap().course);
+  const pieces = grid.flat().filter((m) => m > 0).length;
+  const cut = SIDES.filter((side) => grid.some((row) => row.some((m) =>
+    m & side.bit && !insideTile(bandRect(levelBox, dirOf[side.name], 0.28)))));
+  check(`level ${li}: every open band stays inside its tile`, pieces > 0 && cut.length === 0,
+    cut.map((c) => c.name).join(','));
+}
+
+game.jump(1);
+const snap = game.snap();
 const cells = courseCells(snap.path, snap.course, snap.gardens);
 const at = (x, y) => cells.some((c) => c.x === x && c.y === y);
 
