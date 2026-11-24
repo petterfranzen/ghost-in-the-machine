@@ -1,4 +1,5 @@
 // Canvas painter. It only reads the view it is handed: no game rules here.
+import { courseLinks } from './course.js';
 const C = {
   bg0: '#08161d', bg1: '#0f2830',
   stone: '#2a515c', stoneTop: '#3a6c78', stoneDeep: '#143039',
@@ -26,16 +27,22 @@ function roundRect(ctx, box) {
 }
 
 // A rectangle from the stone's centre out to one edge, width as a fraction of s.
-function band(ctx, stone, side, width) {
+// It stays inside the tile: a west band starts at px, a north band at py, each
+// running to the centre, so the clipped groove and its water are never cut away.
+export function bandRect(stone, side, width) {
   const { px, py, s } = stone;
   const w = s * width, c = s / 2, half = w / 2;
   if (side.dx) {
-    const x = side.dx > 0 ? px + c : px - c;
-    ctx.rect(x, py + c - half, c + 2, w);
-  } else {
-    const y = side.dy > 0 ? py + c : py - c;
-    ctx.rect(px + c - half, y, w, c + 2);
+    const x = side.dx > 0 ? px + c : px;
+    return { x, y: py + c - half, w: c + 2, h: w };
   }
+  const y = side.dy > 0 ? py + c : py;
+  return { x: px + c - half, y, w, h: c + 2 };
+}
+
+function band(ctx, stone, side, width) {
+  const r = bandRect(stone, side, width);
+  ctx.rect(r.x, r.y, r.w, r.h);
 }
 
 // A side carries water only when the stone beyond it is wet and joined to us.
@@ -223,24 +230,22 @@ function drawCourse(ctx, view) {
   const course = view.course;
   if (!course || course.fade <= 0.01) return;
   const s = view.tile;
-  const cells = new Set(course.cells.map((c) => `${c[0]},${c[1]}`));
   ctx.save();
   ctx.lineWidth = Math.max(2, s * 0.09);
   ctx.lineCap = 'round';
   ctx.strokeStyle = C.waterLit;
   ctx.fillStyle = C.waterLit;
-  for (const [x, y] of course.cells) {
-    ctx.globalAlpha = 0.5 * course.fade;
+  ctx.globalAlpha = 0.5 * course.fade;
+  for (const cell of course.cells) {
     ctx.beginPath();
-    ctx.arc((x + 0.5) * s, (y + 0.5) * s, s * 0.09, 0, 6.283);
+    ctx.arc((cell.x + 0.5) * s, (cell.y + 0.5) * s, s * 0.09, 0, 6.283);
     ctx.fill();
-    for (const side of SIDES) {
-      if (!cells.has(`${x + side.dx},${y + side.dy}`)) continue;
-      ctx.beginPath();
-      ctx.moveTo((x + 0.5) * s, (y + 0.5) * s);
-      ctx.lineTo((x + 0.5 + side.dx * 0.5) * s, (y + 0.5 + side.dy * 0.5) * s);
-      ctx.stroke();
-    }
+  }
+  for (const link of courseLinks(course.cells)) {
+    ctx.beginPath();
+    ctx.moveTo((link.x + 0.5) * s, (link.y + 0.5) * s);
+    ctx.lineTo((link.x + 0.5 + link.dx * 0.5) * s, (link.y + 0.5 + link.dy * 0.5) * s);
+    ctx.stroke();
   }
   ctx.restore();
 }

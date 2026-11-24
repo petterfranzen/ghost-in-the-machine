@@ -5,6 +5,7 @@ import { createAudio } from './audio.js';
 import { createBoard } from './board.js';
 import { createGestures } from './gestures.js';
 import { createEffects } from './effects.js';
+import { courseCells } from './course.js';
 
 const STORE_KEY = 'stillspring.sound';
 
@@ -47,16 +48,6 @@ function setSoundButton() {
 function wetFraction(view) {
   const wet = view.tiles.filter((tile) => tile[4] >= 0).length;
   return wet / Math.max(1, view.tiles.length);
-}
-
-function parsePath(path) {
-  const cells = [];
-  path.split(';').forEach((row, y) => {
-    row.split(',').forEach((value, x) => {
-      if (Number(value) >= 0) cells.push([x, y]);
-    });
-  });
-  return cells;
 }
 
 function tileAt(x, y) {
@@ -122,7 +113,7 @@ function activate(x, y) {
 
 function traceWater(tile) {
   audio.play('garden');
-  effects.showCourse(parsePath(state.path), clock);
+  effects.showCourse(courseCells(state.path, state.course, state.gardens), clock);
   effects.flash(tile[0], tile[1], clock);
   announce('The garden remembers the way the water took.');
 }

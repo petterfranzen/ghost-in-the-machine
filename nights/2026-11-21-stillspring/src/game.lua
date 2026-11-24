@@ -164,8 +164,21 @@ local function hintTile()
   return best
 end
 
--- Distances once every stone is turned home: the shape of the finished stream.
-local function solvedDistances()
+-- A 2D number grid as ';'-joined, ','-split rows (row 0 first).
+local function gridJson(values)
+  local rows = {}
+  for y = 0, Game.h - 1 do
+    local row = {}
+    for x = 0, Game.w - 1 do row[#row + 1] = values[y][x] end
+    rows[#rows + 1] = table.concat(row, ',')
+  end
+  return table.concat(rows, ';')
+end
+
+-- The finished stream: how far the water runs from the spring (the trace), and
+-- the open ports each stone shows once every stone is turned home, so the host
+-- can tell which neighbours the water truly joins.
+local function solvedStream()
   local saved = {}
   eachTile(function(tile) saved[#saved + 1] = tile.rot end)
   local i = 0
@@ -174,19 +187,19 @@ local function solvedDistances()
     tile.rot = 0
   end)
   flood()
-  local rows = {}
+  local portGrid = {}
   for y = 0, Game.h - 1 do
-    local row = {}
-    for x = 0, Game.w - 1 do row[#row + 1] = Game.dist[y][x] end
-    rows[#rows + 1] = table.concat(row, ',')
+    portGrid[y] = {}
+    for x = 0, Game.w - 1 do portGrid[y][x] = ports(at(x, y)) end
   end
+  local dist, prt = gridJson(Game.dist), gridJson(portGrid)
   i = 0
   eachTile(function(tile)
     i = i + 1
     tile.rot = saved[i]
   end)
   flood()
-  return table.concat(rows, ';')
+  return dist, prt
 end
 
 local function tileJson(tile, x, y)
@@ -218,6 +231,7 @@ end
 
 local function snapshot()
   local lv = LEVELS[Game.li]
+  local path, course = solvedStream()
   return '{' .. table.concat({
     pair('name', string.format('%q', lv.name)),
     pair('hint', string.format('%q', lv.hint)),
@@ -232,7 +246,8 @@ local function snapshot()
     pair('tiles', tilesJson()),
     pair('gardens', gardensJson()),
     pair('spring', string.format('[%d,%d]', Game.spring[1], Game.spring[2])),
-    pair('path', string.format('%q', solvedDistances())),
+    pair('path', string.format('%q', path)),
+    pair('course', string.format('%q', course)),
   }, ',') .. '}'
 end
 
