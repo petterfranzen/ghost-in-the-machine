@@ -93,7 +93,8 @@ class View
   def beat(speed = 1.0) = Math.sin(@time * speed)
 
   def draw_room(session)
-    Paint.fill(0, 0, 96, Layout::ROOM_H, Palette::WALL_WARM)
+    Paint.fill(0, 0, Layout::W, Layout::ROOM_H, Palette::WALL_WARM)
+    Paint.fill(0, Layout::ROOM_H, Layout::W, 3, Paint.alpha(Palette::WOOD_DARK, 0.35))
     Paint.fill(0, Layout::H - 9, Layout::W, 9, Palette::WOOD_DARK)
     draw_window
     draw_lamp
@@ -155,8 +156,10 @@ class View
     py = Layout.plank_y(index, count)
     shake = @shake[index] ? (Math.sin(@shake[index] * 40) * 2).round : 0
     rx += shake
-    Paint.fill(rx + 2, py - (rack.capacity * Layout::JAR_H) - 4, Layout::CELL_W - 4,
-               rack.capacity * Layout::JAR_H + 4, Palette::WOOD_DARK)
+    unless rack.empty?
+      Paint.fill(rx + 2, py - (rack.capacity * Layout::JAR_H) - 4, Layout::CELL_W - 4,
+                 rack.capacity * Layout::JAR_H + 4, Palette::WOOD_DARK)
+    end
     rack.jars.each_with_index do |jar, level|
       draw_jar(Paint, rx + 3, py - ((level + 1) * Layout::JAR_H) + drop_for(index), jar)
     end
@@ -169,6 +172,7 @@ class View
   def draw_plank(rx, py)
     Paint.fill(rx, py, Layout::CELL_W, Layout::PLANK_H, Palette::SHELF_WOOD)
     Paint.fill(rx, py, Layout::CELL_W, 1, Palette::SHELF_EDGE)
+    Paint.fill(rx + 1, py + Layout::PLANK_H, Layout::CELL_W - 2, 2, Paint.alpha(Palette::WOOD_DARK, 0.55))
   end
 
   def draw_overlays(rack, index, at)
