@@ -83,30 +83,34 @@ let water_tile v i =
 
 let deep_tile v i =
   unit_fill v i 0.0 0.0 1.0 1.0 (shade Palette.deep (Level.y_of v.level i));
-  for k = 0 to 1 do
-    let u = 0.18 +. (0.34 *. float_of_int k) in
-    unit_fill v i u 0.44 0.12 0.045 "rgba(122, 210, 214, 0.10)"
-  done
+  (* A faint diagonal hatch: deep water is a place, not just a paler wash. *)
+  for k = 0 to 2 do
+    let u = 0.08 +. (0.30 *. float_of_int k) in
+    unit_fill v i u u 0.14 0.10 Palette.deep_line
+  done;
+  stone_edge v i "rgba(126, 194, 202, 0.20)"
 
 let arrow v i dir =
   let dx, dy = Level.delta dir in
   let u = 0.5 +. (0.22 *. float_of_int dx) and w = 0.5 +. (0.22 *. float_of_int dy) in
   let stem_w = if dx = 0 then 0.08 else 0.28 in
   let stem_h = if dy = 0 then 0.08 else 0.28 in
-  unit_fill v i (0.5 -. (stem_w /. 2.0)) (0.5 -. (stem_h /. 2.0)) stem_w stem_h "rgba(176, 236, 224, 0.62)";
+  unit_fill v i (0.5 -. (stem_w /. 2.0)) (0.5 -. (stem_h /. 2.0)) stem_w stem_h "rgba(176, 236, 224, 0.75)";
   let side = 0.1 in
   if dx <> 0 then
-    unit_fill v i (u -. side) (w -. 0.14) 0.14 0.28 "rgba(176, 236, 224, 0.62)"
-  else unit_fill v i (u -. 0.14) (w -. side) 0.28 0.14 "rgba(176, 236, 224, 0.62)"
+    unit_fill v i (u -. side) (w -. 0.14) 0.14 0.28 "rgba(176, 236, 224, 0.75)"
+  else unit_fill v i (u -. 0.14) (w -. side) 0.28 0.14 "rgba(176, 236, 224, 0.75)"
 
 let moss_tile v i =
   unit_fill v i 0.0 0.0 1.0 1.0 (shade Palette.moss (i * 3));
+  (* A sparse stipple in a lighter green, so a moss stone reads as moss at
+     phone brightness instead of as a slightly darker tile. *)
   let salt = float_of_int i in
-  for k = 0 to 1 do
+  for k = 0 to 2 do
     let u = Util.hash (salt +. float_of_int k) 1.0 and w = Util.hash (salt +. float_of_int k) 2.0 in
-    unit_fill v i (0.14 +. (0.66 *. u)) (0.14 +. (0.66 *. w)) 0.13 0.11 "rgba(24, 40, 34, 0.26)"
+    unit_fill v i (0.14 +. (0.58 *. u)) (0.14 +. (0.58 *. w)) 0.15 0.12 Palette.moss_dot
   done;
-  stone_edge v i "rgba(16, 28, 26, 0.42)"
+  stone_edge v i "rgba(16, 28, 26, 0.50)"
 
 (* A drop of dew: asleep it is a dim bead, awake it is a soft bead with a
    small steady halo that breathes once every ten seconds. *)

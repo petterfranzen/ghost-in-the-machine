@@ -54,11 +54,11 @@ let light_flowers done_n current =
 
 (* Only name the rules this pond actually uses. *)
 let legend level =
-  let has_deep = Array.exists (fun t -> t = Level.Deep) level.Level.cells in
-  let has_current =
-    Array.exists (function Level.Current _ -> true | _ -> false) level.cells in
-  show "key-deep" has_deep;
-  show "key-current" has_current
+  let has t = Array.exists (fun x -> x = t) level.Level.cells in
+  show "key-moss" (has Level.Moss);
+  show "key-deep" (has Level.Deep);
+  show "key-current"
+    (Array.exists (function Level.Current _ -> true | _ -> false) level.cells)
 
 let paint_sound on =
   set_text "sound" (if on then "Sound on" else "Sound off");

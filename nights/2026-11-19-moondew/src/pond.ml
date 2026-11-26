@@ -37,7 +37,6 @@ let wake_pond w =
   w.unlocked <- max w.unlocked (index + 1);
   play w Audio.bloom;
   Hud.banner (Printf.sprintf "Pond %d awake - every dew is lit" index);
-  Hud.say "the pond is awake";
   Hud.light_flowers (min (max 0 (w.unlocked - 1)) Level.count_levels) 0;
   later w 2.6 (fun () ->
       Hud.hide_banner ();

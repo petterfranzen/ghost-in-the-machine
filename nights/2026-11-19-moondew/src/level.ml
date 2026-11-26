@@ -98,19 +98,21 @@ let spring_of w h = ((w / 2) * 1) + ((h - 1) * w)
 
 (* How many neighbours of [i] the trail has not touched yet: a cell with the
    fewest ways out is the best pick, because walking it last keeps the trail
-   from cornering itself. *)
-let openness visits l i =
+   from cornering itself.  Moss is stone the trail may not enter, so it is
+   filtered out here. *)
+let openness visits blocked l i =
   neighbours l i
-  |> List.filter (fun j -> visits.(j) = 0)
+  |> List.filter (fun j -> visits.(j) = 0 && not blocked.(j))
   |> List.length
 
-let pick_fresh rng visits l i =
-  let fresh = neighbours l i |> List.filter (fun j -> visits.(j) = 0) in
+let pick_fresh rng visits blocked l i =
+  let fresh =
+    neighbours l i |> List.filter (fun j -> visits.(j) = 0 && not blocked.(j)) in
   match fresh with
   | [] -> None
   | _ ->
-    let best = List.fold_left (fun acc j -> min acc (openness visits l j)) 99 fresh in
-    let good = List.filter (fun j -> openness visits l j = best) fresh in
+    let best = List.fold_left (fun acc j -> min acc (openness visits blocked l j)) 99 fresh in
+    let good = List.filter (fun j -> openness visits blocked l j = best) fresh in
     Some (List.nth good (Util.rand_int rng (List.length good)))
 
 let pick_wet rng visits l i =
@@ -125,7 +127,7 @@ let pick_wet rng visits l i =
    itself.  While the pond is deep the trail may also cross itself, but only
    a few times, and each crossing turns that stone into deep water. *)
 
-let walk rng spec spring =
+let walk rng spec spring blocked =
   let l = { index = 0; w = fst spec.size; h = snd spec.size; cells = [||];
             spring; dew_total = 0; caption = ""; solution = [||] } in
   let visits = Array.make (size l) 0 in
@@ -141,7 +143,7 @@ let walk rng spec spring =
           | None -> None
       in
       let next =
-        match pick_fresh rng visits l pos with
+        match pick_fresh rng visits blocked l pos with
         | Some j when spec.deep && Util.chance rng 0.15 ->
           (match wet () with Some k -> Some k | None -> Some j)
         | Some j -> Some j
@@ -182,16 +184,49 @@ let direction_of_step l a b =
   let dx = x_of l b - x_of l a and dy = y_of l b - y_of l a in
   if dx > 0 then E else if dx < 0 then W else if dy > 0 then S else N
 
+(* Moss is placed before the trail is grown, so the trail has something to
+   go around.  Without this a small pond's walk covers every cell and no moss
+   is ever left over - which is how pond 2 came to teach a rule with nothing
+   to walk around. *)
+let pick_moss rng n count spring =
+  let blocked = Array.make n false in
+  let cand = Array.init n (fun i -> i) in
+  let tmp = cand.(spring) in
+  cand.(spring) <- cand.(n - 1); cand.(n - 1) <- tmp;
+  Util.shuffle rng cand;
+  let k = min count (n - 1) in
+  for i = 0 to k - 1 do blocked.(cand.(i)) <- true done;
+  blocked
+
+(* How many distinct cells the walk touched, not counting the koi's stone. *)
+let fresh_cells spring visits =
+  let n = ref 0 in
+  Array.iteri (fun i v -> if v = 1 && i <> spring then incr n) visits;
+  !n
+
 let generate index =
   let spec = spec_of index in
   let rng = Util.make_rng ((index * 7919) + 31) in
   let w, h = spec.size in
-  let cells = Array.make (w * h) Water in
-  let shape = { index; w; h; cells; spring = 0; dew_total = 0;
-                caption = spec.caption; solution = [||] } in
+  let n = w * h in
   let spring = spring_of w h in
-  let path, visits = walk rng spec spring in
-  let shape = { shape with spring } in
+  let empty = Array.make n false in
+  let wanted = n * spec.moss / 100 in
+  (* Place the moss first, then grow a trail that keeps out of it.  If the
+     trail cannot reach every dew around the moss, give a tile back and try
+     again; the last resort is a pond with no moss at all. *)
+  let rec attempt tries target =
+    if target <= 0 then (empty, walk rng spec spring empty)
+    else
+      let blocked = pick_moss rng n target spring in
+      let path, visits = walk rng spec spring blocked in
+      if fresh_cells spring visits >= spec.dew + 2 then (blocked, (path, visits))
+      else attempt (tries - 1) (target - 1)
+  in
+  let blocked, (path, visits) = attempt 12 wanted in
+  let cells = Array.make n Water in
+  let shape = { index; w; h; cells; spring; dew_total = 0;
+                caption = spec.caption; solution = [||] } in
   let dew = choose rng spring visits spec.dew in
   let straight = currents rng spec path |> List.map (fun (c, step) ->
       let next = c + step in
@@ -201,7 +236,7 @@ let generate index =
       let current = List.assoc_opt i straight in
       cells.(i) <-
         if i = spring then Spring
-        else if v = 0 then (if Util.rand_int rng 100 < spec.moss then Moss else Water)
+        else if v = 0 then (if blocked.(i) then Moss else Water)
         else if v > 1 then Deep
         else if was_dew then Dew
         else match current with Some d -> Current d | None -> Water) visits;

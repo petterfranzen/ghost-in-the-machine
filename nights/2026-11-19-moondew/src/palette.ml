@@ -5,10 +5,12 @@
 let bg_top = "#101c2d"
 let bg_bottom = "#0a111d"
 
-let moss = [| "#2b4139"; "#334b41"; "#233329" |]
+let moss = [| "#5a8463"; "#618c6b"; "#527a5c" |]
+let moss_dot = "rgba(143, 184, 148, 0.60)"
 let water = [| "#1b3049"; "#1e3550"; "#172a40" |]
-let deep = [| "#15424f"; "#194b58"; "#123743" |]
-let current = "#2a5f66"
+let deep = [| "#357f92"; "#3a8699"; "#31788a" |]
+let deep_line = "rgba(143, 208, 212, 0.42)"
+let current = "#42899a"
 
 let stone = "#3a485a"
 let grid = "rgba(150, 196, 232, 0.13)"
