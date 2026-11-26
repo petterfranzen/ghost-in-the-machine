@@ -200,23 +200,30 @@ attachPointer(canvas, {
         scene.preview = null;
     },
 });
+// The choice survives a reload; the audio itself waits for a gesture, so the
+// label tells the truth about the choice while the bed is still silent.
+let soundWanted = savedChoice();
 function syncSound() {
-    const on = sound?.on === true;
-    soundBtn.setAttribute("aria-pressed", String(on));
-    soundBtn.textContent = on ? "Sound on" : "Sound off";
+    soundBtn.setAttribute("aria-pressed", String(soundWanted));
+    soundBtn.textContent = soundWanted ? "Sound on" : "Sound off";
 }
 function toggleSound() {
-    sound = sound ?? createSound();
-    setEnabled(sound, !sound.on);
-    rememberChoice(sound.on);
+    soundWanted = !soundWanted;
+    if (soundWanted) {
+        sound = sound ?? createSound();
+        setEnabled(sound, true);
+    }
+    else if (sound) {
+        setEnabled(sound, false);
+    }
+    rememberChoice(soundWanted);
     syncSound();
 }
 function restoreSound() {
-    if (!savedChoice() || sound)
+    if (!soundWanted || sound)
         return;
     sound = createSound();
     setEnabled(sound, true);
-    syncSound();
 }
 soundBtn.addEventListener("click", toggleSound);
 document.addEventListener("pointerdown", restoreSound, { once: true });
@@ -233,6 +240,7 @@ hud.next.addEventListener("click", () => {
     const finished = game.levelIndex === levelCount() - 1;
     load(finished ? 0 : game.levelIndex + 1);
 });
+syncSound();
 sizeBackground();
 window.addEventListener("resize", sizeBackground);
 load(0);

@@ -48,6 +48,26 @@ recorded solution opens all of it.
 - **Stay still** — after about twenty seconds the open flowers attract
   fireflies; stay longer and more arrive.
 
+## The sounds
+
+All of it is synthesised in the browser with Web Audio — no files, no samples.
+
+- **Wind bed** — filtered noise, always under everything, a little louder as the
+  meadow opens.
+- **Slow pad** — three detuned oscillators behind a lowpass; its filter opens as
+  more flowers open, so the meadow sounds brighter as you get closer.
+- **Tap** — a 540 Hz sine blip, 0.2 s.
+- **Bloom** — 660 Hz triangle then 990 Hz sine, a fifth apart, so opening a
+  flower sounds like a small rise.
+- **Undo** — a 300 Hz sine, falling back.
+- **Next meadow** — 392 Hz then 523 Hz, a soft step up.
+- **Meadow solved** — 523, 659, 784 Hz, a slow arpeggio.
+- **Fireflies** — a high, quiet shimmer when the idle meadow wakes.
+
+Turning sound on plays a short chime at once and fades the bed in over about a
+tenth of a second. A compressor sits on the master bus so many flowers at once
+never clip.
+
 ## How it was built
 
 The board is a small pure model (`board.ts`, `session.ts`): a grid of cells,
