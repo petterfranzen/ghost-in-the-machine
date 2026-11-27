@@ -1,0 +1,81 @@
+import type { Level } from "./types.js";
+
+export const LEVELS: Level[] = [
+  {
+    name: "The first hollow",
+    hint: "Swipe to step closer, and the seed is nudged along in front of you. Guide it into the glowing hollow. Press and hold the floor to make hollows glow.",
+    rows: [
+      "#######",
+      "#.....#",
+      "#.@so.#",
+      "#.....#",
+      "#######",
+    ],
+  },
+  {
+    name: "Around the root",
+    hint: "A seed cannot be pulled - walk around it and push from the other side.",
+    rows: [
+      "#######",
+      "#.....#",
+      "#.@s..#",
+      "#..#..#",
+      "#..o..#",
+      "#######",
+    ],
+  },
+  {
+    name: "Two seeds",
+    hint: "Seeds rest against each other. Bring them to their own hollows, one at a time.",
+    rows: [
+      "########",
+      "#......#",
+      "#.@s.s.#",
+      "#......#",
+      "#.o..o.#",
+      "########",
+    ],
+  },
+  {
+    name: "The long root",
+    hint: "Push a seed along a wall, then step around the far end to meet it.",
+    rows: [
+      "########",
+      "#......#",
+      "#.####.#",
+      "#.#..#.#",
+      "#.@..o.#",
+      "#.s....#",
+      "#......#",
+      "########",
+    ],
+  },
+  {
+    name: "Between the ferns",
+    hint: "Two hollows, two seeds, and a narrow gap - order matters.",
+    rows: [
+      "########",
+      "#......#",
+      "#.s..s.#",
+      "#.#..#.#",
+      "#.o..o.#",
+      "#..@...#",
+      "########",
+    ],
+  },
+  {
+    name: "Moonwake",
+    hint: "Three seeds wait in the orchard. Tuck them all away and the glade will wake.",
+    rows: [
+      "#########",
+      "#.......#",
+      "#.s...s.#",
+      "#..###..#",
+      "#.o...o.#",
+      "#...#...#",
+      "#.s.@...#",
+      "#.....o.#",
+      "#########",
+    ],
+  },
+];
