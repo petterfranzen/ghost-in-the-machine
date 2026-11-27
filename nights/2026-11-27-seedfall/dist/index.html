@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seedfall</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='3' y='3' width='58' height='58' rx='14' fill='%230a1020' stroke='%237fd6c0' stroke-opacity='0.5' stroke-width='3'/%3E%3Ccircle cx='32' cy='34' r='11' fill='%23f0bd72'/%3E%3Cpath d='M32 22c0-6 5-9 9-10-1 6-4 9-9 10z' fill='%237fd6c0'/%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main class="hud" id="hud">
+  <header class="bar">
+    <p class="level" id="level">Glade 1 of 6</p>
+    <p class="goal" id="goal">Seeds tucked 0 of 1</p>
+    <button type="button" class="sound" id="sound" aria-pressed="false" aria-label="Sound is off">Sound off</button>
+  </header>
+  <p class="hint" id="hint"></p>
+  <div class="stage">
+    <canvas id="board" tabindex="0" role="application" aria-label="A moonlit orchard floor. Swipe or use the arrow controls to nudge seeds into the hollows."></canvas>
+    <section class="banner" id="banner" hidden>
+      <p class="banner-text" id="banner-text"></p>
+      <button type="button" id="next" class="primary">Next glade</button>
+    </section>
+  </div>
+  <footer class="controls">
+    <div class="pad" role="group" aria-label="Move">
+      <button type="button" class="pad-btn up" id="move-up" aria-label="Move up">&#9650;</button>
+      <button type="button" class="pad-btn left" id="move-left" aria-label="Move left">&#9664;</button>
+      <button type="button" class="pad-btn right" id="move-right" aria-label="Move right">&#9654;</button>
+      <button type="button" class="pad-btn down" id="move-down" aria-label="Move down">&#9660;</button>
+    </div>
+    <div class="acts">
+      <button type="button" id="undo">Undo</button>
+      <button type="button" id="restart">Restart</button>
+    </div>
+  </footer>
+  <p class="note" id="note" role="status" aria-live="polite"></p>
+</main>
+<script type="module" src="./app/main.js"></script>
+</body>
+</html>

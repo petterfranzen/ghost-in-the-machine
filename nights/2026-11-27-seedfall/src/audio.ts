@@ -1,0 +1,256 @@
+// Seedfall's sound: a small Web Audio world. Everything is synthesised —
+// oscillators, filtered noise and envelopes — so the whole night weighs
+// a few kilobytes. The bed is a low pad, a breath of air and a warm layer
+// that opens as more hollows are filled.
+
+export type Sfx = "step" | "blocked" | "tuck" | "solve" | "undo" | "restart" | "listen" | "next";
+
+const MASTER = 0.6;
+
+interface ToneOpts {
+  type?: OscillatorType;
+  gain?: number;
+  when?: number;
+  glide?: number;
+  attack?: number;
+}
+
+interface Layer {
+  node: GainNode;
+  input: AudioNode;
+}
+
+interface PuffOpts {
+  gain?: number;
+  freq?: number;
+  sweep?: number;
+  q?: number;
+  when?: number;
+}
+
+export class Sound {
+  private ctx: AudioContext | null = null;
+  private master: GainNode | null = null;
+  private bed: GainNode | null = null;
+  private pad: Layer | null = null;
+  private warm: Layer | null = null;
+  private air: Layer | null = null;
+  private noise: AudioBuffer | null = null;
+  private on = false;
+
+  get enabled(): boolean {
+    return this.on;
+  }
+
+  setOn(want: boolean): boolean {
+    if (want) this.start();
+    else this.stop();
+    return this.on;
+  }
+
+  resume(): void {
+    if (this.ctx !== null && this.on) void this.ctx.resume();
+  }
+
+  setWarmth(amount: number): void {
+    const ctx = this.ctx;
+    if (ctx === null || this.warm === null) return;
+    const t = ctx.currentTime;
+    this.warm.node.gain.setTargetAtTime(0.012 + Math.max(0, Math.min(1, amount)) * 0.05, t, 0.8);
+  }
+
+  play(name: Sfx): void {
+    if (!this.on || this.ctx === null) return;
+    switch (name) {
+      case "step":
+        this.tone(196, 0.16, { type: "triangle", gain: 0.16, glide: 148 });
+        this.puff(0.09, { gain: 0.05, freq: 1400 });
+        break;
+      case "blocked":
+        this.tone(118, 0.16, { gain: 0.12, glide: 88 });
+        break;
+      case "tuck":
+        this.tone(523.25, 0.7, { gain: 0.2 });
+        this.tone(783.99, 0.9, { gain: 0.12, when: 0.05 });
+        break;
+      case "solve":
+        [392, 523.25, 659.25, 783.99].forEach((f, i) => this.tone(f, 1.1, { gain: 0.16, when: i * 0.13 }));
+        break;
+      case "undo":
+        this.tone(440, 0.18, { type: "triangle", gain: 0.14, glide: 300 });
+        break;
+      case "restart":
+        this.puff(0.5, { gain: 0.12, freq: 900, sweep: 220 });
+        break;
+      case "listen":
+        this.tone(1174.66, 1.4, { gain: 0.1 });
+        this.tone(1567.98, 1.6, { gain: 0.08, when: 0.12 });
+        break;
+      case "next":
+        this.tone(329.63, 0.35, { gain: 0.14 });
+        this.tone(440, 0.5, { gain: 0.12, when: 0.1 });
+        break;
+    }
+  }
+
+  private start(): void {
+    const ctx = this.ensure();
+    if (ctx === null) return;
+    void ctx.resume();
+    this.on = true;
+    this.bed?.gain.setTargetAtTime(0.5, ctx.currentTime, 0.22);
+    this.tone(660, 0.5, { gain: 0.22 });
+    this.tone(990, 0.7, { gain: 0.12, when: 0.08 });
+  }
+
+  private stop(): void {
+    const ctx = this.ctx;
+    this.on = false;
+    if (ctx === null) return;
+    this.bed?.gain.setTargetAtTime(0, ctx.currentTime, 0.12);
+  }
+
+  private ensure(): AudioContext | null {
+    if (this.ctx !== null) return this.ctx;
+    const Ctor = window.AudioContext ?? (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (Ctor === undefined) return null;
+    const ctx = new Ctor();
+    const master = ctx.createGain();
+    master.gain.value = MASTER;
+    const limiter = ctx.createDynamicsCompressor();
+    limiter.threshold.value = -16;
+    limiter.knee.value = 12;
+    limiter.ratio.value = 8;
+    limiter.attack.value = 0.004;
+    limiter.release.value = 0.25;
+    master.connect(limiter);
+    limiter.connect(ctx.destination);
+    this.ctx = ctx;
+    this.master = master;
+    this.buildBed(ctx);
+    return ctx;
+  }
+
+  private buildBed(ctx: AudioContext): void {
+    const bed = ctx.createGain();
+    bed.gain.value = 0;
+    bed.connect(this.master!);
+    this.bed = bed;
+    this.pad = this.layer(ctx, bed, 620, 0.07);
+    this.warm = this.layer(ctx, bed, 1500, 0.018);
+    this.air = this.layer(ctx, bed, 780, 0.035);
+    this.padOscillators(ctx, this.pad);
+    this.wind(ctx, this.air);
+    this.breathe(ctx);
+  }
+
+  private layer(ctx: AudioContext, out: GainNode, freq: number, gain: number): Layer {
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = freq;
+    filter.Q.value = 0.6;
+    const node = ctx.createGain();
+    node.gain.value = gain;
+    filter.connect(node);
+    node.connect(out);
+    return { node, input: filter };
+  }
+
+  private padOscillators(ctx: AudioContext, pad: Layer): void {
+    for (const [freq, detune] of [[110, -4], [164.81, 5], [220, 0]] as const) {
+      const osc = ctx.createOscillator();
+      osc.type = "triangle";
+      osc.frequency.value = freq;
+      osc.detune.value = detune;
+      osc.connect(pad.input);
+      osc.start();
+    }
+  }
+
+  private wind(ctx: AudioContext, air: Layer): void {
+    const src = ctx.createBufferSource();
+    src.buffer = this.noiseBuffer(ctx);
+    src.loop = true;
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.frequency.value = 520;
+    band.Q.value = 0.7;
+    src.connect(band);
+    band.connect(air.input);
+    src.start();
+  }
+
+  private breathe(ctx: AudioContext): void {
+    const lfo = ctx.createOscillator();
+    const depth = ctx.createGain();
+    lfo.frequency.value = 0.045;
+    depth.gain.value = 0.02;
+    lfo.connect(depth);
+    depth.connect(this.air!.node.gain);
+    lfo.start();
+    const slow = ctx.createOscillator();
+    const sway = ctx.createGain();
+    slow.frequency.value = 0.07;
+    sway.gain.value = 0.025;
+    slow.connect(sway);
+    sway.connect(this.pad!.node.gain);
+    slow.start();
+  }
+
+  private noiseBuffer(ctx: AudioContext): AudioBuffer {
+    if (this.noise !== null) return this.noise;
+    const frames = Math.floor(ctx.sampleRate * 2);
+    const buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < frames; i += 1) {
+      const white = Math.random() * 2 - 1;
+      last = last * 0.96 + white * 0.04;
+      data[i] = last * 3.2;
+    }
+    this.noise = buffer;
+    return buffer;
+  }
+
+  private tone(freq: number, dur: number, opts: ToneOpts = {}): void {
+    const ctx = this.ctx;
+    if (ctx === null || this.master === null) return;
+    const t = ctx.currentTime + (opts.when ?? 0);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = opts.type ?? "sine";
+    osc.frequency.setValueAtTime(freq, t);
+    if (opts.glide !== undefined) osc.frequency.exponentialRampToValueAtTime(Math.max(20, opts.glide), t + dur);
+    const peak = opts.gain ?? 0.2;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(peak, t + (opts.attack ?? 0.008));
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(gain);
+    gain.connect(this.master);
+    osc.start(t);
+    osc.stop(t + dur + 0.05);
+  }
+
+  private puff(dur: number, opts: PuffOpts = {}): void {
+    const ctx = this.ctx;
+    if (ctx === null || this.master === null) return;
+    const t = ctx.currentTime + (opts.when ?? 0);
+    const src = ctx.createBufferSource();
+    src.buffer = this.noiseBuffer(ctx);
+    src.loop = true;
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.Q.value = opts.q ?? 1.1;
+    band.frequency.setValueAtTime(opts.freq ?? 800, t);
+    band.frequency.exponentialRampToValueAtTime(Math.max(60, opts.sweep ?? opts.freq ?? 800), t + dur);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(opts.gain ?? 0.12, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(band);
+    band.connect(gain);
+    gain.connect(this.master);
+    src.start(t);
+    src.stop(t + dur + 0.05);
+  }
+}
