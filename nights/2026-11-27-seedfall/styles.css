@@ -74,7 +74,17 @@ body {
   color: #dff6ee;
 }
 .goal { margin: 0; color: var(--faint); }
-.hint { margin: 0; min-height: 2.9em; color: var(--faint); flex: 0 0 auto; }
+.hint {
+  margin: 0;
+  min-height: 2.9em;
+  color: var(--faint);
+  flex: 0 0 auto;
+  text-shadow: 0 1px 3px rgba(6, 10, 22, 0.9);
+}
+
+@media (min-width: 900px) {
+  .hud { max-width: 42rem; }
+}
 
 .stage {
   position: relative;

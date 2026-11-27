@@ -49,8 +49,8 @@ function stars(ctx: CanvasRenderingContext2D, w: number, h: number): void {
 }
 
 function moon(ctx: CanvasRenderingContext2D, w: number, h: number): void {
-  const x = w * 0.82;
-  const y = h * 0.16;
+  const x = w * 0.84;
+  const y = h * 0.60;
   const r = Math.min(w, h) * 0.07;
   const halo = ctx.createRadialGradient(x, y, r * 0.4, x, y, r * 4.2);
   halo.addColorStop(0, "rgba(240,236,214,0.22)");
