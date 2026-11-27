@@ -17,6 +17,9 @@ html, body {
   margin: 0;
   height: 100%;
   overflow: hidden;
+  /* iOS Safari double-tap-to-zoom would fire on quick repeated taps; the
+     puzzle needs them. `manipulation` keeps pan + pinch, drops double-tap. */
+  touch-action: manipulation;
 }
 
 body {
@@ -180,6 +183,11 @@ body {
   background: #17324a;
   border-color: #2f6f74;
   color: #dff6ee;
+}
+
+button {
+  /* touch-action is not inherited, so every tappable control needs it. */
+  touch-action: manipulation;
 }
 
 button:focus-visible {

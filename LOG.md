@@ -44,6 +44,7 @@ Hard-won rules for the next night. Keep them short and general.
 
 | Date | Lesson | Source |
 |---|---|---|
+| 2026-11-27 | Give every tappable control `touch-action: manipulation` (iOS Safari double-tap-zooms quick repeated taps); it is *not* inherited, so `html`/`body` alone won't reach the buttons, and keep `touch-action: none` on drag canvases. | Seedfall, 27 Nov |
 | 2026-11-15 | Dart's `dart:js_interop`: an `external` member with no declared return type is inferred `dynamic` and rejected — write `external void`. And a `@JS('AudioContext')` annotation on the extension type is what maps `external factory` to the real JS global; without it the factory compiles to `new <YourTypeName>()`, so every call throws one uncaught `Error` and nothing else happens — the app still runs and looks fine. | Steam Spring, 15 Nov |
 | 2026-11-15 | In this SDK's `dart:html`, `MouseEvent` has hidden `clientX`/`clientY` behind `_clientX` (use the public `.client` Point), and `dart:web_audio` is stale (its nodes have no `start()`). Web Audio in Dart means declaring the API by hand over `dart:js_interop`. | Steam Spring, 15 Nov |
 | 2026-11-08 | Long-press interactions need `touch-action:none` + `user-select:none` + `-webkit-touch-callout:none`, or iOS selects/magnifies. Use pointer events with `setPointerCapture` and non-passive `preventDefault()` on `pointerdown`/`touchstart`; never `user-scalable=no` (it hurts accessibility). | Dune Drift, 8 Nov |
