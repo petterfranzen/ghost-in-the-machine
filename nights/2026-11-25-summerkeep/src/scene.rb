@@ -2,6 +2,7 @@
 # the page around the canvas, where they stay crisp on every screen.
 class View
   TAU = 6.2832
+  HELD_LIFT = 22
 
   def initialize(canvas)
     @canvas = canvas
@@ -67,7 +68,7 @@ class View
     tick_timers(dt)
     Paint.fill(0, 0, Layout::W, Layout::H, Palette::WALL)
     draw_room(session)
-    draw_racks(session, pointer)
+    draw_racks(session)
     draw_held(session, pointer)
     draw_effects(session)
     draw_motes
@@ -143,28 +144,43 @@ class View
     Paint.fill(mx + 2, my, 4, 2, Paint.alpha(Palette::MOON, 0.7))
   end
 
-  def draw_racks(session, pointer)
-    count = session.racks.size
+  def draw_racks(session)
+    total = session.racks.size
     session.racks.each_with_index do |rack, index|
-      next if session.held == index && pointer[:dragging]
-      draw_rack(rack, index, count, session.clean?)
+      draw_rack(rack_at(session, rack, index, total))
     end
   end
 
-  def draw_rack(rack, index, count, ribbon)
-    rx = Layout.rack_x(index, count)
-    py = Layout.plank_y(index, count)
-    shake = @shake[index] ? (Math.sin(@shake[index] * 40) * 2).round : 0
-    rx += shake
-    unless rack.empty?
-      Paint.fill(rx + 2, py - (rack.capacity * Layout::JAR_H) - 4, Layout::CELL_W - 4,
-                 rack.capacity * Layout::JAR_H + 4, Palette::WOOD_DARK)
+  # One record per shelf: where it stands, whether it is still unspoiled, and how
+  # many of its jars are up in the player's hand (and so must not be drawn here).
+  def rack_at(session, rack, index, total)
+    { rack: rack, index: index, ribbon: session.clean?,
+      rx: Layout.rack_x(index, total) + shake_for(index),
+      py: Layout.plank_y(index, total),
+      hide: session.held == index ? session.held_count : 0 }
+  end
+
+  def shake_for(index) = @shake[index] ? (Math.sin(@shake[index] * 40) * 2).round : 0
+
+  def draw_rack(at)
+    rack = at[:rack]
+    draw_backing(rack, at)
+    shown_jars(rack, at[:hide]).each_with_index do |jar, level|
+      y = at[:py] - ((level + 1) * Layout::JAR_H) + drop_for(at[:index])
+      draw_jar(Paint, at[:rx] + 3, y, jar)
     end
-    rack.jars.each_with_index do |jar, level|
-      draw_jar(Paint, rx + 3, py - ((level + 1) * Layout::JAR_H) + drop_for(index), jar)
-    end
-    draw_plank(rx, py)
-    draw_overlays(rack, index, { rx: rx, py: py, ribbon: ribbon })
+    draw_plank(at[:rx], at[:py])
+    draw_overlays(rack, at)
+  end
+
+  # The jars still on the shelf: the top `hide` of them are in the player's hand.
+  def shown_jars(rack, hide) = hide.zero? ? rack.jars : rack.jars[0...-hide]
+
+  def draw_backing(rack, at)
+    shown = rack.size - at[:hide]
+    return if shown <= 0
+    height = (shown * Layout::JAR_H) + 4
+    Paint.fill(at[:rx] + 2, at[:py] - height, Layout::CELL_W - 4, height, Palette::WOOD_DARK)
   end
 
   def drop_for(index) = @drop[index] ? -((@drop[index] / 0.22) * 6).round : 0
@@ -175,18 +191,19 @@ class View
     Paint.fill(rx + 1, py + Layout::PLANK_H, Layout::CELL_W - 2, 2, Paint.alpha(Palette::WOOD_DARK, 0.55))
   end
 
-  def draw_overlays(rack, index, at)
-    draw_cloth(rack, at[:rx], at[:py]) if rack.capped?
+  def draw_overlays(rack, at)
+    draw_cloth(rack, at) if rack.capped?
     draw_seal(rack, at[:rx], at[:py], at[:ribbon]) if rack.sealed?
-    draw_seal_ring(index, at[:rx], at[:py]) if @seal[index]
-    draw_hint(index, at[:rx], at[:py]) if @hint && @hint[:move].include?(index)
+    draw_seal_ring(at[:index], at[:rx], at[:py]) if @seal[at[:index]]
+    draw_hint(at[:index], at[:rx], at[:py]) if @hint && @hint[:move].include?(at[:index])
   end
 
-  def draw_cloth(rack, rx, py)
-    top = py - (rack.size * Layout::JAR_H) - 5
-    Paint.round(rx + 1, top, Layout::CELL_W - 2, rack.size * Layout::JAR_H + 5, 4, Palette::WALL_WARM)
-    Paint.fill(rx + 4, top + 3, Layout::CELL_W - 8, 2, Paint.alpha(Palette::MOON, 0.18))
-    Paint.round(rx + (Layout::CELL_W / 2) - 3, top - 2, 6, 5, 2, Palette::SHELF_EDGE)
+  def draw_cloth(rack, at)
+    shown = rack.size - at[:hide]
+    top = at[:py] - (shown * Layout::JAR_H) - 5
+    Paint.round(at[:rx] + 1, top, Layout::CELL_W - 2, (shown * Layout::JAR_H) + 5, 4, Palette::WALL_WARM)
+    Paint.fill(at[:rx] + 4, top + 3, Layout::CELL_W - 8, 2, Paint.alpha(Palette::MOON, 0.18))
+    Paint.round(at[:rx] + (Layout::CELL_W / 2) - 3, top - 2, 6, 5, 2, Palette::SHELF_EDGE)
   end
 
   def draw_seal(rack, rx, py, ribbon)
@@ -221,19 +238,25 @@ class View
     paint.fill(x + 4, y - 1, Layout::JAR_W - 8, 3, Palette::SEAL)
   end
 
+  # The jars in the hand: a small stack that follows the finger, or hovers over
+  # the shelf it came from when the lift was a tap.
   def draw_held(session, pointer)
     rack = session.held
     return if rack.nil?
     jar = session.held_fruit
-    count = session.held_count
-    rx = Layout.rack_x(rack, session.racks.size)
-    py = Layout.plank_y(rack, session.racks.size)
-    px = pointer[:dragging] ? pointer[:x] : rx + (Layout::CELL_W / 2)
-    pyy = (pointer[:dragging] ? pointer[:y] : py - ((session.racks[rack].size + 1) * Layout::JAR_H)) - 22
-    Paint.glow(px, pyy + 6, 12, Palette.fruit(jar, 1), 0.3)
-    draw_jar(Paint, px - (Layout::JAR_W / 2), pyy, jar)
-    return if count < 2 || pointer[:dragging]
-    Paint.fill(px - 2, pyy - 6, 4, 5, Paint.alpha(Palette::TEXT, 0.8))
+    at = held_at(session, pointer)
+    Paint.glow(at[:x], at[:y] + 6, 12, Palette.fruit(jar, 1), 0.3)
+    session.held_count.times do |level|
+      draw_jar(Paint, at[:x] - (Layout::JAR_W / 2), at[:y] - (level * Layout::JAR_H), jar)
+    end
+  end
+
+  def held_at(session, pointer)
+    return { x: pointer[:x], y: pointer[:y] - HELD_LIFT } if pointer[:dragging]
+    rack = session.held
+    total = session.racks.size
+    { x: Layout.rack_x(rack, total) + (Layout::CELL_W / 2),
+      y: Layout.plank_y(rack, total) - ((session.racks[rack].size + 1) * Layout::JAR_H) - HELD_LIFT }
   end
 
   # A warm wash and rising sparks when a shelf is finally kept.
