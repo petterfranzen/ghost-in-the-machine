@@ -12,6 +12,10 @@ public final class World {
   public static final int KERB = 12;
   public static final int DRAIN_Y = 288;
 
+  /** How far a touch in the water is felt by the boat, and the hardest shove. */
+  private static final double STEER_REACH = 110.0;
+  private static final double PUSH = 34.0;
+
   private static final int NONE = 0;
   private static final int WATER = 1;
   private static final int BOAT = 2;
@@ -27,6 +31,8 @@ public final class World {
   public final Boat boat = new Boat();
   public final Flotsam flotsam = new Flotsam();
   public final Cat cat = new Cat();
+  public final Lanterns lanterns = new Lanterns();
+  public final Score score = new Score();
 
   public double t;
   public double flow;
@@ -40,6 +46,9 @@ public final class World {
   public double ringLife = 1.0;
   public int taps;
 
+  /** The warm flare on the hull just after a lantern is gathered. */
+  public double glow;
+
   private int mode = NONE;
   private int heldTarget = -1;
   private double sx;
@@ -52,9 +61,11 @@ public final class World {
   private double stirSnd;
   private boolean acted;
   private int stars;
+  private double snagCool;
 
   public World() {
     flotsam.populate(this);
+    lanterns.populate(this);
   }
 
   /** One fixed step of the evening. dt is in seconds, clamped by the host. */
@@ -70,7 +81,10 @@ public final class World {
     rings.step(adt, speed, motion);
     flotsam.step(this, adt);
     boat.step(this, adt);
+    lanterns.step(this, adt);
+    snags(adt);
     cat.step(this, dt);
+    glow = Math.max(0, glow - dt * 1.7);
     secretEvening();
     hint = idle > 24 ? Math.min(1.0, (idle - 24) / 6.0) : 0.0;
     if (still > 0) {
@@ -172,9 +186,7 @@ public final class World {
       stirAcc = 0;
       rings.spawn(new Ripples.Spec(Ripples.STIR, d.x(), d.y(), 0.55, 13, 1.3 * ringLife));
       flotsam.push(d.x(), d.y(), clamp(d.vx() * 0.05, -26, 26), clamp(d.vy() * 0.02, -2, 2));
-      if (boat.under(d.x(), d.y() - 4) || boat.under(d.x(), d.y() + 4)) {
-        boat.nudge(clamp(d.vx() * 0.02, -0.5, 0.5), clamp(d.vy() * 0.02, -2, 2));
-      }
+      boat.steer(clamp(d.vx() * 0.22, -44, 44) * falloff(d.x(), d.y()));
     }
     stirSnd -= dt;
     if (stirSnd <= 0) {
@@ -230,7 +242,7 @@ public final class World {
     still = 0;
     double dist = Math.abs(x - sx) + Math.abs(y - sy);
     if (duration < 0.34 && dist > 42) {
-      flick();
+      flick(x - sx, y - sy);
     } else if (mode == DRAG) {
       rings.spawn(new Ripples.Spec(Ripples.STIR, x, y, 0.4, 16, 1.6 * ringLife));
     } else if (!acted) {
@@ -241,16 +253,18 @@ public final class World {
     heldTarget = -1;
   }
 
-  private void flick() {
+  /** A quick swipe: the rain thickens, the current quickens, the hull kicks. */
+  private void flick(double dx, double dy) {
     swell = 1.0;
+    boat.nudge(clamp(dx * 0.12, -30, 30), 0);
     events.add(Events.SWELL, W * 0.5, 0, 1);
     events.announce("The rain thickens for a moment and the current quickens.");
   }
 
   private void tap(double x, double y, int target) {
     taps++;
+    boat.nudge(steerPush(x, y), target == BOAT ? 0.4 : 0.0);
     if (target == BOAT) {
-      boat.nudge(0, 0.4);
       rings.spawn(new Ripples.Spec(Ripples.WAKE, boat.x, boat.y - 6, 0.5, 26, 2.0 * ringLife));
       events.add(Events.THUP, x, y, x / W);
     } else if (target == LEAF && heldTarget >= 0) {
@@ -269,9 +283,66 @@ public final class World {
     rings.spawn(new Ripples.Spec(Ripples.TAP, x, y, 0.85, 28, 2.8 * ringLife));
     events.add(Events.PLIP, x, y, x / W);
     flotsam.push(x, y, 0, 3.0);
-    if (Math.abs(x - boat.x) < 40) {
-      boat.nudge(0, 0.2);
+  }
+
+  /** How much of a touch at (x, y) the boat feels: full at the hull, nothing far off. */
+  private double falloff(double x, double y) {
+    double d = Math.abs(x - boat.x) + Math.abs(y - boat.y);
+    return d >= STEER_REACH ? 0.0 : 1.0 - d / STEER_REACH;
+  }
+
+  /** A tap pushes the water away from your thumb, and the boat with it. */
+  private double steerPush(double x, double y) {
+    double dx = boat.x - x;
+    if (Math.abs(dx) < 0.5) {
+      return 0.0;
     }
+    return clamp(dx * 0.9, -PUSH, PUSH) * falloff(x, y);
+  }
+
+  /** The bow met a lantern: a warm flare and the tally; the fifth fills the water with stars. */
+  public void catchLantern(double x, double y) {
+    score.caught();
+    glow = 1.0;
+    rings.spawn(new Ripples.Spec(Ripples.TAP, x, y, 0.8, 26, 2.2 * ringLife));
+    events.add(Events.CATCH, x, y, score.run);
+    if (score.run == Score.GOAL) {
+      starsT = 6.0;
+      events.announce(score.win());
+    } else {
+      events.announce(score.tally());
+    }
+  }
+
+  /** The boat slid under the grate: the run is banked for the next one. */
+  public void endRun() {
+    score.finish();
+    lanterns.release();
+    events.announce(score.slip());
+  }
+
+  /** A fresh boat is folded, with the last run still on the water. */
+  public void startRun() {
+    score.restart();
+    events.add(Events.FOLD, boat.x, boat.y, 0);
+    events.announce(score.fold());
+  }
+
+  /** Brushing a mat of leaves drags at the hull for a moment: a snag, no harm. */
+  private void snags(double dt) {
+    snagCool = Math.max(0, snagCool - dt);
+    if (snagCool > 0 || boat.state != Boat.DRIFT) {
+      return;
+    }
+    int hit = flotsam.pick(boat.x, boat.y);
+    if (hit < 0) {
+      return;
+    }
+    snagCool = 2.4;
+    boat.snag();
+    flotsam.spin(hit);
+    events.add(Events.RUSTLE, boat.x, boat.y, 1);
+    events.announce("A mat of leaves drags at the hull, and the boat slows a moment.");
   }
 
   private void grate(double x, double y) {

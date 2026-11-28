@@ -7,6 +7,8 @@ import org.teavm.jso.typedarrays.Uint32Array;
 public final class Main {
   private static final String SOUND_ON = "Sound on";
   private static final String SOUND_OFF = "Sound off";
+  /** Where the best run of the evening is kept between visits. */
+  private static final String BEST_KEY = "papertide.best";
 
   private static JSObject canvas;
   private static Screen screen;
@@ -19,7 +21,9 @@ public final class Main {
   private static double lastFrame;
   private static double frameMs;
   private static boolean fitted;
-  private static String statusText = "A small paper boat drifts down the gutter.";
+  private static String badgeText = "";
+  private static String statusText =
+      "A paper boat drifts down the gutter. Steer it into the lanterns.";
 
   private Main() {}
 
@@ -28,6 +32,7 @@ public final class Main {
     Uint32Array pixels = Bridge.wire(canvas);
     screen = new Screen(World.W, World.H, pixels);
     world = new World();
+    world.score.best = readBest();
     renderer = new Renderer(screen);
     audio = new Audio();
     if (Bridge.reducedMotion()) {
@@ -151,7 +156,9 @@ public final class Main {
   private static void drainEvents() {
     Events e = world.events;
     for (int i = 0; i < e.size(); i++) {
-      audio.play(e.kindAt(i));
+      if (e.kindAt(i) != Events.CATCH) {
+        audio.play(e.kindAt(i));
+      }
     }
     String say = e.announcement();
     if (say != null) {
@@ -159,6 +166,34 @@ public final class Main {
       Bridge.setText("status", say);
     }
     e.clear();
+    saveBest();
+    showBadge();
+  }
+
+  /** The tally above the water, rewritten only when it changes. */
+  private static void showBadge() {
+    String badge = world.score.badge();
+    if (!badge.equals(badgeText)) {
+      badgeText = badge;
+      Bridge.setText("tally", badge);
+    }
+  }
+
+  /** The record, read once: a missing or broken value simply means none yet. */
+  private static int readBest() {
+    try {
+      return Math.max(0, Integer.parseInt(Bridge.load(BEST_KEY)));
+    } catch (RuntimeException e) {
+      return 0;
+    }
+  }
+
+  /** A run that beat the record is stored, once, and the flag cleared. */
+  private static void saveBest() {
+    if (world.score.store) {
+      world.score.store = false;
+      Bridge.store(BEST_KEY, String.valueOf(world.score.best));
+    }
   }
 
   private static void tapAt(double x, double y) {
@@ -172,12 +207,22 @@ public final class Main {
   }
 
   private static String state() {
-    StringBuilder sb = new StringBuilder(220);
+    StringBuilder sb = new StringBuilder(300);
     sb.append("{\"t\":").append(round(world.t));
+    sceneJson(sb);
+    scoreJson(sb);
+    audioJson(sb);
+    sb.append(",\"status\":\"").append(statusText.replace('"', '\'')).append("\"}");
+    return sb.toString();
+  }
+
+  /** Where everything is, so a playtest can steer by reading it. */
+  private static void sceneJson(StringBuilder sb) {
     sb.append(",\"frameMs\":").append(round(frameMs));
     sb.append(",\"rings\":").append(world.rings.size());
     sb.append(",\"rain\":").append(world.rain.size());
     sb.append(",\"impacts\":").append(world.rain.impactsTotal);
+    sb.append(",\"boatX\":").append(round(world.boat.x));
     sb.append(",\"boatY\":").append(round(world.boat.y));
     sb.append(",\"boatState\":").append(world.boat.state);
     sb.append(",\"fade\":").append(round(world.boat.fade));
@@ -191,12 +236,25 @@ public final class Main {
     sb.append(",\"speed\":").append(round(world.speed));
     sb.append(",\"flow\":").append(round(world.flow));
     sb.append(",\"motion\":").append(round(world.motion));
+  }
+
+  /** The tally, and where the next lantern to steer for is. */
+  private static void scoreJson(StringBuilder sb) {
+    sb.append(",\"lanterns\":").append(world.lanterns.size());
+    sb.append(",\"towed\":").append(world.lanterns.towedCount());
+    sb.append(",\"aimX\":").append(round(world.lanterns.aimX(world.boat)));
+    sb.append(",\"aimY\":").append(round(world.lanterns.aimY(world.boat)));
+    sb.append(",\"caught\":").append(world.score.run);
+    sb.append(",\"last\":").append(world.score.last);
+    sb.append(",\"best\":").append(world.score.best);
+  }
+
+  /** The sound button and the frame cost, for the playtest. */
+  private static void audioJson(StringBuilder sb) {
     sb.append(",\"audio\":").append(audio.on ? 1 : 0);
     sb.append(",\"ctx\":").append(audio.created);
     sb.append(",\"played\":").append(audio.played);
     sb.append(",\"cssPx\":").append(round(Bridge.cssWidth(canvas)));
-    sb.append(",\"status\":\"").append(statusText.replace('"', '\'')).append("\"}");
-    return sb.toString();
   }
 
   private static String round(double v) {
