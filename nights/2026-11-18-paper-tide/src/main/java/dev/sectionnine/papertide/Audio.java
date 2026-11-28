@@ -169,11 +169,20 @@ public final class Audio {
 
   /** One short voice, a row of numbers out of {@link Sounds}. */
   public void play(int kind) {
+    play(kind, 0);
+  }
+
+  /** The same voice lifted by a few semitones: the ladder of lanterns caught. */
+  public void play(int kind, double lift) {
     if (!on || ctx == null) {
       return;
     }
     played++;
     double[] v = Sounds.row(kind);
+    if (lift != 0) {
+      double k = Math.pow(2.0, lift / 12.0);
+      v = new double[] { v[0], v[1] * k, v[2] * k, v[3], v[4], v[5], v[6] };
+    }
     double t0 = ctx.getCurrentTime() + 0.01;
     switch ((int) v[0]) {
       case Sounds.TONE -> tone(t0, new Tone(v[1], v[2], v[3], v[4], v[5], 0.0, "triangle"));
