@@ -6,6 +6,9 @@ package dev.sectionnine.papertide;
  * the host loads and stores the record, so this stays plain Java.
  */
 public final class Score {
+  /** Lanterns on one boat that light the whole string: the goal of a run. */
+  public static final int GOAL = 5;
+
   public int run;
   public int last = -1;
   public int best;
@@ -31,6 +34,17 @@ public final class Score {
   /** The best on show: this run counts from the moment it beats the record. */
   public int shown() {
     return Math.max(best, run);
+  }
+
+  /** The short line kept on show above the water: this boat, and the best. */
+  public String badge() {
+    String count = run >= GOAL ? "String lit, " + run : run + " of " + GOAL;
+    return count + " lanterns · best " + shown();
+  }
+
+  /** The goal reached on this boat. */
+  public String win() {
+    return "Five lanterns: the string is lit, and the water fills with stars.";
   }
 
   public String tally() {

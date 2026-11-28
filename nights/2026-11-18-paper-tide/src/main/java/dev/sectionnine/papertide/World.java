@@ -300,13 +300,18 @@ public final class World {
     return clamp(dx * 0.9, -PUSH, PUSH) * falloff(x, y);
   }
 
-  /** The bow met a lantern: a warm flare, a rising note and the tally. */
+  /** The bow met a lantern: a warm flare and the tally; the fifth fills the water with stars. */
   public void catchLantern(double x, double y) {
     score.caught();
     glow = 1.0;
     rings.spawn(new Ripples.Spec(Ripples.TAP, x, y, 0.8, 26, 2.2 * ringLife));
-    events.add(Events.CATCH, x, y, Sounds.STEPS[Math.min(score.run - 1, Sounds.STEPS.length - 1)]);
-    events.announce(score.tally());
+    events.add(Events.CATCH, x, y, score.run);
+    if (score.run == Score.GOAL) {
+      starsT = 6.0;
+      events.announce(score.win());
+    } else {
+      events.announce(score.tally());
+    }
   }
 
   /** The boat slid under the grate: the run is banked for the next one. */
@@ -334,7 +339,7 @@ public final class World {
       return;
     }
     snagCool = 2.4;
-    boat.bump = 1.0;
+    boat.snag();
     flotsam.spin(hit);
     events.add(Events.RUSTLE, boat.x, boat.y, 1);
     events.announce("A mat of leaves drags at the hull, and the boat slows a moment.");

@@ -11,8 +11,8 @@ framework, no images.
 ## Try it
 
 Open `dist/index.html` in a browser. It works one-handed on a phone and fills a
-desktop window without scrolling. Sound starts muted; press **Sound off** in the
-top corner (44 px, always visible) and the ambient bed fades in within half a
+desktop window without scrolling. Sound starts muted; press **Sound off** at the
+bottom, beside the caption (44 px, in reach of the thumb) and the ambient bed fades in within half a
 second with a short confirming chime. Your choice is remembered.
 
 ## What you can do
@@ -36,20 +36,22 @@ second with a short confirming chime. Your choice is remembered.
 Paper lanterns float down the gutter on the current. Your boat gathers them as
 it drifts past — each one settles onto the water behind it and joins the string
 trailing from the stern, so you can see at a glance how the run is going. The
-small lamp-and-number in the top-left corner is the same count, readable at a
-distance.
+line above the water reads the same count ("2 of 5 lanterns · best 3").
 
-Steer with the water, not against it: a tap beside the boat nudges it toward
-that side, a drag carries it along with your thumb, a flick pushes it ahead in
+**The goal:** gather five lanterns on one boat. The fifth lights the whole
+string, and the water fills with stars for a few seconds. The boat keeps
+gathering after that, if you like.
+
+Steer with the water, not against it: a tap beside the boat pushes the water,
+and the boat, away from your thumb, a drag carries it along with your thumb, a flick pushes it ahead in
 the current. Nothing is timed and nothing can be failed — if the boat misses a
 lantern, it simply drifts on. A run ends when the boat reaches the grate at the
 drain: it slips under and the tally is banked ("That boat carried 3 lanterns.
 Best 7."), then a fresh boat is folded at the top of the gutter and the evening
 continues. The best run is kept in local storage, so it survives a reload.
 
-Each lantern caught plays a soft rising chime over the rain, and the string
-behind the boat glows a little brighter for a moment. Reaching the grate plays a
-low, contented settle — the end of a run, not a failure.
+Each lantern caught flares where it was picked up, and the hull glows warm for
+a moment. Reaching the grate is the end of a run, not a failure.
 
 ## How to build
 

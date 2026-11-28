@@ -4,7 +4,8 @@ package dev.sectionnine.papertide;
  * The lanterns: a few small lamps drifting down the channel a little slower
  * than the boat, so steering into one is the whole gentle game. A lantern the
  * boat misses rides on to the grate and comes round again; one it gathers is
- * carried on a short string behind the stern until the boat goes under.
+ * carried on a short string behind the stern until the boat goes under, and a
+ * fresh lamp is set afloat at the top in its place.
  */
 public final class Lanterns {
   private static final double REACH = 11.0;
@@ -113,8 +114,7 @@ public final class Lanterns {
       Light l = pool[i];
       drift(w, l, dt);
       if (met(w, l)) {
-        gather(w, i);
-        i--;
+        gather(w, l);
       }
     }
     pull(w, dt);
@@ -146,20 +146,12 @@ public final class Lanterns {
     return Math.abs(l.x - b.x) < REACH && Math.abs(l.y - b.y) < REACH_Y;
   }
 
-  private void gather(World w, int i) {
-    Light l = pool[i];
+  /** The bow meets a lamp: it joins the string, and a new one is set afloat upstream. */
+  private void gather(World w, Light l) {
     addTowed(l.x, l.y);
     flare(l.x, l.y);
-    remove(i);
     w.catchLantern(l.x, l.y);
-  }
-
-  /** Swap the gathered lamp with the last live one, so the pool stays packed. */
-  private void remove(int i) {
-    int last = --n;
-    Light gone = pool[i];
-    pool[i] = pool[last];
-    pool[last] = gone;
+    place(w, l);
   }
 
   private void addTowed(double x, double y) {

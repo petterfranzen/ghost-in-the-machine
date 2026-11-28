@@ -26,7 +26,7 @@ public final class Boat {
   public double reveal;
   public double fade = 1.0;
   public int laps;
-  public double bump;
+  private double snagged;
   private double wake;
   private double wander;
 
@@ -41,7 +41,7 @@ public final class Boat {
 
   public void step(World w, double dt) {
     stateT -= dt;
-    reveal = Math.max(0, reveal - dt);
+    settle(dt);
     if (state == SINKING) {
       fade = Math.max(0, fade - dt * 1.6);
       y += w.speed * dt * 0.6;
@@ -64,8 +64,7 @@ public final class Boat {
     wander += w.rnd.signed() * dt * 0.7;
     wander = clamp(wander, -0.5, 0.5);
     vx = vx * (1.0 - 1.6 * dt) + wander * dt * 14.0;
-    vy = w.speed * (1.0 - 0.55 * bump) + 1.4 + (y < 24 ? 16.0 : 0.0);
-    bump = Math.max(0, bump - dt * 0.9);
+    vy = downstream(w);
     x = clamp(x + vx * dt, World.KERB + 6, World.W - World.KERB - 6);
     y += vy * dt;
     angle = angle * 0.94 + clamp(vx * 0.5, -0.4, 0.4) * 0.06;
@@ -75,12 +74,29 @@ public final class Boat {
       w.rings.spawn(new Ripples.Spec(Ripples.WAKE, x, y - 7, 0.30, 20, 1.7));
     }
     if (y > World.DRAIN_Y + 3) {
-      state = SINKING;
-      stateT = 3.2;
-      laps++;
-      w.endRun();
-      w.events.add(Events.GONE, x, y, 0);
+      sink(w);
     }
+  }
+
+  /** Down the channel: the current, held back a little while a snag drags. */
+  private double downstream(World w) {
+    double launch = y < 24 ? 16.0 : 0.0;
+    return w.speed * (1.0 - 0.55 * snagged) + 1.4 + launch;
+  }
+
+  /** The timers that run down whatever the boat is doing. */
+  private void settle(double dt) {
+    reveal = Math.max(0, reveal - dt);
+    snagged = Math.max(0, snagged - dt * 0.9);
+  }
+
+  /** Under the grate: the run is over and the boat will be folded again. */
+  private void sink(World w) {
+    state = SINKING;
+    stateT = 3.2;
+    laps++;
+    w.endRun();
+    w.events.add(Events.GONE, x, y, 0);
   }
 
   private void reset() {
@@ -93,18 +109,23 @@ public final class Boat {
     angle = 0;
     wander = 0;
     hold = 0;
-    bump = 0;
+    snagged = 0;
+  }
+
+  /** A mat of leaves drags at the hull: slower for a moment, no harm done. */
+  public void snag() {
+    snagged = 1.0;
   }
 
   /** A shove from the water: sideways speed in pixels a second, and a hop. */
   public void nudge(double ix, double iy) {
-    vx = clamp(vx + ix, -STEER, STEER);
+    vx = limit(vx + ix);
     y += iy * 6;
   }
 
   /** A drag carried through the water: the boat is coaxed toward that speed. */
   public void steer(double target) {
-    vx += (clamp(target, -STEER, STEER) - vx) * 0.35;
+    vx += (limit(target) - vx) * 0.35;
   }
 
   /** A still press, held: the boat slowly unfolds a folded secret. */
@@ -119,6 +140,10 @@ public final class Boat {
       w.events.add(Events.REVEAL, x, y, 0);
       w.events.announce("The folded flap lifts: a tiny pencil star is drawn inside.");
     }
+  }
+
+  private static double limit(double v) {
+    return clamp(v, -STEER, STEER);
   }
 
   private static double clamp(double v, double lo, double hi) {

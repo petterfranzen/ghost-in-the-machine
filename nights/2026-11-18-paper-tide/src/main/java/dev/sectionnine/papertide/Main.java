@@ -21,8 +21,9 @@ public final class Main {
   private static double lastFrame;
   private static double frameMs;
   private static boolean fitted;
+  private static String badgeText = "";
   private static String statusText =
-      "A small paper boat drifts down the gutter. Steer it into the lanterns as it goes.";
+      "A paper boat drifts down the gutter. Steer it into the lanterns.";
 
   private Main() {}
 
@@ -155,8 +156,9 @@ public final class Main {
   private static void drainEvents() {
     Events e = world.events;
     for (int i = 0; i < e.size(); i++) {
-      boolean caught = e.kindAt(i) == Events.CATCH;
-      audio.play(e.kindAt(i), caught ? e.valAt(i) : 0.0);
+      if (e.kindAt(i) != Events.CATCH) {
+        audio.play(e.kindAt(i));
+      }
     }
     String say = e.announcement();
     if (say != null) {
@@ -165,6 +167,16 @@ public final class Main {
     }
     e.clear();
     saveBest();
+    showBadge();
+  }
+
+  /** The tally above the water, rewritten only when it changes. */
+  private static void showBadge() {
+    String badge = world.score.badge();
+    if (!badge.equals(badgeText)) {
+      badgeText = badge;
+      Bridge.setText("tally", badge);
+    }
   }
 
   /** The record, read once: a missing or broken value simply means none yet. */

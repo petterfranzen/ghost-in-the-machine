@@ -101,6 +101,8 @@ const layout = p => p.evaluate(() => ({
   pressed: document.getElementById('sound').getAttribute('aria-pressed'),
   label: document.getElementById('sound').textContent,
   btn: Math.round(document.getElementById('sound').getBoundingClientRect().height),
+  btnTop: Math.round(document.getElementById('sound').getBoundingClientRect().top),
+  touch: [getComputedStyle(document.body).touchAction, getComputedStyle(document.getElementById('app')).touchAction],
   canvasCss: Math.round(document.getElementById('app').getBoundingClientRect().width)
 }));
 
@@ -219,6 +221,10 @@ async function phonePass(browser, out) {
   check('phone: sound plays on a real tap',
     afterTap.played > on.played && out.phone.layout.pressed === 'false', out.phone.storage);
   check('phone: the sound button is at least 44 pixels tall', out.phone.layout.btn >= 44, out.phone.layout.btn);
+  check('phone: the sound button sits in the thumb zone, at the bottom',
+    out.phone.layout.btnTop > out.phone.layout.innerH * 0.75, out.phone.layout.btnTop);
+  check('phone: a double tap cannot zoom the page',
+    out.phone.layout.touch[0] === 'manipulation' && out.phone.layout.touch[1] === 'none', out.phone.layout.touch);
   check('phone: a lantern is on the water to steer for', out.phone.start.lanterns > 0, out.phone.start.lanterns);
   const right = await tapSteer(m.page, b, 1);
   const left = await tapSteer(m.page, b, -1);
@@ -232,6 +238,12 @@ async function phonePass(browser, out) {
   out.phone.bestAfter = await m.page.evaluate(() => localStorage.getItem('papertide.best'));
   check('phone: steering gathers lanterns, so the tally rises from pointer input',
     scored.after > before && scored.taps > 0, scored);
+  const shown = await m.page.evaluate(() => document.getElementById('tally').textContent);
+  const now = await state(m.page);
+  check('phone: the tally above the water reads the score',
+    shown.startsWith(now.caught >= 5 ? 'String lit, ' + now.caught : now.caught + ' of 5 lanterns')
+    && shown.endsWith('best ' + Math.max(now.best, now.caught)),
+    { shown, caught: now.caught, best: now.best });
   check('phone: the boat carries what it gathered',
     (await state(m.page)).towed > 0 || scored.after === 0, await state(m.page));
   await canvasPng(m.page, OUT + '/towed-canvas.png');

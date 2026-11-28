@@ -24,6 +24,7 @@
     overflow: hidden;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
   header {
     flex: 0 0 auto;
@@ -31,13 +32,22 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 10px 14px 6px;
+    min-height: 44px;
+    padding: 6px 14px 2px;
   }
   h1 { font-size: 16px; font-weight: 600; letter-spacing: 0.06em; margin: 0; text-transform: uppercase; }
+  #tally {
+    margin: 0;
+    color: var(--ink);
+    font-size: 16px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
   #sound {
+    flex: 0 0 auto;
     min-height: 44px;
     min-width: 44px;
-    padding: 0 14px;
+    padding: 0 12px;
     font: inherit;
     font-size: 16px;
     color: var(--ink);
@@ -70,19 +80,21 @@
   }
   #app:focus-visible { outline: 2px solid var(--dim); outline-offset: 2px; }
   /* The caption may grow to two lines; the height it gets is fixed either way,
-     so the picture above it never moves when the words get longer. */
+     so the picture above it never moves when the words get longer. The sound
+     button sits beside it, in reach of the thumb. */
   footer {
     flex: 0 0 auto;
     height: calc(2.7em + 12px);
     padding: 4px 14px 8px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
+    gap: 12px;
     color: var(--dim);
     font-size: 16px;
   }
   #status {
+    flex: 1 1 auto;
+    min-width: 0;
     margin: 0;
     max-height: 2.7em;
     overflow: hidden;
@@ -99,14 +111,15 @@
 <body>
 <header>
   <h1>Paper Tide</h1>
-  <button id="sound" type="button" aria-pressed="false" aria-label="Sound off">Sound off</button>
+  <p id="tally">0 lanterns · best 0</p>
 </header>
 <div id="stage">
   <canvas id="app" width="180" height="320" tabindex="0" role="button"
           aria-label="A paper boat drifting down a rainy night gutter, gathering lanterns. Press Enter to nudge the water."></canvas>
 </div>
 <footer id="statusbar">
-  <p id="status" aria-live="polite">A small paper boat drifts down the gutter. Steer it into the lanterns as it goes.</p>
+  <p id="status" aria-live="polite">A paper boat drifts down the gutter. Steer it into the lanterns.</p>
+  <button id="sound" type="button" aria-pressed="false" aria-label="Sound off">Sound off</button>
 </footer>
 <script src="app.js"></script>
 <script>main();</script>
