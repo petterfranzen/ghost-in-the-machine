@@ -21,6 +21,7 @@ let bool (b : bool) : any = J.Unsafe.inject (if b then J._true else J._false)
 let float_of (v : any) : float = J.float_of_number (J.Unsafe.coerce v)
 let int_of (v : any) : int = int_of_float (float_of v)
 let string_of (v : any) : string = J.to_string (J.Unsafe.coerce v)
+let bool_of (v : any) : bool = J.to_bool (J.Unsafe.coerce v)
 
 let callback (f : any -> unit) : any = J.Unsafe.inject (J.wrap_callback f)
 

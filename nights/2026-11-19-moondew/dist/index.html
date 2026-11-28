@@ -3,33 +3,48 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Moondew - a quiet pond puzzle. Draw one trail from the koi stone through every dewdrop.">
 <title>Moondew</title>
-<meta name="description" content="A calm pond-trail puzzle: one thumb wakes the moon-dew.">
-<meta name="theme-color" content="#0b1220">
 <link rel="stylesheet" href="style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%230b1220'/><circle cx='8' cy='8' r='3' fill='%23bfe9ff'/></svg>">
 </head>
 <body>
 <div id="app">
+
   <header class="hud">
-    <div class="hud-left">
-      <span id="pond-label" class="label">Pond 1</span>
-      <span id="flowers" class="flowers" aria-hidden="true"></span>
-    </div>
+    <span id="pond-label" class="label">Moondew</span>
+    <span id="dew-counter" class="counter" role="status">0 of 1 dew awake</span>
     <button id="sound" class="sound" type="button" aria-pressed="false" aria-label="Turn sound on">Sound off</button>
   </header>
 
   <main class="stage">
-    <canvas id="pond" width="360" height="480" aria-label="A moonlit pond seen from above"></canvas>
-    <p id="hint" class="hint" role="status" aria-live="polite">Drag from the sleeping koi.</p>
+    <canvas id="pond" width="360" height="480" aria-label="A moonlit pond seen from above. Drag from the koi stone to draw a trail through every dewdrop."></canvas>
+    <p id="banner" class="banner" role="status" aria-live="polite"></p>
+    <p id="hint" class="hint" role="status">Draw one trail from the koi stone to the dewdrop.</p>
+    <div id="start" class="start">
+      <div class="start-card">
+        <h1 class="title">Moondew</h1>
+        <p class="lede">Draw one trail from the koi stone through every dewdrop.</p>
+        <p class="sub">Take your time. Nothing here is timed.</p>
+        <button id="begin" class="begin" type="button">Begin</button>
+      </div>
+    </div>
   </main>
 
-  <footer class="legend" id="legend">
-    <span class="key"><i class="sw dew"></i>dew</span>
-    <span class="key"><i class="sw moss"></i>moss</span>
-    <span class="key" id="key-deep" hidden><i class="sw deep"></i>deep water</span>
-    <span class="key" id="key-current" hidden><i class="sw current"></i>current</span>
+  <footer class="dock">
+    <div id="flowers" class="flowers" role="group" aria-label="Ponds, tap a finished one to replay it"></div>
+    <div class="controls">
+      <button id="undo" class="ctl" type="button" aria-label="Undo the last step of the trail">Undo</button>
+      <button id="restart" class="ctl" type="button" aria-label="Restart this pond from the koi stone">Restart</button>
+    </div>
+    <div class="legend">
+      <span class="key"><i class="sw sw-dew"></i>dew</span>
+      <span class="key" id="key-moss" hidden><i class="sw sw-moss"></i>moss</span>
+      <span class="key" id="key-deep" hidden><i class="sw sw-deep"></i>deep water</span>
+      <span class="key" id="key-current" hidden><i class="sw sw-current"></i>current</span>
+    </div>
   </footer>
+
 </div>
 <script src="moondew.js"></script>
 </body>

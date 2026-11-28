@@ -65,6 +65,40 @@ let check_level index =
         | None -> true
         | Some j -> Level.tile_at level j <> Level.Moss))
 
+(* A caption must not name a rule the board does not carry: that is how pond 2
+   came to teach moss with nothing to walk around. *)
+let count_tiles level pred =
+  Array.fold_left (fun a t -> if pred t then a + 1 else a) 0 level.Level.cells
+
+let contains hay needle =
+  let n = String.length needle and m = String.length hay in
+  let rec go i = i + n <= m && (String.sub hay i n = needle || go (i + 1)) in
+  go 0
+
+let caption_claims = [
+  ("moss", (fun t -> t = Level.Moss));
+  ("deep", (fun t -> t = Level.Deep));
+  ("current", (function Level.Current _ -> true | _ -> false));
+]
+
+let check_captions () =
+  for index = 1 to Level.count_levels do
+    let level = Level.generate index in
+    let cap = String.lowercase_ascii level.Level.caption in
+    List.iter (fun (word, pred) ->
+        if contains cap word then
+          check (Printf.sprintf "pond %d: the caption names %s, so the board has it" index word)
+            (count_tiles level pred > 0)) caption_claims
+  done
+
+(* Pond 2 teaches moss, so it needs enough of it to walk around. *)
+let check_moss () =
+  let level = Level.generate 2 in
+  check "pond 2 has moss to walk around"
+    (count_tiles level (fun t -> t = Level.Moss) >= 3);
+  check "pond 2's trail keeps off the moss"
+    (Array.for_all (fun c -> Level.tile_at level c <> Level.Moss) level.Level.solution)
+
 let check_determinism () =
   let a = Level.generate 5 and b = Level.generate 5 in
   check "pond 5 grows the same twice" (a.Level.cells = b.Level.cells)
@@ -80,6 +114,8 @@ let () =
   for index = 1 to Level.count_levels do
     check_level index
   done;
+  check_captions ();
+  check_moss ();
   check_determinism ();
   check_endless ();
   if !failures = 0 then Printf.printf "\nall good\n"
