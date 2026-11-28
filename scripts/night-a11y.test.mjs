@@ -3,7 +3,10 @@
 //
 //   * sound turned on inside an inline <script> (the inline body must be read);
 //   * aria-pressed="true" that lives in a CSS selector, not on an element
-//     (must not be a false FAIL).
+//     (must not be a false FAIL);
+//   * audio created behind a real addEventListener('keydown', …) (the event
+//     name is a string, which the scope reader masks: must not be a false FAIL),
+//     and audio created at page load with no listener (must still FAIL).
 //
 // Each case builds a throwaway "night" in a temp dir, runs night-a11y over it
 // and asserts on the one-line output. Static half only — a bogus
@@ -76,6 +79,37 @@ const REDUCED = '@media (prefers-reduced-motion: reduce){*{animation:none}}';
     !/FAIL\s+sound-default\s+.*aria-pressed/.test(out), out.trim());
   check('CSS selector: the clean night passes', code === 0, `exit ${code}\n${out.trim()}`);
   rmSync(dir, { recursive: true, force: true });
+}
+
+// 3. A gesture listener is a quoted event name, which masking blanks. Audio made
+//    inside a keydown handler passes; audio made at the top level, or in a
+//    function nothing calls, still fails.
+{
+  const body = '<button id="sound" aria-pressed="false">sound: off</button>';
+  const ok = makeNight(page(body, REDUCED,
+    "var ctx; addEventListener('keydown', function () { ctx = new AudioContext(); });"));
+  const a = run(ok);
+  check('gesture listener: audio behind addEventListener(\'keydown\') is not a finding',
+    !/FAIL\s+audio/.test(a.out), a.out.trim());
+  check('gesture listener: that night passes', a.code === 0, `exit ${a.code}\n${a.out.trim()}`);
+  rmSync(ok, { recursive: true, force: true });
+
+  const helper = makeNight(page(body, REDUCED,
+    'var ctx; function wake() { ctx = new AudioContext(); }\n' +
+    'document.addEventListener("click", wake);'));
+  const h = run(helper);
+  check('gesture listener: audio in a named click handler is not a finding',
+    !/FAIL\s+audio/.test(h.out), h.out.trim());
+  rmSync(helper, { recursive: true, force: true });
+
+  const none = makeNight(page(body, REDUCED,
+    "var ctx = new AudioContext(); // addEventListener('keydown', f) only in a comment\n" +
+    "var s = \"addEventListener('click', g)\";"));
+  const n = run(none);
+  check('no listener: audio at load still fails',
+    /FAIL\s+audio\s+AudioContext\/Audio is created but the page never listens/.test(n.out), n.out.trim());
+  check('no listener: the run fails', n.code === 1, `exit ${n.code}`);
+  rmSync(none, { recursive: true, force: true });
 }
 
 console.log(`\nnight-a11y tests: ${failures ? `${failures} failed` : 'all passed'}`);
