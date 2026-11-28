@@ -39,6 +39,20 @@ function quoteStep(src, out, i, quote) {
 
 // Strip comments and string bodies to spaces so brace/scope arithmetic is not
 // fooled by a brace inside a string. Length is preserved, so offsets hold.
+//
+// One exception: the event name in addEventListener('click', …). The gesture
+// check reads it from the masked source, so it is kept. Only a call that is
+// itself code counts: the masked text still spells "addEventListener" there,
+// but not inside a comment or a string.
+const EVENT_LITERAL = /addEventListener\s*\(\s*(['"`])(?:click|pointerdown|pointerup|mousedown|mouseup|touchstart|touchend|keydown|keyup|keypress|input|change|submit)\1/g;
+
+function keepEventNames(src, out) {
+  for (const m of src.matchAll(EVENT_LITERAL)) {
+    if (!out.slice(m.index, m.index + 16).join('').startsWith('addEventListener')) continue;
+    for (let i = m[0].indexOf(m[1]) + 1 + m.index; i < m.index + m[0].length - 1; i++) out[i] = src[i];
+  }
+}
+
 export function mask(src) {
   const out = src.split('');
   let i = 0;
@@ -49,6 +63,7 @@ export function mask(src) {
     mode = next;
     i += step;
   }
+  keepEventNames(src, out);
   return out.join('');
 }
 
